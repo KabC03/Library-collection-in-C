@@ -304,3 +304,5 @@ bool offset_vector_size(vector* vector, int offsetSize)
 
     return true;
 }
+
+
