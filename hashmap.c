@@ -125,13 +125,14 @@ bool hashmap_insert(HashMap *const hashmap, void *const key, void *const value) 
 
         //Hash the key
         size_t hash = 0;
-        size_t tableSize = vector_get_size(&(hashmap->mapListNodes));
+        size_t tableSize = vector_get_size(&(hashmap->mapListNodes)) + 1; //get_size returns zero based index
         if(tableSize == 0) {
             return false;
         }
         if(hashmap_hash(key, hashmap->keySize, tableSize, &hash) == false) {
             return false;
         }
+
 
         if(map_LL_insert_front((MapList*)vector_get_index(&(hashmap->mapListNodes), hash), key, value, hashmap->keySize, hashmap->valueSize) == false) {
             return false;
