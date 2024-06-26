@@ -29,6 +29,7 @@ bool hashmap_hash_djb2(const uint8_t *const data, size_t dataSize, size_t tableS
 
         }    
         hash %= tableSize;
+        //printf("Recieved: %d || Hash: %zu\n", *(int*)data, hash);
         *hashOut = hash;
     }
     return true;
@@ -64,9 +65,9 @@ bool hashmap_print(HashMap *const hashmap) {
     } else {
 
         for(int i = 0; i < vector_get_length(&(hashmap->mapListNodes)) + 1; i++) {
-
+            printf("Bucket: %d\n",i);
             map_LL_print((MapList*)(vector_get_index(&(hashmap->mapListNodes), i)));
-
+            
         }   
     }
 
