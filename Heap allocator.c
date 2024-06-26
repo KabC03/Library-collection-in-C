@@ -44,6 +44,10 @@ bool heap_initialise(Heap *const heap, size_t size) {
             return false;
         }
         heap->totalSize = pageSize;
+   
+        heap->memoryNode->blockSize = heap->totalSize;
+        heap->memoryNode->next = newMemory;
+
     }
 
     return true;
