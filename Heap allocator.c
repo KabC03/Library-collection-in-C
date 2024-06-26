@@ -44,9 +44,7 @@ bool heap_initialise(Heap *const heap, size_t size) {
             return false;
         }
         heap->numPages = pageSize;
-   
-        heap->memoryNode->blockSize = heap->numPages;
-        heap->memoryNode->next = newMemory;
+        heap->baseAddress = newMemory;
 
     }
 
@@ -132,7 +130,7 @@ bool heap_destroy(Heap *const heap) {
     } else {
 
         size_t systemPageSize = sysconf(_SC_PAGESIZE);
-        if(munmap(heap->memoryNode, heap->numPages * systemPageSize) != 0) {
+        if(munmap(heap->baseAddress, heap->numPages * systemPageSize) != 0) {
             return false;
         }
         
