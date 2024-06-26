@@ -9,8 +9,11 @@
 #include <string.h>
 #include <stdint.h>
 #include <sys/mman.h>
+#include <unistd.h>
 
-typedef struct FreeMemoryNode {
+
+
+typedef struct FreeMemoryNode {  //Stored next to the free node
 
     size_t blockSize;            //Size of the block
     struct FreeMemoryNode *next; //Next block
