@@ -582,7 +582,7 @@ bool map_LL_initialise(MapList *const list) {
 
 
 //Insert after first node at the front
-bool map_LL_insert_front(MapList *const list, void *inputKey, void *inputValue, size_t keySize, size_t valueSize) {
+bool map_LL_insert_front(MapList *const list, void *const inputKey, void *const inputValue, size_t keySize, size_t valueSize) {
 
     if(list == NULL || inputKey == NULL || inputValue == NULL) {
         return false;
@@ -637,7 +637,7 @@ bool map_LL_insert_front(MapList *const list, void *inputKey, void *inputValue, 
 
 
 //Delete by a key
-bool map_LL_delete_key(MapList *const list, void *inputKey, size_t keySize) {
+bool map_LL_delete_key(MapList *const list, void *const inputKey, size_t keySize) {
 
     if(list == NULL || inputKey == NULL || keySize == 0) {
         return false;
@@ -705,7 +705,7 @@ bool map_LL_delete_key(MapList *const list, void *inputKey, size_t keySize) {
 
 
 //Get value from a key - return pointer to value
-const void *map_LL_get_value(MapList *const list, void *inputKey, size_t keySize) {
+const void *map_LL_get_value(MapList *const list, void *const inputKey, size_t keySize) {
 
     if(list == NULL || inputKey == NULL || keySize == 0) {
         return NULL;
@@ -762,6 +762,5 @@ bool map_LL_destroy(MapList *const list) {
 
     return true;
 }
-
 
 
