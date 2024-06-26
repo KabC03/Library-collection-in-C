@@ -125,7 +125,7 @@ bool heap_free(void *ptr) {
  * Return: bool - T/F depending on if initialisation was successful
  * 
  */
-bool heap_free(Heap *const heap) {
+bool heap_destroy(Heap *const heap) {
 
     if(heap == NULL) {
         return false;
