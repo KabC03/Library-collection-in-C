@@ -1,12 +1,19 @@
 #include "Heap allocator.h"
 
 
-struct FreeMemoryNode {  //Stored next to the free node
+struct MemoryNode{  //Stored next to the free node
 
     size_t blockSize;            //Size of the block
-    struct FreeMemoryNode *next; //Next block
+    bool isUsed;                 //If the block is used
+    struct MemoryNode*next;      //Next block
+    struct MemoryNode *previous; //Previous block
 
 };
+//Doubly linked list
+//When allocating node set forward pointer to skip allocated node
+//Allocated node back ptr points to previous node, forward ptr points to next node still
+//When freeing, can check if adjacent blocks are marked free, if so then combine and insert
+
 
 
 /**
@@ -150,4 +157,4 @@ bool heap_destroy(Heap *const heap) {
 
 
 
- 
+  
