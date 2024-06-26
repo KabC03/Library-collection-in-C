@@ -43,9 +43,9 @@ bool heap_initialise(Heap *const heap, size_t size) {
         if(newMemory == NULL) {
             return false;
         }
-        heap->totalSize = pageSize;
+        heap->numPages = pageSize;
    
-        heap->memoryNode->blockSize = heap->totalSize;
+        heap->memoryNode->blockSize = heap->numPages;
         heap->memoryNode->next = newMemory;
 
     }
@@ -75,7 +75,7 @@ void *heap_allocate(size_t size, const Heap *const heap) {
     } else {
 
         //Move through the LL until find a node with a large enough capacity. Break off whats needed then trim the node
-
+        //If no blocks free just return NULL
     }
 
     return newPtr;
@@ -106,6 +106,36 @@ bool heap_free(void *ptr) {
         //if not just insert the metadata node back into the LL
         
 
+    }
+
+    return true;    
+}
+
+
+
+
+
+/**
+ * heap_destroy
+ * ===============================================
+ * Brief: Destroy a full heap
+ * 
+ * Param: *ptr - ptr to block of interest 
+ * 
+ * Return: bool - T/F depending on if initialisation was successful
+ * 
+ */
+bool heap_free(Heap *const heap) {
+
+    if(heap == NULL) {
+        return false;
+    } else {
+
+        size_t systemPageSize = sysconf(_SC_PAGESIZE);
+        if(munmap(heap->memoryNode, heap->numPages * systemPageSize) != 0) {
+            return false;
+        }
+        
     }
 
     return true;    
