@@ -46,8 +46,38 @@ TODO:
 - Destroy hashmap
 */
 
+
 /**
- * hashmap_initiahlise - DOESNT WORK 
+ * hashmap_print
+ * ===============================================
+ * Brief: Print a hashmap of ints - used for debugging
+ * 
+ * Param: *hashmap - Hashmap of interest 
+ * 
+ * Return: bool - T/F depending on if initialisation was successful
+ * 
+ */
+bool hashmap_print(HashMap *const hashmap) {
+
+    if(hashmap == NULL) {
+        return false;
+    } else {
+
+        for(int i = 0; i < vector_get_length(&(hashmap->mapListNodes)) + 1; i++) {
+
+            map_LL_print((MapList*)(vector_get_index(&(hashmap->mapListNodes), i)));
+
+        }   
+    }
+
+    return true;
+}
+
+
+
+
+/**
+ * hashmap_initiahlise 
  * ===============================================
  * Brief: Initialise a hash table 
  * 
@@ -166,7 +196,7 @@ bool hashmap_get_value(HashMap *const hashmap, void *const key, const void **val
         size_t hash = 0;
         size_t tableSize = vector_get_size(&(hashmap->mapListNodes)) + 1; //get_size returns zero based index
         
-        
+         
         if(tableSize == 0) {
             return false;
         }
