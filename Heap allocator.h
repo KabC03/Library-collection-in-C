@@ -19,7 +19,6 @@ typedef struct Heap { //Do this to allow for multiple heaps
 
     size_t numBytes;
 
-    void *baseAddress;                 //Base mmap memory address
     struct MemoryNode *memoryNode;     //A memory node contained within the heap
 
 } Heap;
