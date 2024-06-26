@@ -68,6 +68,8 @@ bool heap_initialise(Heap *const heap, size_t size) {
  */
 void *heap_allocate(size_t size, const Heap *const heap) {
 
+
+    void *newPtr = NULL;
     if(size == 0 || heap == NULL) {
         return NULL;
     } else {
@@ -76,7 +78,7 @@ void *heap_allocate(size_t size, const Heap *const heap) {
 
     }
 
-    return NULL; //TEMPORARY
+    return newPtr;
 }
 
 
