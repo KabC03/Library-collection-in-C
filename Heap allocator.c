@@ -95,7 +95,6 @@ bool heap_initialise(Heap *const heap, size_t size) {
 void *heap_allocate(size_t size, const Heap *const heap) {
 
 
-    void *newPtr = NULL;
     if(size == 0 || heap == NULL) {
         return NULL;
     } else {
@@ -109,12 +108,36 @@ void *heap_allocate(size_t size, const Heap *const heap) {
         } else {
 
             MemoryNode *currentNode = heap->memoryNode;
+            while(currentNode->next != NULL) {
 
+                if(currentNode->isUsed == false && size > currentNode->blockSize + sizeof(MemoryNode)) {
+                    //Allocate memory here
+
+                    MemoryNode newNode;
+                    newNode.previous = currentNode;
+                    newNode.next = currentNode->next;
+                    newNode.isUsed = false;
+                    newNode.blockSize = currentNode->blockSize - size - sizeof(MemoryNode);
+
+                    memcpy(currentNode + currentNode->blockSize + sizeof(MemoryNode), &newNode, sizeof(newNode));
+
+                    
+
+                    currentNode->blockSize = size + sizeof(MemoryNode);
+                    currentNode->next = (MemoryNode*)(currentNode + currentNode->blockSize + sizeof(MemoryNode));
+                    currentNode->isUsed = true;
+
+
+                    return currentNode;
+                }
+
+                currentNode = currentNode->next;
+            }
 
         }
     }
 
-    return newPtr;
+    return NULL;
 }
 
 
@@ -135,10 +158,14 @@ bool heap_free(void *ptr) {
         return false;
     } else {
 
+        //Comments outdataed
         //Decrement ptr by sizeof MemoryNode (to find the metadata node)
         //munmap the next bytes
         //Fragmentation can be resolved during allocation??
-        
+
+        //Deletion
+        //While left and right are empty add them to the current block
+        //Then just add to the LL
 
     }
 
