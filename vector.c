@@ -295,6 +295,7 @@ bool vector_destroy(Vector *const vector) {
     } else {
 
         free(vector->data);
+        vector->data = NULL;
 
     }
     return true;
