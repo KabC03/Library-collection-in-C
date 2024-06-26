@@ -49,6 +49,7 @@ bool heap_initialise(Heap *const heap, size_t size) {
         //Ceil the page multiple
         size_t systemPageSize = sysconf(_SC_PAGESIZE);
         size_t pageSize = 0;
+
         if(size % systemPageSize == 0) {
 
             pageSize = size / systemPageSize;
@@ -62,8 +63,16 @@ bool heap_initialise(Heap *const heap, size_t size) {
         if(newMemory == NULL) {
             return false;
         }
-        heap->numBytes = pageSize * systemPageSize;
-        heap->baseAddress = newMemory;
+
+
+        MemoryNode newNode;
+        newNode.isUsed = false;
+        newNode.blockSize = size - sizeof(MemoryNode);
+
+        newNode.next = NULL;
+        newNode.previous = NULL;
+        memcpy(newMemory, &newNode, sizeof(MemoryNode));
+        
 
     }
 
@@ -97,12 +106,12 @@ void *heap_allocate(size_t size, const Heap *const heap) {
 
         if(size > heap->numBytes) {
             return false;
+        } else {
+
+            MemoryNode *currentNode = heap->memoryNode;
+
+
         }
-
-
-
-
-
     }
 
     return newPtr;
@@ -155,8 +164,11 @@ bool heap_destroy(Heap *const heap) {
     if(heap == NULL) {
         return false;
     } else {
-
-        if(munmap(heap->baseAddress, heap->numBytes) != 0) {
+        if(heap->memoryNode == NULL) {
+            return false;
+        }
+    
+        if(munmap(heap->memoryNode, heap->numBytes) != 0) {
             return false;
         }
         
