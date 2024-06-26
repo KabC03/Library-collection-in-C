@@ -542,20 +542,22 @@ TODO
 bool map_LL_print(MapList *const list) {
 
     if(list == NULL) {
+        printf("Invalid map\n");
         return false;
     } else {
-
-        printf("Index    || Key || Value");
-        printf("       0 || %d  || %d, ", *(int*)(list->firstNode.key),*(int*)(list->firstNode.value));
+        printf("\n\n");
+        printf("Index    || Key || Value\n");
+        printf("       0 || %d  || %d \n", *(int*)(list->firstNode.key),*(int*)(list->firstNode.value));
         MapListNode *currentNode = list->firstNode.next;
 
         int count = 1;
         while(currentNode != NULL) {
 
-        printf("       %d || %d  || %d, ", count,*(int*)(list->firstNode.key),*(int*)(list->firstNode.value)); 
+        printf("       %d || %d  || %d \n", count,*(int*)(list->firstNode.key),*(int*)(list->firstNode.value)); 
             currentNode = currentNode->next;
             count++;
-        }        
+        }     
+        printf("\n\n");   
     }
 
     return true;
