@@ -92,7 +92,7 @@ bool heap_initialise(Heap *const heap, size_t size) {
  * Return: void* - Pointer to the new block 
  * 
  */
-void *heap_allocate(size_t size, const Heap *const heap) {
+void *heap_allocate(const Heap *const heap, size_t size) {
 
 
     if(size == 0 || heap == NULL) {
