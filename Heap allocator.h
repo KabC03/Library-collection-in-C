@@ -18,6 +18,8 @@ typedef struct FreeMemoryNode FreeMemoryNode;
 typedef struct Heap { //Do this to allow for multiple heaps
 
     size_t numPages;
+
+    void *baseAddress;                 //Base mmap memory address
     struct FreeMemoryNode *memoryNode; //A memory node contained within the heap
 
 } Heap;
