@@ -1,6 +1,12 @@
 #include "Heap allocator.h"
 
 
+struct FreeMemoryNode {  //Stored next to the free node
+
+    size_t blockSize;            //Size of the block
+    struct FreeMemoryNode *next; //Next block
+
+};
 
 
 /**
@@ -21,6 +27,23 @@ bool heap_initialise(Heap *const heap, size_t size) {
     } else {
 
 
+        //Ceil the page multiple
+        size_t systemPageSize = sysconf(_SC_PAGESIZE);
+        size_t pageSize = 0;
+        if(size % systemPageSize == 0) {
+
+            pageSize = size / systemPageSize;
+        } else {
+            pageSize = (size / systemPageSize) + 1;
+        }
+
+
+        //Request memory
+        void *newMemory = mmap(NULL, pageSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+        if(newMemory == NULL) {
+            return false;
+        }
+        heap->totalSize = pageSize;
     }
 
     return true;
@@ -48,7 +71,7 @@ void *heap_allocate(size_t size, const Heap *const heap) {
 
     }
 
-
+    return NULL; //TEMPORARY
 }
 
 
