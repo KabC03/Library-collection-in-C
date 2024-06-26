@@ -547,7 +547,7 @@ bool map_LL_print(MapList *const list) {
     } else {
         printf("\n\n");
         printf("Index    || Key || Value\n");
-        printf("       0 || %d  || %d \n", *(int*)(list->firstNode.key),*(int*)(list->firstNode.value));
+        printf("       0 || %d   || %d \n", *(int*)(list->firstNode.key),*(int*)(list->firstNode.value));
         MapListNode *currentNode = list->firstNode.next;
 
         int count = 1;
