@@ -12,19 +12,15 @@
 #include <unistd.h>
 
 
+typedef struct FreeMemoryNode FreeMemoryNode;
 
-typedef struct FreeMemoryNode {  //Stored next to the free node
-
-    size_t blockSize;            //Size of the block
-    struct FreeMemoryNode *next; //Next block
-
-} FreeMemoryNode;
 typedef struct Heap { //Do this to allow for multiple heaps
 
     size_t totalSize;
     struct FreeMemoryNode *memoryNode; //A memory node contained within the heap
 
 } Heap;
+
 
 
 bool heap_initialise(Heap *const heap, size_t size);
