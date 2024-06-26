@@ -347,7 +347,7 @@ bool vector_set_index(Vector *const vector, size_t index, const void *const data
 /**
  * vector_quick_append 
  * ===============================================
- * Brief: Appends an array of items to the end of the vector with automatic resizing 
+ * Brief: Appends an array of items to the end of the vector with automatic resizing (doubles in capacity each time) 
  * 
  * Param: *vector - Pointer to the vector of interest
  *        *data - data of interest
@@ -363,11 +363,11 @@ bool vector_quick_append(Vector *const vector, const void *const data, size_t am
     } else {
 
         if(amountOfData > vector->size - vector->top) { //Allocate more memory
-            vector->data = realloc(vector->data, (vector->size + amountOfData) * vector->elementSize);
+            vector->data = realloc(vector->data, (vector->size + amountOfData) * 2 * vector->elementSize);
             if(vector->data == NULL) {
                 return false;
             }
-            vector->size += amountOfData;
+            vector->size += amountOfData * 2;
         } else {
         
         }
