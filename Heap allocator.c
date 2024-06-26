@@ -5,7 +5,7 @@ struct MemoryNode{  //Stored next to the free node
 
     size_t blockSize;            //Size of the block
     bool isUsed;                 //If the block is used
-    struct MemoryNode*next;      //Next block
+    struct MemoryNode *next;      //Next block
     struct MemoryNode *previous; //Previous block
 
 };
@@ -13,6 +13,18 @@ struct MemoryNode{  //Stored next to the free node
 //When allocating node set forward pointer to skip allocated node
 //Allocated node back ptr points to previous node, forward ptr points to next node still
 //When freeing, can check if adjacent blocks are marked free, if so then combine and insert
+
+
+/*
+Allocating:
+
+1. prevNode->next = allocatedNode->next
+2. (Leave allocatedNode->prev pointing to prevNode)
+3. Done?
+4. If adjacent block is allocated
+
+
+*/
 
 
 
@@ -50,7 +62,7 @@ bool heap_initialise(Heap *const heap, size_t size) {
         if(newMemory == NULL) {
             return false;
         }
-        heap->numPages = pageSize;
+        heap->numBytes = pageSize * systemPageSize;
         heap->baseAddress = newMemory;
 
     }
@@ -81,7 +93,16 @@ void *heap_allocate(size_t size, const Heap *const heap) {
 
         //Move through the LL until find a node with a large enough capacity. Break off whats needed then trim the node
         //If no blocks free just return NULL
-        //Maybe also resolve fragmentation during this process?
+
+
+        if(size > heap->numBytes) {
+            return false;
+        }
+
+
+
+
+
     }
 
     return newPtr;
@@ -135,8 +156,7 @@ bool heap_destroy(Heap *const heap) {
         return false;
     } else {
 
-        size_t systemPageSize = sysconf(_SC_PAGESIZE);
-        if(munmap(heap->baseAddress, heap->numPages * systemPageSize) != 0) {
+        if(munmap(heap->baseAddress, heap->numBytes) != 0) {
             return false;
         }
         
@@ -157,4 +177,4 @@ bool heap_destroy(Heap *const heap) {
 
 
 
-  
+ 
