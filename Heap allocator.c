@@ -19,9 +19,9 @@ bool heap_initialise(Heap *const heap, size_t size) {
     if(heap == NULL || size == 0) {
         return false;
     } else {
-        
-    }
 
+
+    }
 
     return true;
 }
