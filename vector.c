@@ -367,11 +367,12 @@ bool vector_quick_append(Vector *const vector, const void *const data, size_t am
             if(vector->data == NULL) {
                 return false;
             }
-            
+            vector->size += amountOfData;
         } else {
         
         }
         memcpy(&((vector->data)[vector->top * vector->elementSize]), data, amountOfData * vector->elementSize);
+        vector->top += amountOfData;
 
     }
 
