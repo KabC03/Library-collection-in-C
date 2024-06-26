@@ -80,13 +80,16 @@ bool LL_delete_back(LinkedList *const list);
 
 bool map_LL_print(MapList *const list);
 bool map_LL_initialise(MapList *const list); 
-bool map_LL_insert_front(MapList *const list, void *inputKey, void *inputValue, size_t keySize, size_t valueSize);
-bool map_LL_delete_key(MapList *const list, void *inputKey, size_t keySize);
-const void *map_LL_get_value(MapList *const list, void *inputKey, size_t keySize);
+bool map_LL_insert_front(MapList *const list, void *const inputKey, void *const inputValue, size_t keySize, size_t valueSize);
+bool map_LL_delete_key(MapList *const list, void *const inputKey, size_t keySize);
+const void *map_LL_get_value(MapList *const list, void *const inputKey, size_t keySize);
 bool map_LL_destroy(MapList *const list);
 
 
 
 #endif // DATASTRUCTURES_H
+
+
+
 
 
