@@ -156,7 +156,7 @@ bool hashmap_insert(HashMap *const hashmap, void *const key, void *const value) 
  * Return: bool - T/F depending on if initialisation was successful
  * 
  */
-bool hashmap_get_value(HashMap *const hashmap, void *const key, void **valueOut) {
+bool hashmap_get_value(HashMap *const hashmap, void *const key, const void **valueOut) {
 
     if(hashmap == NULL || key == NULL || valueOut == NULL) {
         return false;
