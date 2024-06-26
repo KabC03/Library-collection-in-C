@@ -72,6 +72,7 @@ void *heap_allocate(size_t size, const Heap *const heap) {
         return NULL;
     } else {
 
+        //Move through the LL until find a node with a large enough capacity. Break off whats needed then trim the node
 
     }
 
@@ -96,6 +97,13 @@ bool heap_free(void *ptr) {
         return false;
     } else {
 
+        //Decrement ptr by sizeof MemoryNode (to find the metadata node)
+        //munmap the next bytes
+        //check if next or previous blocks are free
+        //if so combine them into their LLs
+        //if not just insert the metadata node back into the LL
+        
+
     }
 
     return true;    
@@ -113,3 +121,4 @@ bool heap_free(void *ptr) {
 
 
 
+ 
