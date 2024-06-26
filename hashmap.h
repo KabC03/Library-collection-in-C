@@ -15,13 +15,17 @@
 typedef struct HashMap {
 
     Vector mapListNodes;
+    size_t keySize;
+    size_t valueSize;
 
 } HashMap;
 
 
 bool hashmap_hash_djb2(const uint8_t *const data, size_t dataSize, size_t tableSize, size_t *const hashOut); 
 bool hashmap_initialise(HashMap *const hashmap, size_t keySize, size_t valueSize, size_t initialTableSize);
+bool hashmap_insert(HashMap *const hashmap, void *const key, void *const value);
 
 #endif // HASHMAP_H
+
 
 
