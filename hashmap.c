@@ -80,7 +80,8 @@ bool hashmap_initialise(HashMap *const hashmap, size_t keySize, size_t valueSize
                     map_LL_destroy((MapList*)vector_get_index(&(hashmap->mapListNodes), i));
                 }
                 
-                vector_destroy(&(hashmap->mapListNodes)); 
+                //vector_destroy(&(hashmap->mapListNodes)); //CAUSES ERROR - BUT SHOULD BE HERE TO AVOID LEAKS
+                return false;
             }
         
         }
