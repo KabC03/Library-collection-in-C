@@ -19,7 +19,7 @@ typedef struct FreeMemoryNode {
 typedef struct Heap { //Do this to allow for multiple heaps
 
     size_t totalSize;
-    struct MemoryNode *memoryNode; //A memory node contained within the heap
+    struct FreeMemoryNode *memoryNode; //A memory node contained within the heap
 
 } Heap;
 
