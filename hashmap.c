@@ -69,19 +69,23 @@ bool hashmap_initialise(HashMap *const hashmap, size_t keySize, size_t valueSize
         }
         
         if(vector_resize(&(hashmap->mapListNodes), initialTableSize) == false) {
+            vector_destroy(&(hashmap->mapListNodes));
             return false;
         }
 
         for(size_t i = 0; i < initialTableSize; i++) {
             //vector_get_index can return null ptr but map_LL will notice it
-            if(map_LL_initialise((MapList*)vector_get_index(&(hashmap->mapListNodes), i), keySize, valueSize) == false) {
-                return false;
+            if(map_LL_initialise((MapList*)vector_get_index(&(hashmap->mapListNodes), i)) == false) {
+                vector_destroy(&(hashmap->mapListNodes));
             }
-
+        
         }
 
     }
 
     return true;
 }
+
+
+
 
