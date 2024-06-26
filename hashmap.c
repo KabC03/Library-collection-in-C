@@ -1,7 +1,7 @@
 #include "hashmap.h"
 
 #define DJB2_CONSTANT 5381
-
+#define hashmap_hash_djb2 hashmap_hash //Do this to select the current hash algorithm
 
 /**
  * hashmap_hash_djb2
@@ -19,7 +19,7 @@
 bool hashmap_hash_djb2(const uint8_t *const data, size_t dataSize, size_t tableSize, size_t *const hashOut) {
 
     size_t hash= DJB2_CONSTANT;
-    if(data == NULL || dataSize == 0) {
+    if(data == NULL || dataSize == 0 || hashOut == NULL) {
         return false;
     } else {
 
@@ -64,6 +64,9 @@ bool hashmap_initialise(HashMap *const hashmap, size_t keySize, size_t valueSize
         return false;
     } else {
 
+
+        hashmap->keySize = keySize;
+        hashmap->valueSize = valueSize;
         if(vector_initialise(&(hashmap->mapListNodes), sizeof(MapList)) == false) {
             return false;
         }
@@ -95,6 +98,44 @@ bool hashmap_initialise(HashMap *const hashmap, size_t keySize, size_t valueSize
             }
         
         } 
+
+    }
+
+    return true;
+}
+
+
+/**
+ * hashmap_insert
+ * ===============================================
+ * Brief: Insert into a hashtable 
+ * 
+ * Param: *hashmap - Hashmap of interest 
+ *        *key - key of interest to insert
+ *        *value - Corrosponding value to insert
+ * 
+ * Return: bool - T/F depending on if initialisation was successful
+ * 
+ */
+bool hashmap_insert(HashMap *const hashmap, void *const key, void *const value) {
+
+    if(hashmap == NULL || key == NULL || value == NULL) {
+        return false;
+    } else {
+
+        //Hash the key
+        size_t hash = 0;
+        size_t tableSize = vector_get_size(&(hashmap->mapListNodes));
+        if(tableSize == 0) {
+            return false;
+        }
+        if(hashmap_hash(key, hashmap->keySize, tableSize, &hash) == false) {
+            return false;
+        }
+
+        if(map_LL_insert_front((MapList*)vector_get_index(&(hashmap->mapListNodes), hash), key, value, hashmap->keySize, hashmap->valueSize) == false) {
+            return false;
+        }
 
     }
 
