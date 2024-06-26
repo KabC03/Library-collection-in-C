@@ -94,7 +94,7 @@ size_t stack_length(Stack *const stack) {
  * Return: bool - T/F depending on if initialisation was successful
  * 
  */
-bool stack_push(Stack *const stack, void *data) {
+bool stack_push(Stack *const stack, const void *const data) {
 
     if(stack == NULL || data == NULL) {
         return false;
@@ -324,7 +324,7 @@ size_t LL_length(LinkedList *const linkedList) {
  * Return: bool - T/F depending on if initialisation was successful
  * 
  */
-bool LL_insert_front(LinkedList *const list, void *data) {
+bool LL_insert_front(LinkedList *const list, const void *const data) {
 
     if(list == NULL || data == NULL) {
         return false;
@@ -410,7 +410,7 @@ bool LL_delete_front(LinkedList *const list) {
  * Return: bool - T/F depending on if initialisation was successful
  * 
  */
-bool LL_insert_back(LinkedList *const list, void *data) {
+bool LL_insert_back(LinkedList *const list, const void *const data) {
 
     if(list == NULL) {
         return false;
@@ -582,7 +582,7 @@ bool map_LL_initialise(MapList *const list) {
 
 
 //Insert after first node at the front
-bool map_LL_insert_front(MapList *const list, void *const inputKey, void *const inputValue, size_t keySize, size_t valueSize) {
+bool map_LL_insert_front(MapList *const list, const void *const inputKey, const void *const inputValue, size_t keySize, size_t valueSize) {
 
     if(list == NULL || inputKey == NULL || inputValue == NULL) {
         return false;
@@ -637,7 +637,7 @@ bool map_LL_insert_front(MapList *const list, void *const inputKey, void *const 
 
 
 //Delete by a key
-bool map_LL_delete_key(MapList *const list, void *const inputKey, size_t keySize) {
+bool map_LL_delete_key(MapList *const list, const void *const inputKey, size_t keySize) {
 
     if(list == NULL || inputKey == NULL || keySize == 0) {
         return false;
@@ -705,7 +705,7 @@ bool map_LL_delete_key(MapList *const list, void *const inputKey, size_t keySize
 
 
 //Get value from a key - return pointer to value
-const void *map_LL_get_value(MapList *const list, void *const inputKey, size_t keySize) {
+const void *map_LL_get_value(MapList *const list, const void *const inputKey, size_t keySize) {
 
     if(list == NULL || inputKey == NULL || keySize == 0) {
         return NULL;
