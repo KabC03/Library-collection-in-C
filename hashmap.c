@@ -83,14 +83,14 @@ bool hashmap_print(HashMap *const hashmap) {
  * 
  * Param: *hashmap - Hashmap of interest 
  *        keySize - Size of keys
- *        initialTableSize - Initial table size
+ *        TableSize - Table size
  * 
  * Return: bool - T/F depending on if initialisation was successful
  * 
  */
-bool hashmap_initialise(HashMap *const hashmap, size_t keySize, size_t valueSize, size_t initialTableSize) {
+bool hashmap_initialise(HashMap *const hashmap, size_t keySize, size_t valueSize, size_t TableSize) {
 
-    if(hashmap == NULL || keySize == 0 || valueSize == 0 || initialTableSize == 0) {
+    if(hashmap == NULL || keySize == 0 || valueSize == 0 || TableSize == 0) {
         return false;
     } else {
 
@@ -101,7 +101,7 @@ bool hashmap_initialise(HashMap *const hashmap, size_t keySize, size_t valueSize
             return false;
         }
         
-        if(vector_resize(&(hashmap->mapListNodes), initialTableSize) == false) {
+        if(vector_resize(&(hashmap->mapListNodes), TableSize) == false) {
             vector_destroy(&(hashmap->mapListNodes));
             return false;
         }
@@ -115,7 +115,7 @@ bool hashmap_initialise(HashMap *const hashmap, size_t keySize, size_t valueSize
             return false;
         }
 
-        for(size_t i = 0; i < initialTableSize; i++) {
+        for(size_t i = 0; i < TableSize; i++) {
             //vector_get_index can return null ptr but map_LL will notice it
 
             if(vector_insert_index(&(hashmap->mapListNodes), i, &newMap) == false) {
