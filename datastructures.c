@@ -545,14 +545,14 @@ bool map_LL_print(MapList *const list) {
         return false;
     } else {
 
-
-        printf("0 || %d, ", *(int*)(list->firstNode.key));
+        printf("Index    || Key || Value");
+        printf("       0 || %d  || %d, ", *(int*)(list->firstNode.key),*(int*)(list->firstNode.value));
         MapListNode *currentNode = list->firstNode.next;
 
         int count = 1;
         while(currentNode != NULL) {
 
-            printf("%d || %d, ",count, *(int*)(currentNode->key));
+        printf("       %d || %d  || %d, ", count,*(int*)(list->firstNode.key),*(int*)(list->firstNode.value)); 
             currentNode = currentNode->next;
             count++;
         }        
