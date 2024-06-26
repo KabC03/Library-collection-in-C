@@ -157,7 +157,7 @@ const uint8_t* vector_get_index(Vector *const vector, size_t index) {
  * Return: bool - T/F depending on if insertion was successful
  * 
  */
-bool vector_insert_index(Vector *const vector, size_t index, void* data) {
+bool vector_insert_index(Vector *const vector, size_t index, const void *const data) {
 
 
     if(vector == NULL || data == NULL) {
@@ -322,7 +322,7 @@ bool vector_destroy(Vector *const vector) {
  * Return: uint8_t - Pointer to data within the vector
  * 
  */
-bool vector_set_index(Vector *const vector, size_t index, void* data) {
+bool vector_set_index(Vector *const vector, size_t index, const void *const data) {
 
     if(vector == NULL || data == false) {
         return false;
@@ -343,6 +343,40 @@ bool vector_set_index(Vector *const vector, size_t index, void* data) {
 
 
 
+
+/**
+ * vector_quick_append 
+ * ===============================================
+ * Brief: Appends an array of items to the end of the vector with automatic resizing 
+ * 
+ * Param: *vector - Pointer to the vector of interest
+ *        *data - data of interest
+ *        amountOfData - amount of items to be added
+ * 
+ * Return: bool - T/F depending on if addition was successful
+ * 
+ */
+bool vector_quick_append(Vector *const vector, const void *const data, size_t amountOfData) {
+
+    if(vector == NULL || data == NULL || amountOfData == 0) {
+        return false;
+    } else {
+
+        if(amountOfData > vector->size - vector->top) { //Allocate more memory
+            vector->data = realloc(vector->data, (vector->size + amountOfData) * vector->elementSize);
+            if(vector->data == NULL) {
+                return false;
+            }
+            
+        } else {
+        
+        }
+        memcpy(&((vector->data)[vector->top * vector->elementSize]), data, amountOfData * vector->elementSize);
+
+    }
+
+    return true;
+}
 
 
 
