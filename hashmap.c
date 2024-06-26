@@ -133,7 +133,6 @@ bool hashmap_insert(HashMap *const hashmap, void *const key, void *const value) 
             return false;
         }
 
-
         if(map_LL_insert_front((MapList*)vector_get_index(&(hashmap->mapListNodes), hash), key, value, hashmap->keySize, hashmap->valueSize) == false) {
             return false;
         }
@@ -142,6 +141,52 @@ bool hashmap_insert(HashMap *const hashmap, void *const key, void *const value) 
 
     return true;
 }
+
+
+
+/**
+ * hashmap_get_value
+ * ===============================================
+ * Brief: Get a value from a hashmap
+ * 
+ * Param: *hashmap - Hashmap of interest 
+ *        *key - key of interest to insert
+ *        *valueOut - Output of hash table 
+ * 
+ * Return: bool - T/F depending on if initialisation was successful
+ * 
+ */
+bool hashmap_get_value(HashMap *const hashmap, void *const key, void **valueOut) {
+
+    if(hashmap == NULL || key == NULL || valueOut == NULL) {
+        return false;
+    } else {
+
+        //Hash the key
+        size_t hash = 0;
+        size_t tableSize = vector_get_size(&(hashmap->mapListNodes)) + 1; //get_size returns zero based index
+        
+        
+        if(tableSize == 0) {
+            return false;
+        }
+        if(hashmap_hash(key, hashmap->keySize, tableSize, &hash) == false) {
+            return false;
+        }
+        
+        
+        *valueOut = map_LL_get_value((MapList*)vector_get_index(&(hashmap->mapListNodes), hash), key, hashmap->keySize);
+    }
+
+
+ 
+
+
+    return true;
+}
+
+
+
 
 
 
