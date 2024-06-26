@@ -218,6 +218,85 @@ bool hashmap_get_value(HashMap *const hashmap, void *const key, const void **val
 
 
 
+/**
+ * hashmap_remove
+ * ===============================================
+ * Brief: Remove a key/value from a hashmap
+ * 
+ * Param: *hashmap - Hashmap of interest 
+ *        *key - key of interest to delete
+ * 
+ * Return: bool - T/F depending on if initialisation was successful
+ * 
+ */
+bool hashmap_remove(HashMap *const hashmap, void *const key) {
+
+    if(hashmap == NULL || key == NULL) {
+        return false;
+    } else {
+
+        //Hash the key
+        size_t hash = 0;
+        size_t tableSize = vector_get_size(&(hashmap->mapListNodes)) + 1; //get_size returns zero based index
+        
+         
+        if(tableSize == 0) {
+            return false;
+        }
+        if(hashmap_hash(key, hashmap->keySize, tableSize, &hash) == false) {
+            return false;
+        }
+
+
+        if(map_LL_delete_key((MapList*)vector_get_index(&(hashmap->mapListNodes), hash), key, hashmap->keySize) == false) {
+            return false;
+        }
+    }
+
+
+    return true;
+}
+
+
+
+/**
+ * hashmap_destroy
+ * ===============================================
+ * Brief: Destroy a hashmap
+ * 
+ * Param: *hashmap - Hashmap of interest 
+ * 
+ * Return: bool - T/F depending on if initialisation was successful
+ * 
+ */
+bool hashmap_destroy(HashMap *const hashmap) {
+
+    if(hashmap == false) {
+        return false;
+    } else {
+
+        size_t mapSize = 0;
+        if(vector_get_size(&(hashmap->mapListNodes)) == false) {
+            return false;
+        }
+
+
+        for(size_t i = 0; i < mapSize; i++) {
+            if(map_LL_destroy((MapList*)vector_get_index(&(hashmap->mapListNodes), i)) == false) {
+                return false;
+            }
+        }
+        vector_destroy(&(hashmap->mapListNodes));
+    }
+
+    return true;
+}
+
+
+
+
+
+
 
 
 
