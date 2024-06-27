@@ -131,7 +131,7 @@ void *heap_allocate(const Heap *const heap, size_t size) {
                     currentNode->blockSize = size;
                     //Previous node does not need to be updated
                     //Set next node to the address of the copied block
-                    currentNode->next = &currentNode + sizeof(MemoryNode) + currentNode->blockSize;
+                    currentNode->next = currentNode + sizeof(MemoryNode) + currentNode->blockSize;
 
                     //Skip the allocated node
                     currentNode->previous->next = currentNode->next;
