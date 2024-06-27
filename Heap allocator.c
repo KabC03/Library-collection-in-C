@@ -75,6 +75,7 @@ bool heap_initialise(Heap *const heap, size_t size) {
         
         heap->memoryNode = newMemory;
         heap->numBytes =  (pageSize * systemPageSize); //Number of bytes (including metadata)
+        //Automatically aligned to bottom of page so dont need to manually do it
     }
 
     return true;
@@ -87,13 +88,14 @@ bool heap_initialise(Heap *const heap, size_t size) {
  * ===============================================
  * Brief: Request a block of memory 
  * 
- * Param: size - Size of the block
- *        *heap - Heap of interest 
+ * Param: *heap - Heap of interest 
+ *        size - Size of the block
+ *        elementSize - Size of individual element in block (for allignment)
  * 
  * Return: void* - Pointer to the new block 
  * 
  */
-void *heap_allocate(Heap *const heap, size_t size) {
+void *heap_allocate(Heap *const heap, size_t size, size_t elementSize) {
 
 
     if(size == 0 || heap == NULL) {
@@ -132,6 +134,8 @@ void *heap_allocate(Heap *const heap, size_t size) {
                     currentNode->blockSize = size;
                     //Previous node does not need to be updated
                     //Set next node to the address of the copied block
+                    //Need to MANUALLY align memory
+                    //If allignment = size until size == long, then just allign for a void* (8 bytes)
                     currentNode->next = (MemoryNode*)((uint8_t*)currentNode + sizeof(MemoryNode) + currentNode->blockSize);
 
                     //Skip the allocated node
