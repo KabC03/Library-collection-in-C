@@ -119,8 +119,22 @@ void *heap_allocate(Heap *const heap, size_t size, size_t elementSize) {
 
 
                 //Account for allignment
-                size_t misAllignment = (((uintptr_t)currentNode + sizeof(MemoryNode)) % elementSize);
+
+                size_t misAllignment = 0; 
                 size_t allignmentCorrection = 0;
+                //Metadata alignment
+
+                misAllignment = (((uintptr_t)currentNode + sizeof(MemoryNode)) % alignof(MemoryNode));
+                allignmentCorrection = 0;
+                if(misAllignment == 0) {
+                    allignmentCorrection = 0;
+                } else {
+                    allignmentCorrection = alignof(MemoryNode) - misAllignment;
+                }
+
+                //Data alignment
+                misAllignment = (((uintptr_t)currentNode + sizeof(MemoryNode) + allignmentCorrection) % elementSize);
+                allignmentCorrection = 0;
                 if(misAllignment == 0) {
                     allignmentCorrection = 0;
                 } else {
