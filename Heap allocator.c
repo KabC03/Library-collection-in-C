@@ -67,7 +67,8 @@ bool heap_initialise(Heap *const heap, size_t size) {
 
         MemoryNode newNode;
         newNode.isUsed = false;
-        newNode.blockSize = size - sizeof(MemoryNode);
+        newNode.blockSize = (pageSize * systemPageSize) - sizeof(MemoryNode);
+        //Number of free bytes in block (including metadata)
 
         newNode.next = NULL;
         newNode.previous = NULL;
@@ -104,31 +105,41 @@ void *heap_allocate(const Heap *const heap, size_t size) {
 
 
         if(size > heap->numBytes) {
-            return false;
+            return NULL;
         } else {
 
             MemoryNode *currentNode = heap->memoryNode;
             while(currentNode->next != NULL) {
 
-                if(currentNode->isUsed == false && size > currentNode->blockSize + sizeof(MemoryNode)) {
-                    //Allocate memory here
+                if(currentNode->blockSize >= size + sizeof(MemoryNode)) { //Allocate memory (Also have to store metadata)
 
+                    size_t leftover = currentNode->blockSize - size - sizeof(MemoryNode);
+                    //Size of the leftover block (after splitting)
+
+
+                    //Split the block - therefore set up the next node in the block
                     MemoryNode newNode;
-                    newNode.previous = currentNode;
-                    newNode.next = currentNode->next;
                     newNode.isUsed = false;
-                    newNode.blockSize = currentNode->blockSize - size - sizeof(MemoryNode);
+                    newNode.next = NULL;
+                    newNode.previous = currentNode;
+                    newNode.blockSize = leftover;
 
-                    memcpy(currentNode + currentNode->blockSize + sizeof(MemoryNode), &newNode, sizeof(newNode));
 
-                    
 
-                    currentNode->blockSize = size + sizeof(MemoryNode);
-                    currentNode->next = (MemoryNode*)(currentNode + currentNode->blockSize + sizeof(MemoryNode));
+                    //Put data into the current node
                     currentNode->isUsed = true;
+                    currentNode->blockSize = size;
+                    //Previous node does not need to be updated
+                    //Set next node to the address of the copied block
+                    currentNode->next = &currentNode + sizeof(MemoryNode) + currentNode->blockSize;
+
+                    //Skip the allocated node
+                    currentNode->previous->next = currentNode->next;
 
 
-                    return currentNode;
+                    //Copy the new node in
+                    memcpy(currentNode->next, &newNode, sizeof(newNode));
+                    return currentNode + sizeof(newNode); //Skip the metadata and return pointer
                 }
 
                 currentNode = currentNode->next;
