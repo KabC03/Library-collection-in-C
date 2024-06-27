@@ -26,7 +26,7 @@ typedef struct Heap { //Do this to allow for multiple heaps
 
 
 bool heap_initialise(Heap *const heap, size_t size);
-void *heap_allocate(Heap *const heap, size_t size);
+void *heap_allocate(Heap *const heap, size_t size, size_t elementSize);
 bool heap_free(void *ptr);
 bool heap_destroy(Heap *const heap);
 
