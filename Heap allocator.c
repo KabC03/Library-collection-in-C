@@ -74,6 +74,7 @@ bool heap_initialise(Heap *const heap, size_t size) {
         memcpy(newMemory, &newNode, sizeof(MemoryNode));
         
         heap->memoryNode = newMemory;
+        heap->numBytes =  (pageSize * systemPageSize); //Number of bytes (including metadata)
     }
 
     return true;
@@ -110,8 +111,7 @@ void *heap_allocate(Heap *const heap, size_t size) {
             MemoryNode *currentNode = heap->memoryNode;
 
 
-            while(currentNode->next != NULL) {
-
+            while(currentNode != NULL) {
 
                 if(currentNode->blockSize >= size + sizeof(MemoryNode)) { //Allocate memory (Also have to store metadata)
 
@@ -155,7 +155,6 @@ void *heap_allocate(Heap *const heap, size_t size) {
 
         }
     }
-
     return NULL;
 }
 
@@ -213,7 +212,8 @@ bool heap_destroy(Heap *const heap) {
         if(heap->memoryNode == NULL) {
             return false;
         }
-    
+
+
         if(munmap(heap->memoryNode, heap->numBytes) != 0) {
             return false;
         }
