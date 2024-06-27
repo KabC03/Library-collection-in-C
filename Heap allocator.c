@@ -178,8 +178,8 @@ void *heap_allocate(Heap *const heap, size_t size, size_t elementSize) {
 
 
                     //Copy the new node in
-                    memcpy(currentNode->next, &newNode, sizeof(newNode));
-                    return (void*)((uint8_t*)currentNode + sizeof(newNode) + allignmentCorrection);
+                    memcpy(currentNode->next, &newNode, sizeof(MemoryNode));
+                    return (void*)((uint8_t*)currentNode + sizeof(MemoryNode) + allignmentCorrection);
                      //Skip the metadata and return pointer
                 }
 
@@ -217,6 +217,13 @@ bool heap_free(void *ptr) {
         //Deletion
         //While left and right are empty add them to the current block
         //Then just add to the LL
+
+        
+
+
+
+
+
 
     }
 
