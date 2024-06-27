@@ -166,6 +166,7 @@ void *heap_allocate(Heap *const heap, size_t size, size_t elementSize) {
                     //Need to MANUALLY align memory
                     //If allignment = size until size == long, then just allign for a void* (8 bytes)
                     currentNode->next = (MemoryNode*)((uint8_t*)currentNode + sizeof(MemoryNode) + currentNode->blockSize + allignmentCorrection);
+                    printf("Address = %p\n",currentNode->next);
                     //Skip the allocated node
 
                     if(currentNode->previous != NULL) {
@@ -179,6 +180,7 @@ void *heap_allocate(Heap *const heap, size_t size, size_t elementSize) {
 
                     //Copy the new node in
                     memcpy(currentNode->next, &newNode, sizeof(MemoryNode));
+                    printf("Returning: %p\n",(void*)((uint8_t*)currentNode + sizeof(MemoryNode) + allignmentCorrection));
                     return (void*)((uint8_t*)currentNode + sizeof(MemoryNode) + allignmentCorrection);
                      //Skip the metadata and return pointer
                 }
@@ -218,10 +220,13 @@ bool heap_free(void *ptr) {
         //While left and right are empty add them to the current block
         //Then just add to the LL
 
-        
 
 
-
+        //Find metadata struct (must be aligned to boundry and behind ptr)
+        //(address - offset)%(alignment) = 0 -> (offset) = (address)%(alignment)
+        printf("Freeing: %p\n",ptr);
+        MemoryNode *currentNode = (MemoryNode*)((uintptr_t)ptr % alignof(MemoryNode));
+        printf("data: %zu\n",currentNode->blockSize);
 
 
 
