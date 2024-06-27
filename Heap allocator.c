@@ -113,9 +113,11 @@ void *heap_allocate(Heap *const heap, size_t size, size_t elementSize) {
             MemoryNode *currentNode = heap->memoryNode;
 
 
-            while(currentNode != NULL) {
+            while(currentNode != NULL) { 
 
-                if(currentNode->blockSize >= size + sizeof(MemoryNode)) { //Allocate memory (Also have to store metadata)
+                //Check for allignment with currentNode % elementSize
+                if(currentNode->blockSize >= size + sizeof(MemoryNode) + ((uintptr_t)currentNode % elementSize)) { 
+                    //Allocate memory (Also have to store metadata)
 
                     size_t leftover = currentNode->blockSize - size - sizeof(MemoryNode);
                     //Size of the leftover block (after splitting)
@@ -136,7 +138,7 @@ void *heap_allocate(Heap *const heap, size_t size, size_t elementSize) {
                     //Set next node to the address of the copied block
                     //Need to MANUALLY align memory
                     //If allignment = size until size == long, then just allign for a void* (8 bytes)
-                    currentNode->next = (MemoryNode*)((uint8_t*)currentNode + sizeof(MemoryNode) + currentNode->blockSize);
+                    currentNode->next = (MemoryNode*)((uint8_t*)currentNode + sizeof(MemoryNode) + currentNode->blockSize + ((uintptr_t)currentNode % elementSize));
 
                     //Skip the allocated node
 
@@ -151,7 +153,8 @@ void *heap_allocate(Heap *const heap, size_t size, size_t elementSize) {
 
                     //Copy the new node in
                     memcpy(currentNode->next, &newNode, sizeof(newNode));
-                    return (void*)((uint8_t*)currentNode + sizeof(newNode)); //Skip the metadata and return pointer
+                    return (void*)((uint8_t*)currentNode + sizeof(newNode) + ((uintptr_t)currentNode % elementSize));
+                     //Skip the metadata and return pointer
                 }
 
                 currentNode = currentNode->next;
