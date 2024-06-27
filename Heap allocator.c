@@ -57,9 +57,8 @@ bool heap_initialise(Heap *const heap, size_t size) {
             pageSize = (size / systemPageSize) + 1;
         }
 
-
         //Request memory
-        void *newMemory = mmap(NULL, pageSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+        void *newMemory = mmap(NULL, pageSize * systemPageSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
         if(newMemory == NULL) {
             return false;
         }
@@ -74,7 +73,7 @@ bool heap_initialise(Heap *const heap, size_t size) {
         newNode.previous = NULL;
         memcpy(newMemory, &newNode, sizeof(MemoryNode));
         
-
+        heap->memoryNode = newMemory;
     }
 
     return true;
@@ -93,7 +92,7 @@ bool heap_initialise(Heap *const heap, size_t size) {
  * Return: void* - Pointer to the new block 
  * 
  */
-void *heap_allocate(const Heap *const heap, size_t size) {
+void *heap_allocate(Heap *const heap, size_t size) {
 
 
     if(size == 0 || heap == NULL) {
@@ -109,7 +108,10 @@ void *heap_allocate(const Heap *const heap, size_t size) {
         } else {
 
             MemoryNode *currentNode = heap->memoryNode;
+
+
             while(currentNode->next != NULL) {
+
 
                 if(currentNode->blockSize >= size + sizeof(MemoryNode)) { //Allocate memory (Also have to store metadata)
 
@@ -125,21 +127,27 @@ void *heap_allocate(const Heap *const heap, size_t size) {
                     newNode.blockSize = leftover;
 
 
-
                     //Put data into the current node
                     currentNode->isUsed = true;
                     currentNode->blockSize = size;
                     //Previous node does not need to be updated
                     //Set next node to the address of the copied block
-                    currentNode->next = currentNode + sizeof(MemoryNode) + currentNode->blockSize;
+                    currentNode->next = (MemoryNode*)((uint8_t*)currentNode + sizeof(MemoryNode) + currentNode->blockSize);
 
                     //Skip the allocated node
-                    currentNode->previous->next = currentNode->next;
+
+                    if(currentNode->previous != NULL) {
+                        currentNode->previous->next = currentNode->next;
+                    
+                    
+                    } else {
+                        heap->memoryNode = currentNode->next;
+                    }
 
 
                     //Copy the new node in
                     memcpy(currentNode->next, &newNode, sizeof(newNode));
-                    return currentNode + sizeof(newNode); //Skip the metadata and return pointer
+                    return (void*)((uint8_t*)currentNode + sizeof(newNode)); //Skip the metadata and return pointer
                 }
 
                 currentNode = currentNode->next;
