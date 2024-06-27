@@ -122,7 +122,7 @@ void *heap_allocate(Heap *const heap, size_t size) {
                     //Split the block - therefore set up the next node in the block
                     MemoryNode newNode;
                     newNode.isUsed = false;
-                    newNode.next = NULL;
+                    newNode.next = currentNode->next;
                     newNode.previous = currentNode;
                     newNode.blockSize = leftover;
 
