@@ -9,6 +9,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stdint.h>
+#include <stdalign.h>
 #include <sys/mman.h>
 #include <unistd.h>
 
