@@ -166,7 +166,7 @@ void *heap_allocate(Heap *const heap, size_t size, size_t elementSize) {
                     //Need to MANUALLY align memory
                     //If allignment = size until size == long, then just allign for a void* (8 bytes)
                     currentNode->next = (MemoryNode*)((uint8_t*)currentNode + sizeof(MemoryNode) + currentNode->blockSize + allignmentCorrection);
-
+                    printf("Placing new node on: %p, struct: %zu\n",currentNode->next, sizeof(MemoryNode));
                     //Skip the allocated node
 
                     if(currentNode->previous != NULL) {
