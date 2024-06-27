@@ -117,7 +117,15 @@ void *heap_allocate(Heap *const heap, size_t size, size_t elementSize) {
 
                 //Check for allignment with currentNode % elementSize
 
-                size_t allignmentCorrection = ((uintptr_t)currentNode % elementSize);
+
+                //Account for allignment
+                size_t misAllignment = (((uintptr_t)currentNode + sizeof(MemoryNode)) % elementSize);
+                size_t allignmentCorrection = 0;
+                if(misAllignment == 0) {
+                    allignmentCorrection = 0;
+                } else {
+                    allignmentCorrection = elementSize - misAllignment;
+                }
 
 
 
