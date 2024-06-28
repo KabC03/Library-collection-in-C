@@ -3,7 +3,9 @@
 
 struct MemoryNode{  //Stored next to the free node
 
-    size_t blockSize;            //Size of the block
+    size_t blockSize;            //Size of the block without metadata
+    size_t paddingSize;          //Padding in the block
+
     bool isUsed;                 //If the block is used
 
     struct MemoryNode *next;     //Next block
@@ -111,6 +113,7 @@ bool heap_initialise(Heap *const heap, size_t size) {
         //Number of free bytes in block (including metadata)
         newNode.prev = NULL;
         newNode.next = NULL;
+        newNode.paddingSize = 0;
         memcpy(newMemory, &newNode, sizeof(MemoryNode));
         
         heap->memoryNode = newMemory;
@@ -199,7 +202,7 @@ void *heap_allocate(Heap *const heap, size_t size, size_t elementSize) {
                     newNode.next = currentNode->next;
                     newNode.blockSize = leftover;
                     newNode.prev = currentNode;
-
+                    newNode.paddingSize = dataAlignmentCorrection + metadataAlignmentCorrection;
 
                     //Put data into the current node
                     currentNode->isUsed = true;
@@ -275,9 +278,43 @@ bool heap_free(Heap *heap, void *ptr) {
         printf("Freeing ptr, blockSize = %zu || address of metadata = %p\n",currentNode->blockSize,currentNode);
         //Check if adjacent blocks are free (if so then combine them)
 
-        
+        if(currentNode->prev != NULL) {
+
+            if(currentNode->prev->isUsed == false) {
+                currentNode->prev->next = currentNode->next;
+                currentNode->next->prev = currentNode->prev;
+            }
+        }
 
 
+        MemoryNode *insertPtr = currentNode->next;
+        while(insertPtr->isUsed == true) {
+            insertPtr = insertPtr->next;
+        }
+
+
+        //if end of insert ptr == ptr then combine blocks
+        //if end of ptr = start of next ptr then combine blocks
+        if((uintptr_t)currentNode == (uintptr_t)insertPtr + sizeof(MemoryNode) + insertPtr->blockSize + insertPtr->paddingSize + 1) {
+            //Combine blocks
+            insertPtr->blockSize += (currentNode->blockSize + currentNode->paddingSize + sizeof(MemoryNode));
+
+        }
+
+
+        if(insertPtr->next != NULL) {
+            if((uintptr_t)currentNode + sizeof(MemoryNode) + currentNode->blockSize + currentNode->paddingSize + 1 == (uintptr_t)(insertPtr->next)) {
+                //Combine blocks
+
+
+                //Copy data to current node then combine
+                currentNode->prev = insertPtr->next->prev;
+                currentNode->next = insertPtr->next->next;
+
+                currentNode->blockSize += (insertPtr->next->blockSize + sizeof(MemoryNode) + insertPtr->next->paddingSize);
+                currentNode->isUsed = false;
+            }
+        }
 
 
 
