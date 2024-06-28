@@ -31,7 +31,7 @@ Allocating:
 size_t calculate_alignment_correction(void *address, size_t alignment) {
 
     size_t correction = 0;
-    if(address = NULL) {
+    if(address == NULL) {
         return -1;
     } else {
 
@@ -209,10 +209,10 @@ void *heap_allocate(Heap *const heap, size_t size, size_t elementSize) {
 
                     //Copy the new node in
                     memcpy(currentNode->next, &newNode, sizeof(MemoryNode));
-                    printf("Returning: %p\n",(void*)((uint8_t*)currentNode + sizeof(MemoryNode) + dataAlignmentCorrection));
-                    printf("Next metadata struct is at: %p\n",currentNode->next);
+                    printf("Returning: %p\n",(void*)((uint8_t*)currentNode + sizeof(MemoryNode) + dataAlignmentCorrection)); //Should %elementSize == 0
+                    printf("Next metadata struct is at: %p\n",currentNode->next); //Should %alignof(MemoryNode) == 0
                     return (void*)((uint8_t*)currentNode + sizeof(MemoryNode) + dataAlignmentCorrection);
-                     //Skip the metadata and return pointer
+                    //Skip the metadata and return pointer
                 }
 
                 currentNode = currentNode->next;
