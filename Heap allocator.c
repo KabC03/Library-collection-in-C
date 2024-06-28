@@ -226,9 +226,9 @@ void *heap_allocate(Heap *const heap, size_t size, size_t elementSize) {
                     printf("Current metadata struct is at: %p\n",currentNode);
 
 
-
+                    currentNode->prev = currentNode->next;
                     currentNode->next = prevNode;
-
+                    
 
 
                     return (void*)((uint8_t*)currentNode + sizeof(MemoryNode) + dataAlignmentCorrection);
@@ -262,15 +262,9 @@ bool heap_free(Heap *heap, void *ptr) {
         return false;
     } else {
 
-        //Comments outdataed
-        //Decrement ptr by sizeof MemoryNode (to find the metadata node)
-        //munmap the next bytes
-        //Fragmentation can be resolved during allocation??
 
-        //Deletion
-        //While left and right are empty add them to the current block
-        //Then just add to the LL
-
+        //If ptr == end of prevBlock then combine prev and current block
+        //If ptrEnd == start of NextBlock then combine to current block
 
 
         //Find metadata struct (must be aligned to boundry and behind ptr)
@@ -278,9 +272,10 @@ bool heap_free(Heap *heap, void *ptr) {
         size_t offset = calculate_dealignment_offset(ptr, alignof(MemoryNode));
         MemoryNode *currentNode = (MemoryNode*)((uintptr_t)(ptr) - offset - sizeof(MemoryNode));
 
-        printf("Freeing ptr, blockSize = %zu || address = %p\n",currentNode->blockSize,currentNode);
+        printf("Freeing ptr, blockSize = %zu || address of metadata = %p\n",currentNode->blockSize,currentNode);
         //Check if adjacent blocks are free (if so then combine them)
 
+        
 
 
 
