@@ -18,8 +18,8 @@ typedef struct MemoryNode MemoryNode;
 
 typedef struct Heap { //Do this to allow for multiple heaps
 
+    void *baseAddress;
     size_t numBytes;
-
     struct MemoryNode *memoryNode;     //A memory node contained within the heap
 
 } Heap;
@@ -32,24 +32,6 @@ bool heap_free(Heap *heap, void *ptr);
 bool heap_destroy(Heap *const heap);
 
 #endif // HEAP_ALLOCATOR_H
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
