@@ -111,7 +111,8 @@ bool heap_initialise(Heap *const heap, size_t size) {
         newNode.prev = newMemory; //Indicates no used nodes before
         newNode.next = NULL;
         memcpy(newMemory, &newNode, sizeof(MemoryNode));
-        
+
+        heap->baseAddress = newMemory; 
         heap->memoryNode = newMemory;
         heap->numBytes =  (pageSize * systemPageSize); //Number of bytes (including metadata)
         //Automatically aligned to bottom of page so dont need to manually do it
@@ -140,7 +141,7 @@ void *heap_allocate(Heap *const heap, size_t size, size_t elementSize) {
     if(size == 0 || heap == NULL) {
         return NULL;
     } else {
-        printf("ALLOCATING MEMORY\n");
+        //printf("ALLOCATING MEMORY\n");
         //Move through the LL until find a node with a large enough capacity. Break off whats needed then trim the node
         //If no blocks free just return NULL
 
@@ -171,7 +172,7 @@ void *heap_allocate(Heap *const heap, size_t size, size_t elementSize) {
                     newNode.next = currentNode->next;
                     newNode.blockSize = leftover;
                     newNode.prev = currentNode;
-                    printf("Next node points to %p\n",newNode.prev);
+                    //printf("Next node points to %p\n",newNode.prev);
 
 
                     //Put data into the current node
@@ -192,7 +193,7 @@ void *heap_allocate(Heap *const heap, size_t size, size_t elementSize) {
                     }
                     
                     if(currentNode->prev == currentNode) {
-                        printf("Loop\n");
+                        //printf("Loop\n");
                         currentNode->next = NULL;
                     } else {
 
@@ -204,9 +205,9 @@ void *heap_allocate(Heap *const heap, size_t size, size_t elementSize) {
                     //Copy the new node in
                     memcpy(newNodeAddress, &newNode, sizeof(MemoryNode));
 
-                    printf("Returning: %p || alignment = %zu\n",(void*)((uint8_t*)currentNode + sizeof(MemoryNode) + dataAlignmentCorrection), elementSize); //Should %elementSize == 0
-                    printf("Next metadata struct is at: %p and points to %p|| alignment = %zu\n",newNodeAddress, newNode.prev,alignof(MemoryNode)); //Should %alignof(MemoryNode) == 0
-                    printf("Current metadata struct is at: %p and points to %p, next to %p\n",currentNode, currentNode->prev, currentNode->next);
+                    //printf("Returning: %p || alignment = %zu\n",(void*)((uint8_t*)currentNode + sizeof(MemoryNode) + dataAlignmentCorrection), elementSize); //Should %elementSize == 0
+                    //printf("Next metadata struct is at: %p and points to %p|| alignment = %zu\n",newNodeAddress, newNode.prev,alignof(MemoryNode)); //Should %alignof(MemoryNode) == 0
+                    //printf("Current metadata struct is at: %p and points to %p, next to %p\n",currentNode, currentNode->prev, currentNode->next);
 
 
 
@@ -250,7 +251,7 @@ bool heap_free(Heap *heap, void *ptr) {
         size_t offset = calculate_dealignment_offset(ptr, alignof(MemoryNode));
         MemoryNode *currentNode = (MemoryNode*)((uintptr_t)(ptr) - offset - sizeof(MemoryNode));
 
-        printf("\n\nFreeing ptr, blockSize = %zu || address of metadata = %p\n",currentNode->blockSize,currentNode);
+        //printf("\n\nFreeing ptr, blockSize = %zu || address of metadata = %p\n",currentNode->blockSize,currentNode);
         //Check if adjacent blocks are free (if so then combine them)
 
 
@@ -276,7 +277,7 @@ bool heap_free(Heap *heap, void *ptr) {
         if(freeNode == NULL) {
             //Only node
 
-            printf("Setting heap HEAD. Hepa points to %p\n",heap->memoryNode);
+            //printf("Setting heap HEAD. Hepa points to %p\n",heap->memoryNode);
             currentNode->next = heap->memoryNode;
             heap->memoryNode = currentNode;
             currentNode->prev = currentNode; //Loop pointer to itself to say its free and at the start
@@ -284,7 +285,7 @@ bool heap_free(Heap *heap, void *ptr) {
 
         } else {
             //Not the only node
-            printf("Setting ANOTHER nodes head = %p\n", freeNode);
+            //printf("Setting ANOTHER nodes head = %p\n", freeNode);
             currentNode->next = freeNode->next;
             freeNode->next = currentNode;
 
@@ -302,7 +303,7 @@ bool heap_free(Heap *heap, void *ptr) {
 
         if(freeNode != NULL) {
 
-            printf("[Merge FIRST nodes] Comparing %p and %p\n", (void*)((uintptr_t)freeNode + freeNode->blockSize), (void*)((uintptr_t)currentNode));
+            //printf("[Merge FIRST nodes] Comparing %p and %p\n", (void*)((uintptr_t)freeNode + freeNode->blockSize), (void*)((uintptr_t)currentNode));
             if((uintptr_t)freeNode + freeNode->blockSize == (uintptr_t)currentNode) {
                 freeNode->blockSize += currentNode->blockSize;
                 freeNode->next = currentNode->next;
@@ -314,7 +315,7 @@ bool heap_free(Heap *heap, void *ptr) {
 
         
         if(currentNode->next != NULL) {
-            printf("[Merge last nodes] Comparing %p and %p\n", (void*)((uintptr_t)currentNode + currentNode->blockSize), (void*)((uintptr_t)currentNode->next));
+            //printf("[Merge last nodes] Comparing %p and %p\n", (void*)((uintptr_t)currentNode + currentNode->blockSize), (void*)((uintptr_t)currentNode->next));
             if((uintptr_t)currentNode + currentNode->blockSize == (uintptr_t)currentNode->next) {
                 currentNode->blockSize += currentNode->next->blockSize;
                 currentNode->next = currentNode->next->next;
@@ -346,17 +347,19 @@ bool heap_free(Heap *heap, void *ptr) {
 bool heap_destroy(Heap *const heap) {
 
     if(heap == NULL) {
+
         return false;
     } else {
         if(heap->memoryNode == NULL) {
+
             return false;
         }
 
 
-        if(munmap(heap->memoryNode, heap->numBytes) != 0) {
+        if(munmap(heap->baseAddress, heap->numBytes) != 0) {
             return false;
         }
-        
+        heap->memoryNode = NULL;
     }
 
     return true;    
