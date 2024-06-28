@@ -110,7 +110,7 @@ bool heap_initialise(Heap *const heap, size_t size) {
         newNode.isUsed = false;
         newNode.blockSize = (pageSize * systemPageSize);
         //Number of free bytes in block (including metadata)
-        newNode.prev = NULL;
+        newNode.prev = newMemory;
         newNode.next = NULL;
         memcpy(newMemory, &newNode, sizeof(MemoryNode));
         
@@ -155,35 +155,6 @@ void *heap_allocate(Heap *const heap, size_t size, size_t elementSize) {
             MemoryNode *prevNode = NULL;
             while(currentNode != NULL) { 
 
-                //Check for allignment with currentNode % elementSize
-
-
-                //Account for allignment
-
-                /*
-                size_t misAllignment = 0; 
-                size_t allignmentCorrection = 0;
-                //Metadata alignment
-
-                misAllignment = (((uintptr_t)currentNode + sizeof(MemoryNode)) % alignof(MemoryNode));
-                allignmentCorrection = 0;
-                if(misAllignment == 0) {
-                    allignmentCorrection = 0;
-                } else {
-                    allignmentCorrection = alignof(MemoryNode) - misAllignment;
-                }
-
-                //Data alignment
-                misAllignment = (((uintptr_t)currentNode + sizeof(MemoryNode) + allignmentCorrection) % elementSize);
-                allignmentCorrection = 0;
-                if(misAllignment == 0) {
-                    allignmentCorrection = 0;
-                } else {
-                    allignmentCorrection = elementSize - misAllignment;
-                }
-                */
-
-
                 size_t dataAlignmentCorrection = calculate_alignment_correction((uint8_t*)currentNode + sizeof(MemoryNode), elementSize); 
                 size_t metadataAlignmentCorrection = calculate_alignment_correction((uint8_t*)currentNode + sizeof(MemoryNode) + size + dataAlignmentCorrection, alignof(MemoryNode));
 
@@ -211,7 +182,9 @@ void *heap_allocate(Heap *const heap, size_t size, size_t elementSize) {
                     //Set next node to the address of the copied block
                     //Need to MANUALLY align memory
                     //If allignment = size until size == long, then just allign for a void* (8 bytes)
-                    currentNode->next = (MemoryNode*)((uint8_t*)currentNode + currentBlockSize);
+
+
+                    MemoryNode *newNodeAddress = (MemoryNode*)((uint8_t*)currentNode + currentBlockSize);
                     //Skip the allocated node
 
 
@@ -223,16 +196,14 @@ void *heap_allocate(Heap *const heap, size_t size, size_t elementSize) {
                     }
 
                     //Copy the new node in
-                    memcpy(currentNode->next, &newNode, sizeof(MemoryNode));
+                    memcpy(newNodeAddress, &newNode, sizeof(MemoryNode));
                     printf("Returning: %p || alignment = %zu\n",(void*)((uint8_t*)currentNode + sizeof(MemoryNode) + dataAlignmentCorrection), elementSize); //Should %elementSize == 0
-                    printf("Next metadata struct is at: %p || alignment = %zu\n",currentNode->next, alignof(MemoryNode)); //Should %alignof(MemoryNode) == 0
+                    printf("Next metadata struct is at: %p || alignment = %zu\n",newNodeAddress, alignof(MemoryNode)); //Should %alignof(MemoryNode) == 0
                     printf("Current metadata struct is at: %p\n",currentNode);
 
 
-                    currentNode->prev = currentNode->next;
-                    currentNode->next = prevNode;
-                    
-
+                    currentNode->next = prevNode;                    
+                    currentNode->prev = NULL;
 
                     return (void*)((uint8_t*)currentNode + sizeof(MemoryNode) + dataAlignmentCorrection);
                     //Skip the metadata and return pointer
@@ -278,6 +249,43 @@ bool heap_free(Heap *heap, void *ptr) {
         printf("Freeing ptr, blockSize = %zu || address of metadata = %p\n",currentNode->blockSize,currentNode);
         //Check if adjacent blocks are free (if so then combine them)
 
+
+        MemoryNode *freeNode = currentNode;
+        
+        while(1) {
+            //If freenode == NULL then set heap head to point to new node
+            //If freenode->prev != NULL then insert after
+
+            if(freeNode == NULL) {
+                break;
+            } else if(freeNode->prev != NULL) {
+                break;
+            }
+
+            freeNode = freeNode->next;
+        }
+
+
+        if(freeNode == NULL) {
+            //Only node
+
+            currentNode->next = heap->memoryNode;
+            heap->memoryNode = currentNode;
+            currentNode->prev = currentNode; //Loop pointer to itself to say its free and at the start
+
+
+        } else {
+            //Not the only node
+            currentNode->next = freeNode->next;
+            freeNode->next = currentNode;
+
+            //Loop to indicate node is free
+            currentNode->prev = currentNode;
+        }
+
+
+
+        //Combine adjacent nodes
 
     }
 
@@ -331,4 +339,3 @@ bool heap_destroy(Heap *const heap) {
 
  
 
- 
