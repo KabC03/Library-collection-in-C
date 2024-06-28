@@ -8,7 +8,7 @@ struct MemoryNode{  //Stored next to the free node
     bool isUsed;                 //If the block is used
 
     struct MemoryNode *next;     //Next block
-    struct MemoryNode *prev;     //Previous block
+    struct MemoryNode *prev;     //Previous block (NULL if node is being used, loops to itself or previous node if free)
 
 };
 //Doubly linked list
@@ -251,7 +251,9 @@ bool heap_free(Heap *heap, void *ptr) {
 
 
         MemoryNode *freeNode = currentNode;
+        //Pointers behind currentNode automatically follow it (so it automatically remains ordered)
         
+
         while(1) {
             //If freenode == NULL then set heap head to point to new node
             //If freenode->prev != NULL then insert after
@@ -284,8 +286,24 @@ bool heap_free(Heap *heap, void *ptr) {
         }
 
 
-
         //Combine adjacent nodes
+
+
+        //Check previous node
+        if(freeNode != NULL) {
+
+        }
+
+
+        //Combine next node
+        if(currentNode->next != NULL) {
+
+
+
+        }
+
+
+
 
     }
 
@@ -339,3 +357,4 @@ bool heap_destroy(Heap *const heap) {
 
  
 
+ 
