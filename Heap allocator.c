@@ -5,10 +5,9 @@ struct MemoryNode{  //Stored next to the free node
 
     size_t blockSize;            //Size of the block with padding and metadata
 
-    bool isUsed;                 //If the block is used
-
     struct MemoryNode *next;     //Next block
-    struct MemoryNode *prev;     //Previous block (NULL if node is being used, loops to itself or previous node if free)
+    struct MemoryNode *prev;     
+    //Previous block (NULL if node is being used, loops to itself or previous node if free - loops to previous node if previosu node is in use)
 
 };
 //Doubly linked list
@@ -107,7 +106,6 @@ bool heap_initialise(Heap *const heap, size_t size) {
 
 
         MemoryNode newNode;
-        newNode.isUsed = false;
         newNode.blockSize = (pageSize * systemPageSize);
         //Number of free bytes in block (including metadata)
         newNode.prev = newMemory;
@@ -170,13 +168,11 @@ void *heap_allocate(Heap *const heap, size_t size, size_t elementSize) {
 
                     //Split the block - therefore set up the next node in the block
                     MemoryNode newNode;
-                    newNode.isUsed = false;
                     newNode.next = currentNode->next;
                     newNode.blockSize = leftover;
                     newNode.prev = currentNode;
 
                     //Put data into the current node
-                    currentNode->isUsed = true;
                     currentNode->blockSize = currentBlockSize;
                     //Previous node does not need to be updated
                     //Set next node to the address of the copied block
@@ -292,7 +288,7 @@ bool heap_free(Heap *heap, void *ptr) {
         //Check previous node
         if(freeNode != NULL) {
 
-            if((uintptr_t)freeNode + freeNode->blockSize + 1 == (uintptr_t)currentNode) {
+            if((uintptr_t)freeNode + freeNode->blockSize == (uintptr_t)currentNode) {
                 freeNode += currentNode->blockSize;
                 freeNode->next = currentNode->next;
             }
