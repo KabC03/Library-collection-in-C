@@ -27,6 +27,19 @@ Allocating:
 */
 
 
+//Undo alignment to find metadata
+size_t calculate_dealignment_offset(void *address, size_t alignment) {
+
+    size_t offset = 0;
+    if(address = NULL) {
+        return -1;
+    } else {
+        offset = (uintptr_t)address % alignment;
+    }
+
+    return  offset;
+}
+
 //Calculate the allignment corretion of data
 size_t calculate_alignment_correction(void *address, size_t alignment) {
 
@@ -205,6 +218,7 @@ void *heap_allocate(Heap *const heap, size_t size, size_t elementSize) {
                     
                     } else {
                         heap->memoryNode = currentNode->next;
+                        currentNode->previous = currentNode->next;
                     }
 
 
@@ -310,5 +324,7 @@ bool heap_destroy(Heap *const heap) {
 
 
 
+
+ 
 
  
