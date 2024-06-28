@@ -136,11 +136,11 @@ bool heap_initialise(Heap *const heap, size_t size) {
  */
 void *heap_allocate(Heap *const heap, size_t size, size_t elementSize) {
 
-
+    
     if(size == 0 || heap == NULL) {
         return NULL;
     } else {
-
+        printf("ALLOCATING MEMORY\n");
         //Move through the LL until find a node with a large enough capacity. Break off whats needed then trim the node
         //If no blocks free just return NULL
 
@@ -150,7 +150,6 @@ void *heap_allocate(Heap *const heap, size_t size, size_t elementSize) {
         } else {
 
             MemoryNode *currentNode = heap->memoryNode;
-            MemoryNode *prevNode = NULL;
             while(currentNode != NULL) { 
 
                 size_t dataAlignmentCorrection = calculate_alignment_correction((uint8_t*)currentNode + sizeof(MemoryNode), elementSize); 
@@ -185,11 +184,6 @@ void *heap_allocate(Heap *const heap, size_t size, size_t elementSize) {
 
 
                     //Allocate first node
-                    if(prevNode == NULL) {
-                        heap->memoryNode = newNodeAddress;
-                    } else {
-                        prevNode->next = newNodeAddress;
-                    }
 
                     //Copy the new node in
                     memcpy(newNodeAddress, &newNode, sizeof(MemoryNode));
@@ -198,14 +192,12 @@ void *heap_allocate(Heap *const heap, size_t size, size_t elementSize) {
                     printf("Current metadata struct is at: %p\n",currentNode);
 
 
-                    currentNode->next = prevNode;                    
                     currentNode->prev = NULL;
 
                     return (void*)((uint8_t*)currentNode + sizeof(MemoryNode) + dataAlignmentCorrection);
                     //Skip the metadata and return pointer
                 }
 
-                prevNode = currentNode;
                 currentNode = currentNode->next;
             }
 
@@ -253,21 +245,21 @@ bool heap_free(Heap *heap, void *ptr) {
         while(1) {
             //If freenode == NULL then set heap head to point to new node
             //If freenode->prev != NULL then insert after
-
+            freeNode = freeNode->next;
             if(freeNode == NULL) {
                 break;
             } else if(freeNode->prev != NULL) {
                 break;
             }
 
-            freeNode = freeNode->next;
+
         }
 
 
         if(freeNode == NULL) {
             //Only node
 
-            printf("Setting heap head. Hepa points to %p\n",heap->memoryNode);
+            printf("Setting heap HEAD. Hepa points to %p\n",heap->memoryNode);
             currentNode->next = heap->memoryNode;
             heap->memoryNode = currentNode;
             currentNode->prev = currentNode; //Loop pointer to itself to say its free and at the start
@@ -275,7 +267,7 @@ bool heap_free(Heap *heap, void *ptr) {
 
         } else {
             //Not the only node
-            printf("Setting another nodes head\n");
+            printf("Setting ANOTHER nodes head\n");
             currentNode->next = freeNode->next;
             freeNode->next = currentNode;
 
