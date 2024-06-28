@@ -300,7 +300,7 @@ bool heap_free(Heap *heap, void *ptr) {
         //Check previous node
 
         
-
+        //printf("\n\nNEW TEST\n");
         if(freeNode != NULL) {
 
             //printf("[Merge FIRST nodes] Comparing %p and %p\n", (void*)((uintptr_t)freeNode + freeNode->blockSize), (void*)((uintptr_t)currentNode));
