@@ -31,7 +31,7 @@ Allocating:
 size_t calculate_dealignment_offset(void *address, size_t alignment) {
 
     size_t offset = 0;
-    if(address = NULL) {
+    if(address == NULL) {
         return -1;
     } else {
         offset = (uintptr_t)address % alignment;
@@ -226,6 +226,7 @@ void *heap_allocate(Heap *const heap, size_t size, size_t elementSize) {
                     memcpy(currentNode->next, &newNode, sizeof(MemoryNode));
                     printf("Returning: %p || alignment = %zu\n",(void*)((uint8_t*)currentNode + sizeof(MemoryNode) + dataAlignmentCorrection), elementSize); //Should %elementSize == 0
                     printf("Next metadata struct is at: %p || alignment = %zu\n",currentNode->next, alignof(MemoryNode)); //Should %alignof(MemoryNode) == 0
+                    printf("Current metadata struct is at: %p\n",currentNode);
                     return (void*)((uint8_t*)currentNode + sizeof(MemoryNode) + dataAlignmentCorrection);
                     //Skip the metadata and return pointer
                 }
@@ -269,10 +270,10 @@ bool heap_free(void *ptr) {
 
         //Find metadata struct (must be aligned to boundry and behind ptr)
         //(address - offset)%(alignment) = 0 -> (offset) = (address)%(alignment)
-        printf("Freeing: %p\n",ptr);
-        MemoryNode *currentNode = (MemoryNode*)((uintptr_t)ptr % alignof(MemoryNode));
-        printf("data: %zu\n",currentNode->blockSize);
+        size_t offset = calculate_dealignment_offset(ptr, alignof(MemoryNode));
+        MemoryNode *currentNode = (MemoryNode*)((uintptr_t)(ptr) - offset - sizeof(MemoryNode));
 
+        printf("Freeing ptr, blockSize = %zu || address = %p\n",currentNode->blockSize,currentNode);
 
 
     }
