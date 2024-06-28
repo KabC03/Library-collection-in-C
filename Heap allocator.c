@@ -139,7 +139,6 @@ void *heap_allocate(Heap *const heap, size_t size, size_t elementSize) {
 
             MemoryNode *currentNode = heap->memoryNode;
 
-            size_t metadataAlignmentCorrection = calculate_alignment_correction(currentNode, alignof(MemoryNode));
             while(currentNode != NULL) { 
 
                 //Check for allignment with currentNode % elementSize
@@ -170,8 +169,10 @@ void *heap_allocate(Heap *const heap, size_t size, size_t elementSize) {
                 }
                 */
 
-                size_t dataAlignmentCorrection = calculate_alignment_correction((uint8_t*)currentNode + sizeof(MemoryNode) + currentNode->blockSize + dataAlignmentCorrection, elementSize);
-                
+
+                size_t dataAlignmentCorrection = calculate_alignment_correction((uint8_t*)currentNode + sizeof(MemoryNode), elementSize); 
+
+                size_t metadataAlignmentCorrection = calculate_alignment_correction((uint8_t*)currentNode + sizeof(MemoryNode) + size + dataAlignmentCorrection, alignof(MemoryNode));
 
                 if(currentNode->blockSize >= size + sizeof(MemoryNode) + dataAlignmentCorrection) { 
                     //Allocate memory (Also have to store metadata)
@@ -309,7 +310,5 @@ bool heap_destroy(Heap *const heap) {
 
 
 
-
- 
 
  
