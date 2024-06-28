@@ -70,7 +70,7 @@ bool LL_insert_front(LinkedList *const list, const void *const data);
 bool LL_delete_front(LinkedList *const list);
 bool LL_insert_back(LinkedList *const list, const void *const data);
 bool LL_delete_back(LinkedList *const list);
-
+bool LL_insert_index(LinkedList *const list, size_t index,const void *const data);
 
 
 
@@ -88,7 +88,6 @@ bool map_LL_destroy(MapList *const list);
 
 
 #endif // DATASTRUCTURES_H
-
 
 
 
