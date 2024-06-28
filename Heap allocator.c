@@ -170,7 +170,7 @@ void *heap_allocate(Heap *const heap, size_t size, size_t elementSize) {
                 }
                 */
 
-                size_t dataAlignmentCorrection = calculate_alignment_correction(currentNode, elementSize);
+                size_t dataAlignmentCorrection = calculate_alignment_correction((uint8_t*)currentNode + sizeof(MemoryNode) + currentNode->blockSize + dataAlignmentCorrection, elementSize);
                 
 
                 if(currentNode->blockSize >= size + sizeof(MemoryNode) + dataAlignmentCorrection) { 
@@ -209,8 +209,8 @@ void *heap_allocate(Heap *const heap, size_t size, size_t elementSize) {
 
                     //Copy the new node in
                     memcpy(currentNode->next, &newNode, sizeof(MemoryNode));
-                    printf("Returning: %p\n",(void*)((uint8_t*)currentNode + sizeof(MemoryNode) + dataAlignmentCorrection)); //Should %elementSize == 0
-                    printf("Next metadata struct is at: %p\n",currentNode->next); //Should %alignof(MemoryNode) == 0
+                    printf("Returning: %p || alignment = %zu\n",(void*)((uint8_t*)currentNode + sizeof(MemoryNode) + dataAlignmentCorrection), elementSize); //Should %elementSize == 0
+                    printf("Next metadata struct is at: %p || alignment = %zu\n",currentNode->next, alignof(MemoryNode)); //Should %alignof(MemoryNode) == 0
                     return (void*)((uint8_t*)currentNode + sizeof(MemoryNode) + dataAlignmentCorrection);
                     //Skip the metadata and return pointer
                 }
