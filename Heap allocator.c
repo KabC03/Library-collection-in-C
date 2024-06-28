@@ -149,6 +149,7 @@ void *heap_allocate(Heap *const heap, size_t size, size_t elementSize) {
             return NULL;
         } else {
 
+            MemoryNode *prevNode = NULL;
             MemoryNode *currentNode = heap->memoryNode;
             while(currentNode != NULL) { 
 
@@ -170,6 +171,8 @@ void *heap_allocate(Heap *const heap, size_t size, size_t elementSize) {
                     newNode.next = currentNode->next;
                     newNode.blockSize = leftover;
                     newNode.prev = currentNode;
+                    printf("Next node points to %p\n",newNode.prev);
+
 
                     //Put data into the current node
                     currentNode->blockSize = currentBlockSize;
@@ -181,23 +184,35 @@ void *heap_allocate(Heap *const heap, size_t size, size_t elementSize) {
 
                     MemoryNode *newNodeAddress = (MemoryNode*)((uint8_t*)currentNode + currentBlockSize);
                     //Skip the allocated node
+                    
+                    if(prevNode == NULL) {
+                        heap->memoryNode = newNodeAddress;
+                    } else {
+                        prevNode->next = newNodeAddress;
+                    }
+                    
+                    if(currentNode->prev == currentNode) {
+                        currentNode->next = NULL;
+                    } else {
 
+                        currentNode->next = currentNode->prev;
+                    }
+                    currentNode->prev = NULL; //Indicate node is used
 
                     //Allocate first node
-
                     //Copy the new node in
                     memcpy(newNodeAddress, &newNode, sizeof(MemoryNode));
+
                     printf("Returning: %p || alignment = %zu\n",(void*)((uint8_t*)currentNode + sizeof(MemoryNode) + dataAlignmentCorrection), elementSize); //Should %elementSize == 0
-                    printf("Next metadata struct is at: %p || alignment = %zu\n",newNodeAddress, alignof(MemoryNode)); //Should %alignof(MemoryNode) == 0
-                    printf("Current metadata struct is at: %p\n",currentNode);
+                    printf("Next metadata struct is at: %p and points to %p|| alignment = %zu\n",newNodeAddress, newNode.prev,alignof(MemoryNode)); //Should %alignof(MemoryNode) == 0
+                    printf("Current metadata struct is at: %p and points to %p, next to %p\n",currentNode, currentNode->prev, currentNode->next);
 
 
-                    currentNode->prev = NULL;
 
                     return (void*)((uint8_t*)currentNode + sizeof(MemoryNode) + dataAlignmentCorrection);
                     //Skip the metadata and return pointer
                 }
-
+                prevNode = currentNode;
                 currentNode = currentNode->next;
             }
 
@@ -243,6 +258,7 @@ bool heap_free(Heap *heap, void *ptr) {
         
 
         while(1) {
+
             //If freenode == NULL then set heap head to point to new node
             //If freenode->prev != NULL then insert after
             freeNode = freeNode->next;
@@ -267,7 +283,7 @@ bool heap_free(Heap *heap, void *ptr) {
 
         } else {
             //Not the only node
-            printf("Setting ANOTHER nodes head\n");
+            printf("Setting ANOTHER nodes head = %p\n", freeNode);
             currentNode->next = freeNode->next;
             freeNode->next = currentNode;
 
@@ -285,7 +301,7 @@ bool heap_free(Heap *heap, void *ptr) {
 
         if(freeNode != NULL) {
 
-            printf("[Merge FIRST nodes] Comparing %zu and %zu\n", (uintptr_t)freeNode + freeNode->blockSize, (uintptr_t)currentNode);
+            printf("[Merge FIRST nodes] Comparing %p and %p\n", (void*)((uintptr_t)freeNode + freeNode->blockSize), (void*)((uintptr_t)currentNode));
             if((uintptr_t)freeNode + freeNode->blockSize == (uintptr_t)currentNode) {
                 freeNode += currentNode->blockSize;
                 freeNode->next = currentNode->next;
@@ -297,7 +313,7 @@ bool heap_free(Heap *heap, void *ptr) {
 
         
         if(currentNode->next != NULL) {
-            printf("[Merge last nodes] Comparing %zu and %zu\n", (uintptr_t)currentNode + currentNode->blockSize, (uintptr_t)currentNode->next);
+            printf("[Merge last nodes] Comparing %p and %p\n", (void*)((uintptr_t)currentNode + currentNode->blockSize), (void*)((uintptr_t)currentNode->next));
             if((uintptr_t)currentNode + currentNode->blockSize == (uintptr_t)currentNode->next) {
                 currentNode->blockSize += currentNode->next->blockSize;
                 currentNode->next = currentNode->next->next;
