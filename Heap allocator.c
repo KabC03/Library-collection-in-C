@@ -242,7 +242,7 @@ bool heap_free(Heap *heap, void *ptr) {
         size_t offset = calculate_dealignment_offset(ptr, alignof(MemoryNode));
         MemoryNode *currentNode = (MemoryNode*)((uintptr_t)(ptr) - offset - sizeof(MemoryNode));
 
-        printf("Freeing ptr, blockSize = %zu || address of metadata = %p\n",currentNode->blockSize,currentNode);
+        printf("\n\nFreeing ptr, blockSize = %zu || address of metadata = %p\n",currentNode->blockSize,currentNode);
         //Check if adjacent blocks are free (if so then combine them)
 
 
@@ -288,8 +288,12 @@ bool heap_free(Heap *heap, void *ptr) {
 
 
         //Check previous node
+
+        
+
         if(freeNode != NULL) {
-            printf("Merging first part\n");
+
+            printf("[Merge FIRST nodes] Comparing %zu and %zu\n", (uintptr_t)freeNode + freeNode->blockSize, (uintptr_t)currentNode);
             if((uintptr_t)freeNode + freeNode->blockSize == (uintptr_t)currentNode) {
                 freeNode += currentNode->blockSize;
                 freeNode->next = currentNode->next;
@@ -299,10 +303,9 @@ bool heap_free(Heap *heap, void *ptr) {
 
         //Combine next node
 
-        printf("[Merge last nodes] Comparing %zu and %zu\n", (uintptr_t)currentNode + currentNode->blockSize, (uintptr_t)currentNode->next);
+        
         if(currentNode->next != NULL) {
-
-            printf("Merging last part\n");
+            printf("[Merge last nodes] Comparing %zu and %zu\n", (uintptr_t)currentNode + currentNode->blockSize, (uintptr_t)currentNode->next);
             if((uintptr_t)currentNode + currentNode->blockSize == (uintptr_t)currentNode->next) {
                 currentNode->blockSize += currentNode->next->blockSize;
                 currentNode->next = currentNode->next->next;
