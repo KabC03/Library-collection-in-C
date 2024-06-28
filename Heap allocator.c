@@ -186,9 +186,9 @@ void *heap_allocate(Heap *const heap, size_t size, size_t elementSize) {
 
                     //Allocate first node
                     if(prevNode == NULL) {
-                        heap->memoryNode = currentNode->next;
+                        heap->memoryNode = newNodeAddress;
                     } else {
-                        prevNode->next = currentNode->next;
+                        prevNode->next = newNodeAddress;
                     }
 
                     //Copy the new node in
@@ -267,6 +267,7 @@ bool heap_free(Heap *heap, void *ptr) {
         if(freeNode == NULL) {
             //Only node
 
+            printf("Setting heap head. Hepa points to %p\n",heap->memoryNode);
             currentNode->next = heap->memoryNode;
             heap->memoryNode = currentNode;
             currentNode->prev = currentNode; //Loop pointer to itself to say its free and at the start
@@ -274,6 +275,7 @@ bool heap_free(Heap *heap, void *ptr) {
 
         } else {
             //Not the only node
+            printf("Setting another nodes head\n");
             currentNode->next = freeNode->next;
             freeNode->next = currentNode;
 
@@ -287,7 +289,7 @@ bool heap_free(Heap *heap, void *ptr) {
 
         //Check previous node
         if(freeNode != NULL) {
-
+            printf("Merging first part\n");
             if((uintptr_t)freeNode + freeNode->blockSize == (uintptr_t)currentNode) {
                 freeNode += currentNode->blockSize;
                 freeNode->next = currentNode->next;
@@ -296,8 +298,11 @@ bool heap_free(Heap *heap, void *ptr) {
 
 
         //Combine next node
+
+        printf("[Merge last nodes] Comparing %zu and %zu\n", (uintptr_t)currentNode + currentNode->blockSize, (uintptr_t)currentNode->next);
         if(currentNode->next != NULL) {
 
+            printf("Merging last part\n");
             if((uintptr_t)currentNode + currentNode->blockSize == (uintptr_t)currentNode->next) {
                 currentNode->blockSize += currentNode->next->blockSize;
                 currentNode->next = currentNode->next->next;
