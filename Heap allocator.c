@@ -108,7 +108,7 @@ bool heap_initialise(Heap *const heap, size_t size) {
         MemoryNode newNode;
         newNode.blockSize = (pageSize * systemPageSize);
         //Number of free bytes in block (including metadata)
-        newNode.prev = newMemory;
+        newNode.prev = newMemory; //Indicates no used nodes before
         newNode.next = NULL;
         memcpy(newMemory, &newNode, sizeof(MemoryNode));
         
@@ -192,6 +192,7 @@ void *heap_allocate(Heap *const heap, size_t size, size_t elementSize) {
                     }
                     
                     if(currentNode->prev == currentNode) {
+                        printf("Loop\n");
                         currentNode->next = NULL;
                     } else {
 
@@ -303,7 +304,7 @@ bool heap_free(Heap *heap, void *ptr) {
 
             printf("[Merge FIRST nodes] Comparing %p and %p\n", (void*)((uintptr_t)freeNode + freeNode->blockSize), (void*)((uintptr_t)currentNode));
             if((uintptr_t)freeNode + freeNode->blockSize == (uintptr_t)currentNode) {
-                freeNode += currentNode->blockSize;
+                freeNode->blockSize += currentNode->blockSize;
                 freeNode->next = currentNode->next;
             }
         }
