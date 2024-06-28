@@ -400,7 +400,7 @@ bool LL_delete_front(LinkedList *const list) {
 
 
 /**
- * LL_insert_back - WARNING DOES NOT WORK
+ * LL_insert_back
  * ===============================================
  * Brief: Insert at back of list
  * 
@@ -501,9 +501,76 @@ bool LL_delete_back(LinkedList *const list) {
 
 
 
+/**
+ * LL_insert_index - WARNING DOES NOT WORK
+ * ===============================================
+ * Brief: Insert at an index into the LL 
+ * 
+ * Param: *linkedList - LinkedList of interest
+ *        *data - Data to insert
+ *        index - Index to insert
+ * 
+ * Return: bool - T/F depending on if initialisation was successful
+ * 
+ */
+bool LL_insert_index(LinkedList *const list, size_t index,const void *const data) {
+
+    if(list == NULL || data == NULL) {
+        return false;
+    } else {
+
+        ListNode *currentNode = list->head;
+        for(size_t i = 0; i < index; i++) {
+
+            if(currentNode == NULL) {
+                //Out of index
+                return false;
+            }
+            currentNode = currentNode->next;
+        }
+
+        ListNode *newNode = malloc(sizeof(ListNode));
+        if(newNode == NULL) {
+            return false;
+        }
+        newNode->data = malloc(sizeof(list->datatypeSize));
+        if(newNode->data == NULL) {
+            return false;
+        }
+        newNode->back = NULL;
+        newNode->next = NULL;
+
+        memcpy(newNode->data, data, list->datatypeSize);
+
+
+        if(index != 0) {
+
+            newNode->back = currentNode->back;
+            newNode->next = currentNode;
+            currentNode->back = newNode;
+        } else {
+            
+            if(list->head == NULL) {
+                
+
+            } else {
+
+                list->head->next->back = newNode;
+            }
+
+            newNode->next = list->head;
+            list->head = newNode;
+            newNode->back = NULL;
+
+        }
+
+
+    }
 
 
 
+    return true;
+}
 
 
 
