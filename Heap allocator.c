@@ -292,14 +292,20 @@ bool heap_free(Heap *heap, void *ptr) {
         //Check previous node
         if(freeNode != NULL) {
 
+            if((uintptr_t)freeNode + freeNode->blockSize + 1 == (uintptr_t)currentNode) {
+                freeNode += currentNode->blockSize;
+                freeNode->next = currentNode->next;
+            }
         }
 
 
         //Combine next node
         if(currentNode->next != NULL) {
 
-
-
+            if((uintptr_t)currentNode + currentNode->blockSize == (uintptr_t)currentNode->next) {
+                currentNode->blockSize += currentNode->next->blockSize;
+                currentNode->next = currentNode->next->next;
+            }
         }
 
 
