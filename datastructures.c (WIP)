@@ -518,7 +518,8 @@ bool LL_insert_index(LinkedList *const list, size_t index,const void *const data
     if(list == NULL || data == NULL) {
         return false;
     } else {
-    
+
+
     
     }
 
@@ -534,6 +535,8 @@ TODO:
 - Delete at index
 
 - Get item at index
+- Get item from start
+- Get item from end
 
 - Delete a linked list
 - Copy a linked list
@@ -795,6 +798,7 @@ bool map_LL_destroy(MapList *const list) {
 
     return true;
 }
+
 
 
 
