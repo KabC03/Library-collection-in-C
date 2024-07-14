@@ -177,7 +177,7 @@ RETURN_CODE bitmap_greyscale(BitmapImage *bitmapImage) {
                 newPixel <<= 8;
                 newPixel += grey;
 
-
+                //printf("Blue: %d, Green: %d, Red: %d, Grey: %d\n", blue, green, red, grey);
 
                 //Set new greyscale pixel
                 if(vector_set_index(&(bitmapImage->bitmapData), i, &newPixel) == false) {
@@ -202,9 +202,6 @@ RETURN_CODE bitmap_greyscale(BitmapImage *bitmapImage) {
 
     return _SUCCESS_;
 }
-
-
-
 
 
 
