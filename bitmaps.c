@@ -4,13 +4,11 @@
 #define PAD_CONSTANT 4
 /*
 TODO: 
-- Enstantiate and destroy a bitmap 
-- Load a bmp into a flat vector 
-- Greyscale an image
+- Destroy a bitmap struct
 - Draw a line accross an image
 - Create a blank image with a background colour
 - Export an array and header data to a bitmap
-
+- Resize an image
 - Currently only supports 24 bit depth - make it support at least 32 and 16 bit depth too
 */
 
@@ -295,23 +293,27 @@ RETURN_CODE bitmap_reconstruct_image(BitmapImage *bitmapImage, char *imagePath) 
 
 
 
+/**
+ * bitmap_destroy 
+ * ===============================================
+ * Brief: Destroy all associated memory with a bitmap 
+ * 
+ * Param: *bitmapImage - Bitmap of interest 
+ * 
+ * Return: bool - T/F depending on if addition was successful
+ * 
+ */
+RETURN_CODE bitmap_destroy(BitmapImage *bitmapImage) {
 
+    if(bitmapImage == NULL) {
+        return _NULL_PTR_PASS_;
+    } else {
 
+        vector_destroy(&(bitmapImage->bitmapData));
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    return _SUCCESS_;
+}
 
 
 
