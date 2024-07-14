@@ -268,7 +268,7 @@ RETURN_CODE bitmap_reconstruct_image(BitmapImage *bitmapImage, char *imagePath) 
 
         for(size_t i = 0; i < numberOfPixelsInCol; i++) {
 
-
+            //Writing row by row - therefore have to multiply by the size of the pixels
             const void *dataToBeWritten = vector_get_index(&(bitmapImage->bitmapData), i * numberOfPixelsInRow);
             //Write the pixels
             if(fwrite(dataToBeWritten, numberOfPixelsInRow * bytesPerPixel, 1, producedImagePtr) != 1) {
