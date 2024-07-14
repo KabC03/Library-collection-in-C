@@ -392,5 +392,3 @@ TODO:
 - vector_shrink_to_fit
 - vector_set_size (set the size of the vector)
 */
-
-
