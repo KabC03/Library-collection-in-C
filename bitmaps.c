@@ -1,6 +1,7 @@
 #include "bitmap.h"
 #define BITMAP_FILE_SIGNATURE 0x4D42
 #define BITS_PER_BYTE 8
+#define PAD_CONSTANT 4
 /*
 TODO: 
 - Enstantiate and destroy a bitmap 
@@ -62,13 +63,16 @@ RETURN_CODE bitmap_enstantiate(char *bitmapPath, BitmapImage *bitmapImageOutput)
 
         size_t bytesPerPixel = (bitmapImageOutput->bitmapMetadata.bitsPerPixel)/BITS_PER_BYTE;
         size_t numberOfPixels = (bitmapImageOutput->bitmapMetadata.imageHeight) * (bitmapImageOutput->bitmapMetadata.imageWidth);
+
+
+
         if(vector_initialise(&(bitmapImageOutput->bitmapData), bytesPerPixel) == false) {
             return _GENERIC_FAILURE_;
         }
 
 
         //Must use a temp buffer when reading from a file ptr
-        void *tempBuffer = malloc(bytesPerPixel * numberOfPixels);
+        void *tempBuffer = malloc((bytesPerPixel * numberOfPixels));
         if(tempBuffer == NULL) {
             return _MEMORY_ALLOCATION_FAILURE_;
         }
@@ -79,7 +83,6 @@ RETURN_CODE bitmap_enstantiate(char *bitmapPath, BitmapImage *bitmapImageOutput)
             return _GENERIC_FAILURE_;
         }
 
-        //printf("Got %zu instead of %zu\n",fread(tempBuffer, bytesPerPixel, numberOfPixels, bitmapFptr), numberOfPixels);
         if(fread(tempBuffer, bytesPerPixel, numberOfPixels, bitmapFptr) != numberOfPixels) {
             return _GENERIC_FAILURE_;
         }
@@ -185,6 +188,13 @@ RETURN_CODE bitmap_greyscale(BitmapImage *bitmapImage) {
 
     return _SUCCESS_;
 }
+
+
+
+
+
+
+
 
 
 
