@@ -62,8 +62,11 @@ RETURN_CODE bitmap_enstantiate(char *bitmapPath, BitmapImage *bitmapImageOutput)
         //Read data into a vector - NOTE: CURRENTLY < 8 BIT PIXEL DEPTH NOT SUPPORTED
 
         size_t bytesPerPixel = (bitmapImageOutput->bitmapMetadata.bitsPerPixel)/BITS_PER_BYTE;
-        size_t numberOfPixels = (bitmapImageOutput->bitmapMetadata.imageHeight) * (bitmapImageOutput->bitmapMetadata.imageWidth);
+        size_t numberOfPixelsInRow = bitmapImageOutput->bitmapMetadata.imageWidth;
+        size_t numberOfPixelsInCol = bitmapImageOutput->bitmapMetadata.imageHeight;
 
+        size_t paddingPerRow = (PAD_CONSTANT - ((bitmapImageOutput->bitmapMetadata.imageWidth * bytesPerPixel) % PAD_CONSTANT)) * PAD_CONSTANT;
+        size_t totalPadding = paddingPerRow * numberOfPixelsInCol;
 
 
         if(vector_initialise(&(bitmapImageOutput->bitmapData), bytesPerPixel) == false) {
@@ -71,26 +74,27 @@ RETURN_CODE bitmap_enstantiate(char *bitmapPath, BitmapImage *bitmapImageOutput)
         }
 
 
-        //Must use a temp buffer when reading from a file ptr
-        void *tempBuffer = malloc((bytesPerPixel * numberOfPixels));
+
+        void *tempBuffer = malloc((bytesPerPixel * numberOfPixelsInRow) + totalPadding);
         if(tempBuffer == NULL) {
             return _MEMORY_ALLOCATION_FAILURE_;
         }
-
-
-
         if(fseek(bitmapFptr, bitmapImageOutput->bitmapHeader.dataOffset, SEEK_SET) != 0) {
             return _GENERIC_FAILURE_;
         }
 
-        if(fread(tempBuffer, bytesPerPixel, numberOfPixels, bitmapFptr) != numberOfPixels) {
+        //Have to read line by line into the vector
+        
+        
+
+        if(fread(tempBuffer, (bytesPerPixel * numberOfPixelsInRow) + paddingPerRow, numberOfPixelsInCol, bitmapFptr) != numberOfPixelsInCol) {
             return _GENERIC_FAILURE_;
         }
     
 
 
         //Write numberOfPixels from tempBuffer
-        if(vector_quick_append(&(bitmapImageOutput->bitmapData), tempBuffer, numberOfPixels) == false) {
+        if(vector_quick_append(&(bitmapImageOutput->bitmapData), tempBuffer, numberOfPixelsInCol * numberOfPixelsInRow) == false) {
             return _GENERIC_FAILURE_;
         }
         free(tempBuffer);
@@ -188,6 +192,15 @@ RETURN_CODE bitmap_greyscale(BitmapImage *bitmapImage) {
 
     return _SUCCESS_;
 }
+
+
+
+
+
+
+
+
+
 
 
 
