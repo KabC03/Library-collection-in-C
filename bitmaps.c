@@ -238,6 +238,7 @@ RETURN_CODE bitmap_reconstruct_image(BitmapImage *bitmapImage, char *imagePath) 
         if(fwrite(&(bitmapImage->bitmapHeader), sizeof(BitmapHeader), 1, producedImagePtr) != 1) {
             return _GENERIC_FAILURE_;
         }
+
         if(fwrite(&(bitmapImage->bitmapMetadata), sizeof(BitmapMetadata), 1, producedImagePtr) != 1) {
             return _GENERIC_FAILURE_;
         }
@@ -251,26 +252,34 @@ RETURN_CODE bitmap_reconstruct_image(BitmapImage *bitmapImage, char *imagePath) 
         size_t numberOfPixelsInCol = bitmapImage->bitmapMetadata.imageHeight;
         size_t paddingPerRow = (PAD_CONSTANT - (bitmapImage->bitmapMetadata.imageWidth * bytesPerPixel % PAD_CONSTANT)) % PAD_CONSTANT;
 
+
         //Write the row, then padding 
 
+        void *padding = NULL;
+        if(paddingPerRow != 0) {
+            padding = calloc(paddingPerRow, 1);
 
-        void *padding = calloc(paddingPerRow, 1);
-        if(padding == NULL) {
-            return _MEMORY_ALLOCATION_FAILURE_;
+            if(padding == NULL) {
+                return _MEMORY_ALLOCATION_FAILURE_;
+            }
         }
 
 
         for(size_t i = 0; i < numberOfPixelsInCol; i++) {
 
 
+            const void *dataToBeWritten = vector_get_index(&(bitmapImage->bitmapData), i);
             //Write the pixels
-            if(fwrite(&(bitmapImage->bitmapMetadata), numberOfPixelsInRow * bytesPerPixel, 1, producedImagePtr) != 1) {
+            if(fwrite(dataToBeWritten, numberOfPixelsInRow * bytesPerPixel, 1, producedImagePtr) != 1) {
                 return _GENERIC_FAILURE_;
             }
 
-            //Write the padding
-            if(fwrite(padding, paddingPerRow, 1, producedImagePtr) != 1) {
-                return _GENERIC_FAILURE_;
+
+            if(paddingPerRow != 0) {
+                //Write the padding
+                if(fwrite(padding, paddingPerRow, 1, producedImagePtr) != 1) {
+                    return _GENERIC_FAILURE_;
+                }
             }
 
         }
@@ -278,6 +287,30 @@ RETURN_CODE bitmap_reconstruct_image(BitmapImage *bitmapImage, char *imagePath) 
 
     return _SUCCESS_;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
