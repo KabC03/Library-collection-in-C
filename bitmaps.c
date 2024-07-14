@@ -49,43 +49,37 @@ RETURN_CODE bitmap_enstantiate(char *bitmapPath, BitmapImage *bitmapImageOutput)
         }
 
 
-        //Read data into a vector
-        if(vector_initialise(&(bitmapImageOutput->bitmapData), sizeof(uint8_t) * bitmapImageOutput->bitmapMetadata.bitsPerPixel) == false) {
+        //Read data into a vector - NOTE: CURRENTLY < 8 BIT PIXEL DEPTH NOT SUPPORTED
+
+        size_t bytesPerPixel = (bitmapImageOutput->bitmapMetadata.bitsPerPixel)/sizeof(uint8_t);
+        size_t numberOfPixels = (bitmapImageOutput->bitmapMetadata.imageHeight) * (bitmapImageOutput->bitmapMetadata.imageWidth);
+        if(vector_initialise(&(bitmapImageOutput->bitmapData), bytesPerPixel) == false) {
             return _GENERIC_FAILURE_;
         }
 
 
-        FILE *addressToWriteTo = bitmapImageOutput->bitmapImagePtr;
-        for(size_t i = 0; i < bitmapImageOutput->bitmapMetadata.imageWidth * bitmapImageOutput->bitmapMetadata.imageHeight; i++) {
+        //Must use a temp buffer when reading from a file ptr
+        void *tempBuffer = malloc(bytesPerPixel * numberOfPixels);
+        if(tempBuffer == NULL) {
+            return _MEMORY_ALLOCATION_FAILURE_;
+        }
+        fseek(bitmapImageOutput->bitmapImagePtr, bitmapImageOutput->bitmapHeader.dataOffset, SEEK_SET);
+        fread(tempBuffer, bytesPerPixel, numberOfPixels, bitmapImageOutput->bitmapImagePtr);
+    
 
 
-            //WARNING: THIS PART IS WRONG - REDO IT
-            fseek(bitmapImageOutput->bitmapImagePtr, bitmapImageOutput->bitmapHeader.dataOffset + 
-            (i*(bitmapImageOutput->bitmapMetadata.bitsPerPixel)), SEEK_SET);
-
-
-
-            //Write pixel by pixel 
-            if(vector_quick_append(&(bitmapImageOutput->bitmapData), addressToWriteTO, 1) == false) {
-                vector_destroy(&(bitmapImageOutput->bitmapData));
-                return _GENERIC_FAILURE_;
-            }
+        //Write numberOfPixels from tempBuffer
+        if(vector_quick_append(&(bitmapImageOutput->bitmapData), tempBuffer, numberOfPixels) == false) {
+            return _GENERIC_FAILURE_;
         }
 
-
-
+    
+        free(tempBuffer);
     }
 
 
     return _SUCCESS_;
 }
-
-
-
-
-
-
-
 
 
 
