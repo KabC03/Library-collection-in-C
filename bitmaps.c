@@ -1,5 +1,6 @@
 #include "bitmap.h"
 #define BITMAP_FILE_SIGNATURE 0x4D42
+#define BITS_PER_BYTE 8
 /*
 TODO: 
 - Enstantiate and destroy a bitmap 
@@ -59,7 +60,7 @@ RETURN_CODE bitmap_enstantiate(char *bitmapPath, BitmapImage *bitmapImageOutput)
 
         //Read data into a vector - NOTE: CURRENTLY < 8 BIT PIXEL DEPTH NOT SUPPORTED
 
-        size_t bytesPerPixel = (bitmapImageOutput->bitmapMetadata.bitsPerPixel)/sizeof(uint8_t);
+        size_t bytesPerPixel = (bitmapImageOutput->bitmapMetadata.bitsPerPixel)/BITS_PER_BYTE;
         size_t numberOfPixels = (bitmapImageOutput->bitmapMetadata.imageHeight) * (bitmapImageOutput->bitmapMetadata.imageWidth);
         if(vector_initialise(&(bitmapImageOutput->bitmapData), bytesPerPixel) == false) {
             return _GENERIC_FAILURE_;
@@ -71,10 +72,15 @@ RETURN_CODE bitmap_enstantiate(char *bitmapPath, BitmapImage *bitmapImageOutput)
         if(tempBuffer == NULL) {
             return _MEMORY_ALLOCATION_FAILURE_;
         }
-        if(fseek(bitmapImageOutput->bitmapImagePtr, bitmapImageOutput->bitmapHeader.dataOffset, SEEK_SET) != 0) {
+
+
+
+        if(fseek(bitmapFptr, bitmapImageOutput->bitmapHeader.dataOffset, SEEK_SET) != 0) {
             return _GENERIC_FAILURE_;
         }
-        if(fread(tempBuffer, bytesPerPixel, numberOfPixels, bitmapImageOutput->bitmapImagePtr) != numberOfPixels) {
+
+        //printf("Got %zu instead of %zu\n",fread(tempBuffer, bytesPerPixel, numberOfPixels, bitmapFptr), numberOfPixels);
+        if(fread(tempBuffer, bytesPerPixel, numberOfPixels, bitmapFptr) != numberOfPixels) {
             return _GENERIC_FAILURE_;
         }
     
@@ -179,6 +185,18 @@ RETURN_CODE bitmap_greyscale(BitmapImage *bitmapImage) {
 
     return _SUCCESS_;
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
