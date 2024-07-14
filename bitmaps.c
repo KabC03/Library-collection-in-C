@@ -192,33 +192,3 @@ RETURN_CODE bitmap_greyscale(BitmapImage *bitmapImage) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
