@@ -69,13 +69,20 @@ RETURN_CODE bitmap_enstantiate(char *bitmapPath, BitmapImage *bitmapImageOutput)
         size_t totalPadding = paddingPerRow * numberOfPixelsInCol;
 
 
-        if(vector_initialise(&(bitmapImageOutput->bitmapData), bytesPerPixel) == false) {
+
+        //Redo this entire section. vector MUST hold pixels
+        size_t totalSizeToWriteToBuffer = ((bytesPerPixel * numberOfPixelsInRow) + totalPadding) * numberOfPixelsInCol;
+
+
+        //Vector holds RAW BYTES
+        if(vector_initialise(&(bitmapImageOutput->bitmapData), 1) == false) {
             return _GENERIC_FAILURE_;
         }
 
 
 
-        void *tempBuffer = malloc((bytesPerPixel * numberOfPixelsInRow) + totalPadding);
+
+        void *tempBuffer = malloc(totalSizeToWriteToBuffer);
         if(tempBuffer == NULL) {
             return _MEMORY_ALLOCATION_FAILURE_;
         }
@@ -83,18 +90,15 @@ RETURN_CODE bitmap_enstantiate(char *bitmapPath, BitmapImage *bitmapImageOutput)
             return _GENERIC_FAILURE_;
         }
 
-        //Have to read line by line into the vector
-        
-        
 
-        if(fread(tempBuffer, (bytesPerPixel * numberOfPixelsInRow) + paddingPerRow, numberOfPixelsInCol, bitmapFptr) != numberOfPixelsInCol) {
+        if(fread(tempBuffer, totalSizeToWriteToBuffer, 1, bitmapFptr) != 1) {
             return _GENERIC_FAILURE_;
         }
     
 
 
         //Write numberOfPixels from tempBuffer
-        if(vector_quick_append(&(bitmapImageOutput->bitmapData), tempBuffer, numberOfPixelsInCol * numberOfPixelsInRow) == false) {
+        if(vector_quick_append(&(bitmapImageOutput->bitmapData), tempBuffer, 1) == false) {
             return _GENERIC_FAILURE_;
         }
         free(tempBuffer);
@@ -192,6 +196,20 @@ RETURN_CODE bitmap_greyscale(BitmapImage *bitmapImage) {
 
     return _SUCCESS_;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
