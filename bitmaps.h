@@ -53,7 +53,7 @@ typedef struct BitmapImage {
 
 
 RETURN_CODE bitmap_enstantiate(char *bitmapPath, BitmapImage *bitmapImageOutput);
-RETURN_CODE bitmap_enstantiate(char *bitmapPath, BitmapImage *bitmapImageOutput);
+RETURN_CODE bitmap_greyscale(BitmapImage *bitmapImage);
 
 
 
