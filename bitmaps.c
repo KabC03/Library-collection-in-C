@@ -94,10 +94,12 @@ RETURN_CODE bitmap_enstantiate(char *bitmapPath, BitmapImage *bitmapImageOutput)
                 return _GENERIC_FAILURE_;
             }
 
+            if(paddingPerRow != 0) {
 
-            //Skip passed padding
-            if(fseek(bitmapFptr, paddingPerRow, SEEK_CUR) != 0) {
-                return _GENERIC_FAILURE_;
+                //Skip passed padding
+                if(fseek(bitmapFptr, paddingPerRow, SEEK_CUR) != 0) {
+                    return _GENERIC_FAILURE_;
+                }
             }
         }
 
@@ -287,6 +289,13 @@ RETURN_CODE bitmap_reconstruct_image(BitmapImage *bitmapImage, char *imagePath) 
 
     return _SUCCESS_;
 }
+
+
+
+
+
+
+
 
 
 
