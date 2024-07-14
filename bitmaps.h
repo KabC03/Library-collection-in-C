@@ -9,11 +9,13 @@
 #include <string.h>
 #include <stdint.h>
 #include "vector.h"
+#include "return codes.h"
 
 
 #pragma pack(push, 1)
 
-typedef struct BMPHeader {
+//Enstatntiate BMPImage not this
+typedef struct BitmapHeader {
 
     uint16_t fileType;
     uint32_t fileSize;
@@ -21,10 +23,8 @@ typedef struct BMPHeader {
     uint16_t res2;
     uint32_t dataOffset;
 
-} BMPHeader;
-
-
-typedef struct BMPMetadata {
+} BitmapHeader;
+typedef struct BitmapMetadata {
 
     uint32_t headerSize;
     int32_t imageWidth;
@@ -38,12 +38,21 @@ typedef struct BMPMetadata {
     uint32_t numberOfColours;
     uint32_t importantColours;
 
-} BMPMetadata;
+} BitmapMetadata;
+typedef struct BitmapImage {
+
+    FILE *bitmapImagePtr;
+    BitmapHeader bitmapHeader;
+    BitmapMetadata bitmapMetadata;
+    Vector bitmapData;
+
+} BitmapImage;
 
 
 #pragma pack(pop)
 
 
+RETURN_CODE bitmap_enstantiate(char *bitmapPath, BitmapImage *bitmapImageOutput);
 
 #endif // BITMAP_H
 
