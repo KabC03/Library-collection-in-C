@@ -4,7 +4,6 @@
 #define PAD_CONSTANT 4
 /*
 TODO: 
-- Destroy a bitmap struct
 - Draw a line accross an image
 - Create a blank image with a background colour
 - Export an array and header data to a bitmap
