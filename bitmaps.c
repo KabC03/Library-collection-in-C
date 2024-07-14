@@ -1,3 +1,4 @@
+//14, Jul, 2024
 #include "bitmap.h"
 #define BITMAP_FILE_SIGNATURE 0x4D42
 #define BITS_PER_BYTE 8
