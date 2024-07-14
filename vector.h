@@ -45,6 +45,3 @@ bool vector_destroy(Vector *const vector);
 bool vector_quick_append(Vector *const vector, const void *const data, size_t amountOfData);
 
 #endif // VECTOR_H
-
-
-
