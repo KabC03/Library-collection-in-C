@@ -67,7 +67,6 @@ RETURN_CODE bitmap_enstantiate(char *bitmapPath, BitmapImage *bitmapImageOutput)
 
         size_t paddingPerRow = (PAD_CONSTANT - (bitmapImageOutput->bitmapMetadata.imageWidth * bytesPerPixel % PAD_CONSTANT)) % PAD_CONSTANT;
 
-
         if(vector_initialise(&(bitmapImageOutput->bitmapData), bytesPerPixel) == false) {
             return _GENERIC_FAILURE_;
         }
@@ -208,7 +207,77 @@ RETURN_CODE bitmap_greyscale(BitmapImage *bitmapImage) {
 
 
 
+/**
+ * bitmap_reconstruct_image 
+ * ===============================================
+ * Brief: Reconstruct an image from a bitmap 
+ * 
+ * Param: *bitmapImage - Bitmap of interest 
+ *        *imagePath - Name for the image to be produced
+ * 
+ * Return: bool - T/F depending on if addition was successful
+ * 
+ */
+RETURN_CODE bitmap_reconstruct_image(BitmapImage *bitmapImage, char *imagePath) {
 
+    if(bitmapImage == NULL || imagePath == NULL) {
+        return _NULL_PTR_PASS_;
+    } else {
+
+        //Write the metadata
+        //Reconstruct the data (pad it) 
+
+        FILE *producedImagePtr = fopen(imagePath, "wb");
+        if(producedImagePtr == NULL) {
+            return _FAILED_TO_OPEN_FILE_;
+        }
+
+
+
+        //Write the metadata
+        if(fwrite(&(bitmapImage->bitmapHeader), sizeof(BitmapHeader), 1, producedImagePtr) != 1) {
+            return _GENERIC_FAILURE_;
+        }
+        if(fwrite(&(bitmapImage->bitmapMetadata), sizeof(BitmapMetadata), 1, producedImagePtr) != 1) {
+            return _GENERIC_FAILURE_;
+        }
+
+
+
+
+        //Reconstruct the image
+        size_t bytesPerPixel = (bitmapImage->bitmapMetadata.bitsPerPixel)/BITS_PER_BYTE;
+        size_t numberOfPixelsInRow = bitmapImage->bitmapMetadata.imageWidth;
+        size_t numberOfPixelsInCol = bitmapImage->bitmapMetadata.imageHeight;
+        size_t paddingPerRow = (PAD_CONSTANT - (bitmapImage->bitmapMetadata.imageWidth * bytesPerPixel % PAD_CONSTANT)) % PAD_CONSTANT;
+
+        //Write the row, then padding 
+
+
+        void *padding = calloc(paddingPerRow, 1);
+        if(padding == NULL) {
+            return _MEMORY_ALLOCATION_FAILURE_;
+        }
+
+
+        for(size_t i = 0; i < numberOfPixelsInCol; i++) {
+
+
+            //Write the pixels
+            if(fwrite(&(bitmapImage->bitmapMetadata), numberOfPixelsInRow * bytesPerPixel, 1, producedImagePtr) != 1) {
+                return _GENERIC_FAILURE_;
+            }
+
+            //Write the padding
+            if(fwrite(padding, paddingPerRow, 1, producedImagePtr) != 1) {
+                return _GENERIC_FAILURE_;
+            }
+
+        }
+    }
+
+    return _SUCCESS_;
+}
 
 
 
