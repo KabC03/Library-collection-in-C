@@ -81,14 +81,3 @@ RETURN_CODE bitmap_enstantiate(char *bitmapPath, BitmapImage *bitmapImageOutput)
     return _SUCCESS_;
 }
 
-
-
-
-
-
-
-
-
-
-
-
