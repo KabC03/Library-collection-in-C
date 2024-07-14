@@ -1,4 +1,5 @@
 //A basic bitmap library in C
+//14, Jul, 2024
 
 #ifndef BITMAP_H 
 #define BITMAP_H
