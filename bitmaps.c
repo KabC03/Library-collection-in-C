@@ -65,42 +65,48 @@ RETURN_CODE bitmap_enstantiate(char *bitmapPath, BitmapImage *bitmapImageOutput)
         size_t numberOfPixelsInRow = bitmapImageOutput->bitmapMetadata.imageWidth;
         size_t numberOfPixelsInCol = bitmapImageOutput->bitmapMetadata.imageHeight;
 
-        size_t paddingPerRow = (PAD_CONSTANT - ((bitmapImageOutput->bitmapMetadata.imageWidth * bytesPerPixel) % PAD_CONSTANT)) * PAD_CONSTANT;
-        size_t totalPadding = paddingPerRow * numberOfPixelsInCol;
+        size_t paddingPerRow = (PAD_CONSTANT - (bitmapImageOutput->bitmapMetadata.imageWidth * bytesPerPixel % PAD_CONSTANT)) % PAD_CONSTANT;
 
 
-
-        //Redo this entire section. vector MUST hold pixels
-        size_t totalSizeToWriteToBuffer = ((bytesPerPixel * numberOfPixelsInRow) + totalPadding) * numberOfPixelsInCol;
-
-
-        //Vector holds RAW BYTES
-        if(vector_initialise(&(bitmapImageOutput->bitmapData), 1) == false) {
+        if(vector_initialise(&(bitmapImageOutput->bitmapData), bytesPerPixel) == false) {
             return _GENERIC_FAILURE_;
         }
-
-
-
-
-        void *tempBuffer = malloc(totalSizeToWriteToBuffer);
+        void *tempBuffer = malloc(numberOfPixelsInRow * bytesPerPixel);
         if(tempBuffer == NULL) {
             return _MEMORY_ALLOCATION_FAILURE_;
         }
+
+        //Seek passed the metadata
         if(fseek(bitmapFptr, bitmapImageOutput->bitmapHeader.dataOffset, SEEK_SET) != 0) {
             return _GENERIC_FAILURE_;
         }
 
 
-        if(fread(tempBuffer, totalSizeToWriteToBuffer, 1, bitmapFptr) != 1) {
-            return _GENERIC_FAILURE_;
-        }
-    
+        for(size_t i = 0; i < numberOfPixelsInCol; i++) {
+
+            //Read all pixels
+            if(fread(tempBuffer, bytesPerPixel, numberOfPixelsInRow, bitmapFptr) != numberOfPixelsInRow) {
+                return _GENERIC_FAILURE_;
+            }
 
 
-        //Write numberOfPixels from tempBuffer
-        if(vector_quick_append(&(bitmapImageOutput->bitmapData), tempBuffer, 1) == false) {
-            return _GENERIC_FAILURE_;
+            //Write numberOfPixels from tempBuffer
+            if(vector_quick_append(&(bitmapImageOutput->bitmapData), tempBuffer, numberOfPixelsInRow) == false) {
+                return _GENERIC_FAILURE_;
+            }
+
+
+            //Skip passed padding
+            if(fseek(bitmapFptr, paddingPerRow, SEEK_CUR) != 0) {
+                return _GENERIC_FAILURE_;
+            }
         }
+
+
+
+
+
+
         free(tempBuffer);
     }
 
@@ -196,26 +202,6 @@ RETURN_CODE bitmap_greyscale(BitmapImage *bitmapImage) {
 
     return _SUCCESS_;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
