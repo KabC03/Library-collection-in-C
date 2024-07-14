@@ -164,9 +164,9 @@ RETURN_CODE bitmap_greyscale(BitmapImage *bitmapImage) {
                 }
 
                 //WARNING: assuming BGR format
-                red = (*pixel) & (0xFF); //255
+                blue = (*pixel) & (0xFF); //255
                 green = ((*pixel) & (0xFF00)) >> 8; //65280 then bitshift down 8 bits
-                blue = ((*pixel) & (0xFF0000)) >> 16; //Same thing again
+                red = ((*pixel) & (0xFF0000)) >> 16; //Same thing again
 
 
                 //Set greyscale
@@ -202,6 +202,8 @@ RETURN_CODE bitmap_greyscale(BitmapImage *bitmapImage) {
 
     return _SUCCESS_;
 }
+
+
 
 
 
