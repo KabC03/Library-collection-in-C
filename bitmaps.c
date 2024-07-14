@@ -58,7 +58,6 @@ RETURN_CODE bitmap_enstantiate(char *bitmapPath, BitmapImage *bitmapImageOutput)
             return _GENERIC_FAILURE_;
         }
 
-
         //Read data into a vector - NOTE: CURRENTLY < 8 BIT PIXEL DEPTH NOT SUPPORTED
 
         size_t bytesPerPixel = (bitmapImageOutput->bitmapMetadata.bitsPerPixel)/BITS_PER_BYTE;
@@ -270,7 +269,7 @@ RETURN_CODE bitmap_reconstruct_image(BitmapImage *bitmapImage, char *imagePath) 
         for(size_t i = 0; i < numberOfPixelsInCol; i++) {
 
 
-            const void *dataToBeWritten = vector_get_index(&(bitmapImage->bitmapData), i);
+            const void *dataToBeWritten = vector_get_index(&(bitmapImage->bitmapData), i * numberOfPixelsInRow);
             //Write the pixels
             if(fwrite(dataToBeWritten, numberOfPixelsInRow * bytesPerPixel, 1, producedImagePtr) != 1) {
                 return _GENERIC_FAILURE_;
@@ -289,19 +288,6 @@ RETURN_CODE bitmap_reconstruct_image(BitmapImage *bitmapImage, char *imagePath) 
 
     return _SUCCESS_;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
