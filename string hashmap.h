@@ -1,7 +1,5 @@
 
 //Hashmap for strings (since the other hashmap library doesnt work with them)
-//Note - will add deletion functions at some point
-//Also note - this is designed for strings but also works with other datatypes - but the static map is more efficient
 
 #ifndef STRING_HASHMAP_H
 #define STRING_HASHMAP_H
@@ -28,6 +26,3 @@ bool string_hashmap_set(StringHashmap *stringHashmap, void *key, size_t keySize,
 const void *string_hashmap_get_value(StringHashmap *stringHashmap, void *key, size_t keySize);
 
 #endif // STRING_HASHMAP_H
-
-
-
