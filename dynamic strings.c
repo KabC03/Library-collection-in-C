@@ -160,10 +160,14 @@ RETURN_CODE dynamic_string_destroy(DynamicString *dynamicString) {
 
     return _SUCCESS_;
 }
+
+
+
 /*
 TODO: add later
-- Compare strings (stcmp)
-- And so on
+- Strcmp
+- Strlen
+- Strstr
 */
 
 
