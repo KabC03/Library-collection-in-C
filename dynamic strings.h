@@ -23,3 +23,6 @@ const char *dynamic_string_read(DynamicString *dynamicString);
 bool dynamic_string_concatanate(DynamicString *dynamicString, char *inputString);
 
 #endif // DYNAMIC_STRING_H
+
+
+
