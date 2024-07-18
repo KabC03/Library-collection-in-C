@@ -26,3 +26,6 @@ bool string_hashmap_set(StringHashmap *stringHashmap, void *key, size_t keySize,
 const void *string_hashmap_get_value(StringHashmap *stringHashmap, void *key, size_t keySize);
 
 #endif // STRING_HASHMAP_H
+
+
+
