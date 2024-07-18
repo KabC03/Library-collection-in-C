@@ -82,13 +82,13 @@ RETURN_CODE dynamic_string_set(DynamicString *dynamicString, char *inputString) 
 const char *dynamic_string_read(DynamicString *dynamicString) {
 
     if(dynamicString == NULL) {
-        return _INVALID_ARG_PASS_;
+        return NULL;
     } else {
         return dynamicString->data; 
     }
 
 
-    return _INTERNAL_ERROR_; //Put this here so the compiler doesnt complain 
+    return NULL; //Put this here so the compiler doesnt complain 
 }
 
 
