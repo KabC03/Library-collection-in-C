@@ -127,6 +127,39 @@ RETURN_CODE dynamic_string_concatanate(DynamicString *dynamicString, char *input
     return _SUCCESS_;
 }
 
+
+
+
+
+
+/**
+ * dynamic_string_destroy
+ * ===============================================s
+ * Brief: Destroy memory associated with a dynamic string 
+ * 
+ * Param: *dynamicString - string of interest
+ *        *inputString - String to copy from
+ * 
+ * Return: Pointer to the dynamic string 
+ * 
+ */
+RETURN_CODE dynamic_string_destroy(DynamicString *dynamicString) {
+
+    if(dynamicString == NULL) {
+
+
+        return _INVALID_ARG_PASS_;
+    } else {
+
+        if(dynamicString->data == NULL) {
+
+            return _CRITICAL_ERROR_; //Library is not functioning properly if this has happened
+        }
+        free(dynamicString->data);
+    }
+
+    return _SUCCESS_;
+}
 /*
 TODO: add later
 - Compare strings (stcmp)
