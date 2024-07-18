@@ -1,4 +1,4 @@
-#include "dynamic string.h"
+#include "dynamic strings.h"
 
 
 
