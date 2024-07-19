@@ -80,10 +80,10 @@ size_t calculate_alignment_correction(void *address, size_t alignment) {
  * Return: T/F depending on if initialisation was successful 
  * 
  */
-bool heap_initialise(Heap *const heap, size_t size) {
+RETURN_CODE heap_initialise(Heap *const heap, size_t size) {
 
     if(heap == NULL || size == 0) {
-        return false;
+        return _INVALID_ARG_PASS_;
     } else {
 
 
@@ -101,7 +101,7 @@ bool heap_initialise(Heap *const heap, size_t size) {
         //Request memory
         void *newMemory = mmap(NULL, pageSize * systemPageSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
         if(newMemory == NULL) {
-            return false;
+            return _ALLOC_FAILURE_;
         }
 
 
@@ -118,7 +118,7 @@ bool heap_initialise(Heap *const heap, size_t size) {
         //Automatically aligned to bottom of page so dont need to manually do it
     }
 
-    return true;
+    return _SUCCESS_;
 }
 
 
@@ -232,13 +232,13 @@ void *heap_allocate(Heap *const heap, size_t size, size_t elementSize) {
  * 
  * Param: *ptr - ptr to block of interest 
  * 
- * Return: bool - T/F depending on if initialisation was successful
+ * Return: RETURN_CODE - T/F depending on if initialisation was successful
  * 
  */
-bool heap_free(Heap *heap, void *ptr) {
+RETURN_CODE heap_free(Heap *heap, void *ptr) {
 
     if(heap == NULL || ptr == NULL) {
-        return false;
+        return _INVALID_ARG_PASS_;
     } else {
 
 
@@ -327,7 +327,7 @@ bool heap_free(Heap *heap, void *ptr) {
 
     }
 
-    return true;    
+    return _SUCCESS_;    
 }
 
 
@@ -341,28 +341,28 @@ bool heap_free(Heap *heap, void *ptr) {
  * 
  * Param: *ptr - ptr to block of interest 
  * 
- * Return: bool - T/F depending on if initialisation was successful
+ * Return: RETURN_CODE - T/F depending on if initialisation was successful
  * 
  */
-bool heap_destroy(Heap *const heap) {
+RETURN_CODE heap_destroy(Heap *const heap) {
 
     if(heap == NULL) {
 
-        return false;
+        return _INVALID_ARG_PASS_;
     } else {
         if(heap->memoryNode == NULL) {
 
-            return false;
+            return _INVALID_ARG_PASS_;
         }
 
 
         if(munmap(heap->baseAddress, heap->numBytes) != 0) {
-            return false;
+            return _INTERNAL_ERROR_;
         }
         heap->memoryNode = NULL;
     }
 
-    return true;    
+    return _SUCCESS_;    
 }
 
 
