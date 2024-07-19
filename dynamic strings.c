@@ -79,7 +79,7 @@ RETURN_CODE dynamic_string_set(DynamicString *dynamicString, char *inputString) 
  * Return: Pointer to the dynamic string 
  * 
  */
-const char *dynamic_string_read(DynamicString *dynamicString) {
+const char *dynamic_string_read(const DynamicString *dynamicString) {
 
     if(dynamicString == NULL) {
         return NULL;
