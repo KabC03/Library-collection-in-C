@@ -1,3 +1,4 @@
+//12 Aug 2024
 #include "vector.h"
 
 
@@ -328,7 +329,8 @@ bool vector_set_index(Vector *const vector, size_t index, const void *const data
         return false;
     } else {
 
-        if(index + 1 > vector->top || vector->data == NULL) {
+        //if(index + 1 > vector->top || vector->data == NULL) {
+        if(index > vector->top || vector->data == NULL) { //EXPERIMENTAL
             return false;
 
         } else {
