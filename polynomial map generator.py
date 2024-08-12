@@ -27,6 +27,9 @@ sourceCodePneumonics = {
     #"R0" : "0", "R1" : "1", "R2" : "2", "R3" : "3",
 
 };
+outputFilePath = "./data/polymap.asm";
+
+
 
 
 #Check for overflows
@@ -71,43 +74,90 @@ def preprocess_pneumonics(sourceCodePneumonicsInput):
 #Generate the map and assembly
 def generate_Lagrange_map(keys, values):
 
+    print("Lagrange polynomial:");
+
     if(len(keys) != len(values)):
         print("ERROR: Keys and values vectors are not the same length || keys = " + str(len(keys)) + " values = " + str(len(values)));
         return 1;
 
-    #NOTE: For now this just prints text to the console - make it output to a .asm file later
-    for i in range(0, len(keys)):
 
-        leadingCoefficient = values[i];
-        print(str(leadingCoefficient) + " * (", end = '');
+    try:
+
+        with open(outputFilePath, 'w') as file:
 
 
-        print("(", end = '');
-        for j in range(0, len(keys)): #Numerator
+            #Setup
+            file.write("; 12 Aug, 2024\n");
+            file.write("section .text\n\n\n\n\n");
+
+
+            file.write("; edx polymap_get_value(eax key)\n");
+            file.write("polymap_get_value:\n\n");
+            file.write("    mov ebp, esp\n\n");
+
+            file.write("; Setup\n");
+            file.write("    push ebp\n");
+            file.write("    push eax\n");
+            file.write("    push ebx\n");
+            file.write("    push ecx\n\n\n\n\n");
+
+
+            # eax - contains key
+            # ebx - temp
+            # ecx - temp
+            # edx - value
+
+            file.write("; Algorithm\n");
+            #NOTE: For now this just prints text to the console - make it output to a .asm file later
+            for i in range(0, len(keys)):
+
+                leadingCoefficient = values[i];
+                print(str(leadingCoefficient) + " * (", end = '');
+
+
+                print("(", end = '');
+                for j in range(0, len(keys)): #Numerator
+                    
+                    if keys[j] != keys[i]:
+                        print("(x - " + str(keys[j]) + ") ", end = '');
+
+                print(" / ", end = '');
+
+
+                denominator = 1;
+                for j in range(0, len(keys)): #Denominator
+
+                    if keys[j] != keys[i]:
+                        #Denominator
+                        denominator *= keys[i]- keys[j];
+
+
+
+                print(str(denominator) + ")", end = '');
+                        
+                print(") + ");
             
-            if keys[j] != keys[i]:
-                print("(x - " + str(keys[j]) + ") ", end = '');
 
-        print(" / ", end = '');
+                signedIntegerLimit = int(pow(2, (BITS_PER_BYTE * MAX_BYTES))/2);
+                if(denominator > signedIntegerLimit):
+                    print("ERROR: denominator '" + str(denominator) + "' exceeds " + str(MAX_BYTES) + " byte signed limit (" + str(signedIntegerLimit) + ")");
+                    print("Overflow factor: " + str(denominator/ (signedIntegerLimit)));
+                    return 1;
 
+            file.write("\n\n\n\n\n\n");
 
-        denominator = 1;
-        for j in range(0, len(keys)): #Denominator
+            #Cleanup
+            file.write("; Cleanup\n");
+            file.write("    mov esp, ebp\n");
+            file.write("    pop ecx\n");
+            file.write("    pop ebx\n");
+            file.write("    pop eax\n");
+            file.write("    pop ebp\n");
+            file.write("    ret\n");
 
-            if keys[j] != keys[i]:
-                #Denominator
-                denominator *= keys[i]- keys[j];
-
-
-
-        print(str(denominator) + ")", end = '');
-                
-        print(") + ");
-    
-        if(denominator > pow(2, BITS_PER_BYTE * MAX_BYTES)):
-            print("ERROR: denominator '" + str(denominator) + "' exceeds " + str(MAX_BYTES) + " byte signed limit (" + str(pow(2, BITS_PER_BYTE * MAX_BYTES)) + ")");
-            print("Overflow factor: " + str(denominator/ pow(2, BITS_PER_BYTE * MAX_BYTES)));
-            return 1;
+    except:
+        print("File failed to open");
+        return 1;
 
     return 0;
 
