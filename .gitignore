@@ -1,0 +1,8 @@
+output/*
+data/*
+.DS_Store
+.vscode/
+*.swp
+
+
+
