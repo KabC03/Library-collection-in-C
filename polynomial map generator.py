@@ -11,20 +11,53 @@ This creates a direct mapping of the inputs to the output - f(key) = value, for 
 import sys;
 
 #Vectors to fit
-keys = [0b110111111, 0b1011];
-values = [3, 2];
+sourceCodePneumonics = {
+
+    #Pneumonic : Machine code
+
+    #Instructions
+    "ADD" : "0", "LIR" : "1", "PSH" : "2", "POP" : "3", "JEQ" : "4", "BLK" : "-1",
+
+    #Registers
+    "EAX" : "0", "EBX" : "1", "ECX" : "2", "EDX" : "3",
+
+};
 
 
 
 
-def main():
+
+
+#Preprocess pneumonics to put them into binary form
+def preprocess_pneumonics(sourceCodePneumonicsInput):
+
+    keys = [];
+    values = [];
+
+    for key, value in sourceCodePneumonicsInput.items():
+
+        newKey = "";
+        newValue = "";
+
+        for char in key:
+            newKey += str(ord(char));
+        
+        for char in value:
+            newValue += str(ord(char));
+
+        keys.append(int(newKey));
+        values.append(int(newValue));
+
+    return keys, values, 0;
+
+
+
+#Generate the map and assembly
+def generate_Lagrange_map(keys, values):
 
     if(len(keys) != len(values)):
         print("Keys and values vectors are not the same length || keys = " + str(len(keys)) + " values = " + str(len(values)));
         return 1;
-
-
-
 
     #NOTE: For now this just prints text to the console - make it output to a .asm file later
     for i in range(0, len(keys)):
@@ -54,6 +87,28 @@ def main():
 
 
         print(") + ");
+
+    return 0;
+
+
+
+
+
+
+
+
+def main():
+
+    keys = [];
+    values = [];
+    sourceCodePneumonicsInput = sourceCodePneumonics;
+
+    keys, values, returnCode = preprocess_pneumonics(sourceCodePneumonicsInput);
+    if(returnCode != 0):
+        return 1;
+
+    if(generate_Lagrange_map(keys, values) != 0):
+        return 1;
 
     return 0;
 
