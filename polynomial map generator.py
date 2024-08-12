@@ -22,6 +22,9 @@ sourceCodePneumonics = {
     #Registers
     "0" : "0", "1" : "1", "2" : "2", "3" : "3",
 
+
+    #"R0" : "0", "R1" : "1", "R2" : "2", "R3" : "3",
+
 };
 
 BIT_64_CONSTANT = 9223372036854775807;
@@ -38,8 +41,8 @@ def preprocess_pneumonics(sourceCodePneumonicsInput):
     for key, value in sourceCodePneumonicsInput.items():
 
         if(len(key) > BYTE_64_CONSTANT or len(value) > BYTE_64_CONSTANT): #String cannot be longer than 8 bytes (must fit in reg)
-            print("ERROR: key or value overflows 64 bit limit");
-            return 1;
+            print("ERROR: key or value overflows 64 bit limit, max limit is 8 chars");
+            return keys, values, 1;
 
 
 
