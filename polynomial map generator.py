@@ -13,18 +13,19 @@ import sys;
 #Vectors to fit
 sourceCodePneumonics = {
 
-    #Pneumonic : Machine code
+    #NOTE: Could technically have multi-char pneumonics here - but makes it much harder to not go over 64 bit integer limit
 
-    #Instructions
-    "ADD" : "0", "LIR" : "1", "PSH" : "2", "POP" : "3", "JEQ" : "4", "BLK" : "-1",
+
+    #Pneumonic : Machine code
+    "A" : "0", "L" : "1", "S" : "2", "L" : "3", "J" : "4", "X" : "-1",
 
     #Registers
-    "EAX" : "0", "EBX" : "1", "ECX" : "2", "EDX" : "3",
+    "0" : "0", "1" : "1", "2" : "2", "3" : "3",
 
 };
 
-
-
+BIT_64_CONSTANT = 9223372036854775807;
+BYTE_64_CONSTANT = 8;
 
 
 
@@ -35,6 +36,12 @@ def preprocess_pneumonics(sourceCodePneumonicsInput):
     values = [];
 
     for key, value in sourceCodePneumonicsInput.items():
+
+        if(len(key) > BYTE_64_CONSTANT or len(value) > BYTE_64_CONSTANT): #String cannot be longer than 8 bytes (must fit in reg)
+            print("ERROR: key or value overflows 64 bit limit");
+            return 1;
+
+
 
         newKey = "";
         newValue = "";
@@ -56,7 +63,7 @@ def preprocess_pneumonics(sourceCodePneumonicsInput):
 def generate_Lagrange_map(keys, values):
 
     if(len(keys) != len(values)):
-        print("Keys and values vectors are not the same length || keys = " + str(len(keys)) + " values = " + str(len(values)));
+        print("ERROR: Keys and values vectors are not the same length || keys = " + str(len(keys)) + " values = " + str(len(values)));
         return 1;
 
     #NOTE: For now this just prints text to the console - make it output to a .asm file later
@@ -82,11 +89,15 @@ def generate_Lagrange_map(keys, values):
                 #Denominator
                 denominator *= keys[i]- keys[j];
 
+
+
         print(str(denominator) + ")", end = '');
                 
-
-
         print(") + ");
+    
+        if(denominator > BIT_64_CONSTANT):
+            print("ERROR: denominator '" + str(denominator) + "' exceeds 64 bit signed limit");
+            return 1;
 
     return 0;
 
