@@ -11,8 +11,8 @@ This creates a direct mapping of the inputs to the output - f(key) = value, for 
 import sys;
 
 #Vectors to fit
-keys = [-2, -1, 0, 4];
-values = [-2, 4, 1, 8];
+keys = [1, 2, 3];
+values = [3, 2, 1];
 
 
 
@@ -53,7 +53,7 @@ def main():
                 
 
 
-        print(")  ");
+        print(") + ");
 
     return 0;
 
