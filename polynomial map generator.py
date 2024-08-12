@@ -9,6 +9,7 @@ Polynomial is encoded into x86 assembly
 This creates a direct mapping of the inputs to the output - f(key) = value, for all keys and value
 '''
 import sys;
+import math;
 
 #Vectors to fit
 sourceCodePneumonics = {
@@ -27,10 +28,16 @@ sourceCodePneumonics = {
 
 };
 
-BIT_64_CONSTANT = 9223372036854775807;
-BYTE_64_CONSTANT = 8;
+
+#Check for overflows
+BIT_CONSTANT = 9223372036854775807;
+BITS_PER_BYTE = 8;
 
 
+
+
+
+maxNumberOfChars = (math.log2(BIT_CONSTANT) + 1)/BITS_PER_BYTE
 
 #Preprocess pneumonics to put them into binary form
 def preprocess_pneumonics(sourceCodePneumonicsInput):
@@ -40,8 +47,8 @@ def preprocess_pneumonics(sourceCodePneumonicsInput):
 
     for key, value in sourceCodePneumonicsInput.items():
 
-        if(len(key) > BYTE_64_CONSTANT or len(value) > BYTE_64_CONSTANT): #String cannot be longer than 8 bytes (must fit in reg)
-            print("ERROR: key or value overflows 64 bit limit, max limit is 8 chars");
+        if(len(key) > maxNumberOfChars or len(value) > maxNumberOfChars): #String cannot be longer than 8 bytes (must fit in reg)
+            print("ERROR: key: '" + str(key) + "' or value: '" + str(value) + "' overflows set bit limit, max limit is: " + str(int(maxNumberOfChars)));
             return keys, values, 1;
 
 
@@ -98,7 +105,7 @@ def generate_Lagrange_map(keys, values):
                 
         print(") + ");
     
-        if(denominator > BIT_64_CONSTANT):
+        if(denominator > BIT_CONSTANT):
             print("ERROR: denominator '" + str(denominator) + "' exceeds 64 bit signed limit");
             return 1;
 
