@@ -18,10 +18,10 @@ sourceCodePneumonics = {
 
 
     #Pneumonic : Machine code
-    "A" : "0", "L" : "1", "S" : "2", "L" : "3", "J" : "4", "X" : "-1",
+    "A" : "0", "L" : "1", "J" : "2",
 
     #Registers
-    "0" : "0", "1" : "1", "2" : "2", "3" : "3",
+    "X" : "0", "Y" : "1",
 
 
     #"R0" : "0", "R1" : "1", "R2" : "2", "R3" : "3",
@@ -30,14 +30,13 @@ sourceCodePneumonics = {
 
 
 #Check for overflows
-BIT_CONSTANT = 9223372036854775807;
+MAX_BYTES = 4;
 BITS_PER_BYTE = 8;
+BYTES_PER_CHAR = 1;
 
 
 
 
-
-maxNumberOfChars = (math.log2(BIT_CONSTANT) + 1)/BITS_PER_BYTE
 
 #Preprocess pneumonics to put them into binary form
 def preprocess_pneumonics(sourceCodePneumonicsInput):
@@ -47,8 +46,8 @@ def preprocess_pneumonics(sourceCodePneumonicsInput):
 
     for key, value in sourceCodePneumonicsInput.items():
 
-        if(len(key) > maxNumberOfChars or len(value) > maxNumberOfChars): #String cannot be longer than 8 bytes (must fit in reg)
-            print("ERROR: key: '" + str(key) + "' or value: '" + str(value) + "' overflows set bit limit, max limit is: " + str(int(maxNumberOfChars)));
+        if(len(key) > MAX_BYTES * BYTES_PER_CHAR or len(value) > MAX_BYTES * BYTES_PER_CHAR): #String cannot be longer than 8 bytes (must fit in reg)
+            print("ERROR: key: '" + str(key) + "' or value: '" + str(value) + "' overflows set byte limit, max char limit is: " + str(int(MAX_BYTES * BYTES_PER_CHAR)));
             return keys, values, 1;
 
 
@@ -105,8 +104,9 @@ def generate_Lagrange_map(keys, values):
                 
         print(") + ");
     
-        if(denominator > BIT_CONSTANT):
-            print("ERROR: denominator '" + str(denominator) + "' exceeds 64 bit signed limit");
+        if(denominator > pow(2, BITS_PER_BYTE * MAX_BYTES)):
+            print("ERROR: denominator '" + str(denominator) + "' exceeds " + str(MAX_BYTES) + " byte signed limit (" + str(pow(2, BITS_PER_BYTE * MAX_BYTES)) + ")");
+            print("Overflow factor: " + str(denominator/ pow(2, BITS_PER_BYTE * MAX_BYTES)));
             return 1;
 
     return 0;
