@@ -266,7 +266,7 @@ RETURN_CODE bitmap_colour_pixel(BitmapImage *bitmapImage, size_t x, size_t y, ui
  */
 RETURN_CODE bitmap_draw_line(BitmapImage *bitmapImage, size_t x1, size_t y1, size_t x2, size_t y2, uint8_t red, uint8_t green, uint8_t blue, int thickness) {
 
-    if(bitmapImage == NULL || thickness < 0) {
+    if(bitmapImage == NULL || thickness < 0 || x1 > x2) {
         return _INVALID_ARG_PASS_;
 
     } else {
@@ -289,10 +289,12 @@ RETURN_CODE bitmap_draw_line(BitmapImage *bitmapImage, size_t x1, size_t y1, siz
         //Construct a line between two points, evaluate for x1 < x < x2. Then colour pixel(x, floor(f(x)))
         for(double t = x1Double - thickness; t < x1Double + thickness; t++) {
 
-            double gradient = ((y1Double - y2Double)) / ((x1Double - x2Double)); //Gradient is the same after shift (note t cancels)
-            double intercept = (y1Double - t) - (gradient * (x1));
 
-            for(size_t x = x1; x < x2; x++) {
+            double gradient = ((y1Double - y2Double)) / ((x1Double - x2Double)); //Gradient is the same after shift (note t cancels)
+            double intercept = (y1Double - t) - (gradient * (x1Double));
+
+            for(double x = x1Double; x <= x2Double; x++) {
+
 
                 //NOTE: bitmap_colour_pixel does not return an error if the pixel is out of range - this is on purpose so the code below works
                 if(bitmap_colour_pixel(bitmapImage, x, floor((x * gradient) + intercept), red, green, blue) != _SUCCESS_) { //Colour the specific pixel
