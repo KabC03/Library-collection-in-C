@@ -11,8 +11,8 @@ This creates a direct mapping of the inputs to the output - f(key) = value, for 
 import sys;
 
 #Vectors to fit
-keys = [1, 2, 3];
-values = [3, 2, 1];
+keys = [0b110111111, 0b1011];
+values = [3, 2];
 
 
 
