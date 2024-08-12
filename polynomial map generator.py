@@ -109,7 +109,11 @@ def generate_Lagrange_map(keys, values):
 
             file.write("; Algorithm\n");
             #NOTE: For now this just prints text to the console - make it output to a .asm file later
+
+            useEDXinsteadOfECX = True; #ONLY the first time, replace EDX with ECX - slightly more efficient
+
             for i in range(0, len(keys)):
+
 
                 leadingCoefficient = values[i];
                 print(str(leadingCoefficient) + " * (", end = '');
@@ -120,10 +124,46 @@ def generate_Lagrange_map(keys, values):
                     
                     if keys[j] != keys[i]:
                         print("(x - " + str(keys[j]) + ") ", end = '');
+                
+                        # (x - 74)
+                        if(i == 0): #First column of row, use ecx, avoids multiplication by 1
+
+                            if(useEDXinsteadOfECX == True):
+                                file.write("    mov edx, eax\n");
+                                file.write("    sub edx, " + str(keys[j]) + "\n");
+                            
+                            else:
+                                file.write("    mov ecx, eax\n");
+                                file.write("    sub ecx, " + str(keys[j]) + "\n");
+                        
+                            #NOTE: Dont do any multiplication here
+                
+                        else:
+                            file.write("    mov ebx, eax\n");
+                            file.write("    sub ebx, " + str(keys[j]) + "\n");
+
+
+                            #(x - 76) * (x - 74)
+                            if(useEDXinsteadOfECX == True):
+                                file.write("    mul edx, ebx\n");
+                            
+                            else:
+                                file.write("    mul ecx, ebx\n");
+
+                
+
+                #Multiply by numerator
+                if(useEDXinsteadOfECX == True):
+                    file.write("    mul edx, " + str(leadingCoefficient) + "\n");
+                
+                else:
+                    file.write("    mul ecx, " + str(leadingCoefficient) + "\n");
+
+
+
+
 
                 print(" / ", end = '');
-
-
                 denominator = 1;
                 for j in range(0, len(keys)): #Denominator
 
@@ -132,9 +172,22 @@ def generate_Lagrange_map(keys, values):
                         denominator *= keys[i]- keys[j];
 
 
+                #NOTE: Numerator and denominator are not simplified further to avoid float precision issues
 
                 print(str(denominator) + ")", end = '');
                         
+
+
+                #Divide by denominator
+                if(useEDXinsteadOfECX == True):
+                    file.write("    div edx, " + str(denominator) + "\n");
+                
+                else:
+                    file.write("    div ecx, " + str(denominator) + "\n");
+
+
+
+
                 print(") + ");
             
 
@@ -143,6 +196,25 @@ def generate_Lagrange_map(keys, values):
                     print("ERROR: denominator '" + str(denominator) + "' exceeds " + str(MAX_BYTES) + " byte signed limit (" + str(signedIntegerLimit) + ")");
                     print("Overflow factor: " + str(denominator/ (signedIntegerLimit)));
                     return 1;
+        
+
+
+
+
+                #Add row to accumulator
+                if(i == 0): #EDX already contains the row
+                    pass;
+                else:
+                    file.write("    add edx, ecx\n");
+
+
+
+
+
+
+
+
+                useEDXinsteadOfECX = False;
 
             file.write("\n\n\n\n\n\n");
 
