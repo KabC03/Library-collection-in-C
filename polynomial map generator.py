@@ -107,7 +107,7 @@ def generate_Lagrange_map(keys, values):
             # ecx - temp
             # edx - value
 
-            file.write("; Algorithm\n");
+            file.write("; Evaluate polynomial at eax\n");
             #NOTE: For now this just prints text to the console - make it output to a .asm file later
 
             useEDXinsteadOfECX = True; #ONLY the first time, replace EDX with ECX - slightly more efficient
