@@ -9,13 +9,63 @@
 #define BITMAP_HEADER_SIZE 40
 /*
 TODO: 
-- Draw a line accross an image
-- Create a blank image with a background colour
 - Export an array and header data to a bitmap
 - Resize an image
 - Currently only supports 24 bit depth - make it support at least 32 and 16 bit depth too
 */
 
+
+
+    /*Scottish flag
+    BitmapImage testImage;
+    if(bitmap_generate_image_24(&testImage, 255, 0, 0, 2000, 1000) != _SUCCESS_) {
+        printf("Failed to generate\n");
+        return -1;
+    }
+    if(bitmap_draw_line(&testImage, 0, 1000, 2000, 0, 255, 255, 255, 50) != _SUCCESS_) {
+        printf("Failed to draw line\n");
+        return -3;
+    }
+    if(bitmap_draw_line(&testImage, 0, 0, 2000, 1000, 255, 255, 255, 50) != _SUCCESS_) {
+        printf("Failed to draw line\n");
+        return -3;
+    }
+    */
+
+    
+    //Smiley face
+    /*
+    BitmapImage testImage;
+    if(bitmap_generate_image_24(&testImage, 255, 0, 0, 10, 10) != _SUCCESS_) {
+        printf("Failed to generate\n");
+        return -1;
+    }
+    if(bitmap_colour_pixel(&testImage, 3, 7, 255, 255, 0) != _SUCCESS_) {
+        printf("Failed to colour pixel\n");
+        return -4;
+    }
+    if(bitmap_colour_pixel(&testImage, 7, 7, 255, 255, 0) != _SUCCESS_) {
+    printf("Failed to colour pixel\n");
+    return -4;
+    }
+
+    if(bitmap_draw_line(&testImage, 1, 3, 7, 2, 255, 255, 255, 1) != _SUCCESS_) {
+        printf("Failed to draw line\n");
+        return -3;
+    }
+    if(bitmap_draw_line(&testImage, 5, 2, 7, 3, 255, 255, 255, 1) != _SUCCESS_) {
+        printf("Failed to draw line\n");
+        return -3;
+    }
+    */
+
+    
+    /*
+    if(bitmap_reconstruct_image(&testImage, "./data/test.bmp") != _SUCCESS_) {
+        printf("Failed to reconstruct image\n");
+        return -2;
+    }
+    */
 
 
 
