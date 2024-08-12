@@ -220,11 +220,9 @@ RETURN_CODE bitmap_colour_pixel(BitmapImage *bitmapImage, size_t x, size_t y, ui
     } else {
 
         //Check for OOB
-        if(x > bitmapImage->bitmapMetadata.imageWidth || y > bitmapImage->bitmapMetadata.imageHeight) {
+        if(x >= bitmapImage->bitmapMetadata.imageWidth || y >= bitmapImage->bitmapMetadata.imageHeight) {
             return _SUCCESS_; //Dont fill but still return a success
         }
-
-
 
 
         uint32_t currentPixelData = 0; //Use 32 bit integer, depth is 24 bits but last 8 bits wont be appended to vector
@@ -240,7 +238,6 @@ RETURN_CODE bitmap_colour_pixel(BitmapImage *bitmapImage, size_t x, size_t y, ui
         if(vector_set_index(&(bitmapImage->bitmapData), positionToInsert, &currentPixelData) == false) {
             return _INTERNAL_ERROR_;
         }
-
     }
 
     return _SUCCESS_;
