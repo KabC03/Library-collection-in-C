@@ -1,6 +1,6 @@
 #12 Aug
 
-library="./polynomial map.c"
+library="./vector.c"
 
 
 mkdir -p output
