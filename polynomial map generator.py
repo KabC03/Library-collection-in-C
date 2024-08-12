@@ -120,23 +120,25 @@ def generate_Lagrange_map(keys, values):
 
 
                 print("(", end = '');
+                firstLoad = True;
                 for j in range(0, len(keys)): #Numerator
                     
                     if keys[j] != keys[i]:
                         print("(x - " + str(keys[j]) + ") ", end = '');
                 
                         # (x - 74)
-                        if(i == 0): #First column of row, use ecx, avoids multiplication by 1
+                        if(firstLoad == True): #First column of row, use ecx, avoids multiplication by 1
 
                             if(useEDXinsteadOfECX == True):
-                                file.write("    mov edx, eax\n");
-                                file.write("    sub edx, " + str(keys[j]) + "\n");
+                                file.write("\n    mov edx, eax\n");
+                                file.write("    sub edx, " + str(keys[j]) + "\n\n");
                             
                             else:
-                                file.write("    mov ecx, eax\n");
-                                file.write("    sub ecx, " + str(keys[j]) + "\n");
+                                file.write("\n    mov ecx, eax\n");
+                                file.write("    sub ecx, " + str(keys[j]) + "\n\n");
                         
                             #NOTE: Dont do any multiplication here
+                            firstLoad = False;
                 
                         else:
                             file.write("    mov ebx, eax\n");
