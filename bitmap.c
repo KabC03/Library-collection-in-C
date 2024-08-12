@@ -295,7 +295,6 @@ RETURN_CODE bitmap_draw_line(BitmapImage *bitmapImage, size_t x1, size_t y1, siz
 
             for(double x = x1Double; x <= x2Double; x++) {
 
-                printf("x = %f, y = %f, i = %f, t = %f\n", x, floor((x * gradient) + intercept), intercept, t);
                 //NOTE: bitmap_colour_pixel does not return an error if the pixel is out of range - this is on purpose so the code below works
                 if(bitmap_colour_pixel(bitmapImage, x, floor((x * gradient) + intercept), red, green, blue) != _SUCCESS_) { //Colour the specific pixel
 
