@@ -9,63 +9,13 @@
 #define BITMAP_HEADER_SIZE 40
 /*
 TODO: 
+- Draw a line accross an image
+- Create a blank image with a background colour
 - Export an array and header data to a bitmap
 - Resize an image
 - Currently only supports 24 bit depth - make it support at least 32 and 16 bit depth too
 */
 
-
-
-    /*Scottish flag
-    BitmapImage testImage;
-    if(bitmap_generate_image_24(&testImage, 255, 0, 0, 2000, 1000) != _SUCCESS_) {
-        printf("Failed to generate\n");
-        return -1;
-    }
-    if(bitmap_draw_line(&testImage, 0, 1000, 2000, 0, 255, 255, 255, 50) != _SUCCESS_) {
-        printf("Failed to draw line\n");
-        return -3;
-    }
-    if(bitmap_draw_line(&testImage, 0, 0, 2000, 1000, 255, 255, 255, 50) != _SUCCESS_) {
-        printf("Failed to draw line\n");
-        return -3;
-    }
-    */
-
-    
-    //Smiley face
-    /*
-    BitmapImage testImage;
-    if(bitmap_generate_image_24(&testImage, 255, 0, 0, 10, 10) != _SUCCESS_) {
-        printf("Failed to generate\n");
-        return -1;
-    }
-    if(bitmap_colour_pixel(&testImage, 3, 7, 255, 255, 0) != _SUCCESS_) {
-        printf("Failed to colour pixel\n");
-        return -4;
-    }
-    if(bitmap_colour_pixel(&testImage, 7, 7, 255, 255, 0) != _SUCCESS_) {
-    printf("Failed to colour pixel\n");
-    return -4;
-    }
-
-    if(bitmap_draw_line(&testImage, 1, 3, 7, 2, 255, 255, 255, 1) != _SUCCESS_) {
-        printf("Failed to draw line\n");
-        return -3;
-    }
-    if(bitmap_draw_line(&testImage, 5, 2, 7, 3, 255, 255, 255, 1) != _SUCCESS_) {
-        printf("Failed to draw line\n");
-        return -3;
-    }
-    */
-
-    
-    /*
-    if(bitmap_reconstruct_image(&testImage, "./data/test.bmp") != _SUCCESS_) {
-        printf("Failed to reconstruct image\n");
-        return -2;
-    }
-    */
 
 
 
@@ -390,7 +340,7 @@ RETURN_CODE bitmap_greyscale(BitmapImage *bitmapImage) {
 
         uint8_t grey = 0;
 
-        uint32_t *pixel = 0;
+        uint32_t *pixel = NULL;
 
 
         size_t numberOfPixels = vector_get_length(&(bitmapImage->bitmapData)) + 1;
@@ -406,16 +356,22 @@ RETURN_CODE bitmap_greyscale(BitmapImage *bitmapImage) {
 
             for(size_t i = 0; i < numberOfPixels; i++) {
 
+
                 pixel = (uint32_t*)vector_get_index(&(bitmapImage->bitmapData), i);
+
+                uint32_t pixelCopy = 0; 
+                memcpy(&pixelCopy, pixel, BYTES_PER_PIXEL_24); //Have to copy it since otherwise will dereference 8 bits over the end
+
+
                 if(pixel == NULL) {
                     //Unexpected NULL ptr - will make better later
                     return _INTERNAL_ERROR_;
                 }
 
                 //WARNING: assuming BGR format
-                blue = (*pixel) & (0xFF); //255
-                green = ((*pixel) & (0xFF00)) >> 8; //65280 then bitshift down 8 bits
-                red = ((*pixel) & (0xFF0000)) >> 16; //Same thing again
+                blue = pixelCopy & (0xFF); //255
+                green = (pixelCopy & (0xFF00)) >> 8; //65280 then bitshift down 8 bits
+                red = (pixelCopy & (0xFF0000)) >> 16; //Same thing again
 
 
                 //Set greyscale
@@ -429,6 +385,7 @@ RETURN_CODE bitmap_greyscale(BitmapImage *bitmapImage) {
                 //printf("Blue: %d, Green: %d, Red: %d, Grey: %d\n", blue, green, red, newPixel);
 
                 //Set new greyscale pixel
+
                 if(vector_set_index(&(bitmapImage->bitmapData), i, &newPixel) == false) {
                     return _INTERNAL_ERROR_;
                 }
