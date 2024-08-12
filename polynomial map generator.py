@@ -11,9 +11,8 @@ This creates a direct mapping of the inputs to the output - f(key) = value, for 
 import sys;
 
 #Vectors to fit
-keys = [-2-1,0,4];
-values = [-2,4,1,8];
-
+keys = [-2, -1, 0, 4];
+values = [-2, 4, 1, 8];
 
 
 
@@ -21,7 +20,7 @@ values = [-2,4,1,8];
 def main():
 
     if(len(keys) != len(values)):
-        print("Keys and values vectors are not the same length");
+        print("Keys and values vectors are not the same length || keys = " + str(len(keys)) + " values = " + str(len(values)));
         return 1;
 
 
@@ -33,13 +32,28 @@ def main():
         leadingCoefficient = values[i];
         print(str(leadingCoefficient) + " * (", end = '');
 
-        for j in range(0, len(keys)):
+
+        print("(", end = '');
+        for j in range(0, len(keys)): #Numerator
             
             if keys[j] != keys[i]:
-                print("((x - " + str(keys[j]) + ") / ", end = '');
-                print(str(keys[i]- keys[j]) + ") ", end = '');
+                print("(x - " + str(keys[j]) + ") ", end = '');
+
+        print(" / ", end = '');
+
+
+        denominator = 1;
+        for j in range(0, len(keys)): #Denominator
+
+            if keys[j] != keys[i]:
+                #Denominator
+                denominator *= keys[i]- keys[j];
+
+        print(str(denominator) + ")", end = '');
                 
-        print(") * ", end = '');
+
+
+        print(")  ");
 
     return 0;
 
