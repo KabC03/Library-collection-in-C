@@ -1,311 +1,112 @@
-//25, Jul, 2024
-#include "bitmap.h"
-#define BITMAP_FILE_SIGNATURE 0x4D42
-#define BITS_PER_BYTE 8
-#define PAD_CONSTANT 4
-#define BYTES_PER_PIXEL_24 3
-#define BIT_24_DEPTH 24
-#define FILE_HEADER_SIZE 14
-#define BITMAP_HEADER_SIZE 40
-/*
-TODO: 
-- Draw a line accross an image
-- Create a blank image with a background colour
-- Export an array and header data to a bitmap
-- Resize an image
-- Currently only supports 24 bit depth - make it support at least 32 and 16 bit depth too
-*/
+#include "2DMatrix.h"
 
 
 
 
 /**
- * bitmap_enstantiate 
+ * matrix_2D_print
  * ===============================================
- * Brief: Enstantiate a bitmap image - must be manually closed before program ends
+ * Brief: Print a 2D matrix of floats (used for debugging)
  * 
- * Param: *bitmapPath - Path to an empty bitmap struct
- *        *bitmapImageOutput - data of interest
- * 
- * Return: bool - T/F depending on if addition was successful
+ * Param: *matrix - matrix of interest
+ * Return: bool - T/F depending on if initialisation was successful
  * 
  */
-RETURN_CODE bitmap_enstantiate(char *bitmapPath, BitmapImage *bitmapImageOutput) {
+bool matrix_2D_print(Matrix *const matrix) {
 
-    if(bitmapPath == NULL || bitmapImageOutput == NULL) {
-        return _INVALID_ARG_PASS_;
+    if(matrix == NULL) {
+        return false;
     } else {
 
-        FILE *bitmapFptr = fopen(bitmapPath, "rb");
-        if(bitmapFptr == NULL) {
-            return _FILE_NOT_OPENED_; 
-        }
+        for(size_t i = 0; i < matrix->rows; i++) {
+            for(size_t j = 0; j < matrix->cols; j++) {
 
-
-        //Leave this opened until manually closed
-        bitmapImageOutput->bitmapImagePtr = bitmapFptr;
-
-        //Read header
-        if(fread(&(bitmapImageOutput->bitmapHeader), sizeof(BitmapHeader), 1, bitmapFptr) != 1) {
-            return _INTERNAL_ERROR_;
-        }
-        //Read the metadata
-        if(fread(&(bitmapImageOutput->bitmapMetadata), sizeof(BitmapMetadata), 1, bitmapFptr) != 1) {
-            return _INTERNAL_ERROR_;
-        }
-
-
-        //Check file is a bitmap
-        if(bitmapImageOutput->bitmapHeader.fileType != BITMAP_FILE_SIGNATURE) {
-            return _INTERNAL_ERROR_;
-        }
-
-        //Read data into a vector - NOTE: CURRENTLY < 8 BIT PIXEL DEPTH NOT SUPPORTED
-
-        size_t bytesPerPixel = (bitmapImageOutput->bitmapMetadata.bitsPerPixel)/BITS_PER_BYTE;
-        size_t numberOfPixelsInRow = bitmapImageOutput->bitmapMetadata.imageWidth;
-        size_t numberOfPixelsInCol = bitmapImageOutput->bitmapMetadata.imageHeight;
-
-        size_t paddingPerRow = (PAD_CONSTANT - (bitmapImageOutput->bitmapMetadata.imageWidth * bytesPerPixel % PAD_CONSTANT)) % PAD_CONSTANT;
-
-        if(vector_initialise(&(bitmapImageOutput->bitmapData), bytesPerPixel) == false) {
-            return _INTERNAL_ERROR_;
-        }
-        void *tempBuffer = malloc(numberOfPixelsInRow * bytesPerPixel);
-        if(tempBuffer == NULL) {
-            return _ALLOC_FAILURE_;
-        }
-
-        //Seek passed the metadata
-        if(fseek(bitmapFptr, bitmapImageOutput->bitmapHeader.dataOffset, SEEK_SET) != 0) {
-            return _INTERNAL_ERROR_;
-        }
-
-
-
-        if(vector_resize(&(bitmapImageOutput->bitmapData), numberOfPixelsInCol * numberOfPixelsInRow) == false) {
-            return _INTERNAL_ERROR_;
-        }
-
-        for(size_t i = 0; i < numberOfPixelsInCol; i++) {
-
-            //Read all pixels
-            if(fread(tempBuffer, bytesPerPixel, numberOfPixelsInRow, bitmapFptr) != numberOfPixelsInRow) {
-                return _INTERNAL_ERROR_;
+                printf("%f ", *(float*)&((matrix->data)[(matrix->dataSize) * ((i * matrix->cols) + j)]));
             }
-
-
-            //Write numberOfPixels from tempBuffer
-            if(vector_quick_append(&(bitmapImageOutput->bitmapData), tempBuffer, numberOfPixelsInRow) == false) {
-                return _INTERNAL_ERROR_;
-            }
-
-            if(paddingPerRow != 0) {
-
-                //Skip passed padding
-                if(fseek(bitmapFptr, paddingPerRow, SEEK_CUR) != 0) {
-                    return _INTERNAL_ERROR_;
-                }
-            }
+            printf("\n");
         }
-
-
-
-
-
-
-        free(tempBuffer);
     }
 
-    return _SUCCESS_;
+    return true;
 }
 
 
+
 /**
- * bitmap_generate_image_24
+ * matrix_2D_initialise
  * ===============================================
- * Brief: Generate a 24 bit depth image of a certian colour
+ * Brief: Initialise a 2D matrix
  * 
- * Param: *outputImage - Pointer to uninitialised bitmap struct
- *        red - red value of background
- *        green - green value of background
- *        blue - blue value of background
- *        xRes - x resolution of image (pixels)
- *        yRes - y resolution of image (pixels)
- * 
- * Return: bool - T/F depending on if addition was successful
+ * Param: *matrix - matrix of interest
+ *        rows - rows of the matrix
+ *        cols - columns of the matrix
+ *        dataSize - sizeof(element) in bytes
+ * Return: bool - T/F depending on if initialisation was successful
  * 
  */
-RETURN_CODE bitmap_generate_image_24(BitmapImage *outputImage, uint8_t red, uint8_t green, uint8_t blue, size_t xRes, size_t yRes) {
+bool matrix_2D_initialise(Matrix *const matrix, size_t rows, size_t cols, size_t dataSize) {
 
-    if(outputImage == NULL || xRes == 0 || yRes == 0) {
-        return _INVALID_ARG_PASS_;
+    if(matrix == NULL || rows == 0 || cols == 0 || dataSize == 0) {
+        return false;
     } else {
 
-        outputImage->bitmapImagePtr = NULL; //Does not point to a file
-        if(vector_initialise(&(outputImage->bitmapData), BYTES_PER_PIXEL_24) == false) { //Assume 24 bit depth for now
-            return _INTERNAL_ERROR_;
+        matrix->cols = cols;
+        matrix->rows = rows;
+        matrix->dataSize = dataSize;
+
+        matrix->data = malloc(dataSize * rows * cols);
+        if(matrix->data == NULL) {
+            return false;
         }
-
-        if(vector_resize(&(outputImage->bitmapData), xRes * yRes) == false) { //Reserve memory upfront - much faster
-            return _INTERNAL_ERROR_;
-        }
-
-        //Set image colour
-        for(size_t i = 0; i < xRes * yRes; i++) { //For pixel in image
-            
-            uint32_t currentPixelData = 0; //Use 32 bit integer, depth is 24 bits but last 8 bits wont be appended to vector
-            //WARNING: Assuming BGR format [B, G, R]
-            currentPixelData = blue;
-            currentPixelData <<= BITS_PER_BYTE;
-            currentPixelData += green;
-            currentPixelData <<= BITS_PER_BYTE;
-            currentPixelData += red;
-
-
-            if(vector_quick_append(&(outputImage->bitmapData), &currentPixelData, 1) == false) {
-                return _INTERNAL_ERROR_;
-            }
-
-        }
-
-
-        size_t paddingPerRow = (PAD_CONSTANT - (xRes * BYTES_PER_PIXEL_24 % PAD_CONSTANT)) % PAD_CONSTANT;
-        //Set metadata
-        outputImage->bitmapMetadata.bitsPerPixel = BIT_24_DEPTH; //24 bit depth
-        outputImage->bitmapMetadata.compressionType = 0;
-        outputImage->bitmapMetadata.headerSize = BITMAP_HEADER_SIZE;
-        outputImage->bitmapMetadata.imageFileSize = (xRes * BYTES_PER_PIXEL_24 + paddingPerRow) * yRes;
-        outputImage->bitmapMetadata.imageHeight = yRes;
-        outputImage->bitmapMetadata.imageWidth = xRes;
-        outputImage->bitmapMetadata.importantColours = 0;
-        outputImage->bitmapMetadata.numberOfColours = 0;
-        outputImage->bitmapMetadata.numberOfPlanes = 1;
-        outputImage->bitmapMetadata.xRes = 0;
-        outputImage->bitmapMetadata.yRes = 0;
-
-        outputImage->bitmapHeader.fileSize = FILE_HEADER_SIZE + BITMAP_HEADER_SIZE + outputImage->bitmapMetadata.imageFileSize;
-        outputImage->bitmapHeader.fileType = BITMAP_FILE_SIGNATURE;
-        outputImage->bitmapHeader.res1 = 0;
-        outputImage->bitmapHeader.res2 = 0;
-        outputImage->bitmapHeader.dataOffset = FILE_HEADER_SIZE + BITMAP_HEADER_SIZE;
     }
 
-    return _SUCCESS_;
+    return true;
 }
 
 
 
 
 
-/**
- * bitmap_draw_line
- * ===============================================
- * Brief: Colour a specific pixel - NOTE does not return an error if a pixel is out of range, just ignores it
- * 
- * Param: *bitmapImage - Enstantiated bitmap of interest 
- *        x - x position
- *        y - y position
- *        red - red value of pixel
- *        green - green value of pixel
- *        blue - blue value of pixel
- * 
- * Return: bool - T/F depending on if addition was successful
- * 
- */
-RETURN_CODE bitmap_colour_pixel(BitmapImage *bitmapImage, size_t x, size_t y, uint8_t red, uint8_t green, uint8_t blue) {
-
-    if(bitmapImage == NULL) {
-        return _INVALID_ARG_PASS_;
-    } else {
-
-        //Check for OOB
-        if(x >= bitmapImage->bitmapMetadata.imageWidth || y >= bitmapImage->bitmapMetadata.imageHeight) {
-            return _SUCCESS_; //Dont fill but still return a success
-        }
 
 
-        uint32_t currentPixelData = 0; //Use 32 bit integer, depth is 24 bits but last 8 bits wont be appended to vector
-        //WARNING: Assuming BGR format [B, G, R]
-        currentPixelData = blue;
-        currentPixelData <<= BITS_PER_BYTE;
-        currentPixelData += green;
-        currentPixelData <<= BITS_PER_BYTE;
-        currentPixelData += red;
 
-        size_t positionToInsert = (bitmapImage->bitmapMetadata.imageWidth * y) + x;
 
-        if(vector_set_index(&(bitmapImage->bitmapData), positionToInsert, &currentPixelData) == false) {
-            return _INTERNAL_ERROR_;
-        }
-    }
-
-    return _SUCCESS_;
-}
 
 
 
 
 /**
- * bitmap_draw_line
+ * matrix_2D_set
  * ===============================================
- * Brief: Draw a line between two coordinates on an image
+ * Brief: Set or resize a 2D matrix
  * 
- * Param: *bitmapImage - Enstantiated bitmap of interest 
- *        x1 - First x position
- *        y1 - First y position
- *        x2 - Second x position
- *        y2 - Second y position
- *        red - red value of line
- *        green - green value of line
- *        blue - blue value of line
- *        thickness - line thickness
- * 
- * Return: bool - T/F depending on if addition was successful
+ * Param: *matrix - matrix of interest
+ *        rows - rows of the matrix
+ *        cols - columns of the matrix
+ *        *data - data to put into the matrix
+ *        dataSize - sizeof(element) in bytes
+ * Return: bool - T/F depending on if initialisation was successful
  * 
  */
-RETURN_CODE bitmap_draw_line(BitmapImage *bitmapImage, size_t x1, size_t y1, size_t x2, size_t y2, uint8_t red, uint8_t green, uint8_t blue, int thickness) {
+bool matrix_2D_set(Matrix *const matrix, size_t rows, size_t cols, void *data, size_t dataSize) {
 
-    if(bitmapImage == NULL || thickness < 0 || x1 > x2) {
-        return _INVALID_ARG_PASS_;
-
+    if(matrix == NULL || rows == 0 || cols == 0 || data == NULL || dataSize == 0) {
+        return false;
     } else {
 
-        if(x1 > bitmapImage->bitmapMetadata.imageWidth || x2 > bitmapImage->bitmapMetadata.imageWidth 
-        || y1 > bitmapImage->bitmapMetadata.imageHeight || y2 > bitmapImage->bitmapMetadata.imageHeight) { //OOB access
+        matrix->cols = cols;
+        matrix->rows = rows;
+        matrix->dataSize = dataSize;
 
-            return _INVALID_ARG_PASS_;
+
+        matrix->data = realloc(matrix->data, dataSize * rows * cols);
+        if(matrix->data == NULL) {
+            return false;
         }
-
-
-        //Convert to double
-        //Didnt accept doubles since - only unsigned integers should be passed (they are discrete coordinates)
-        double y1Double = (double)y1;
-        double y2Double = (double)y2;
-        double x1Double = (double)x1;
-        double x2Double = (double)x2;
-
-        //printf("%ld, %ld, %d\n", x1 - thickness, x1 + thickness, (int)(x1 - thickness) < (int)(x1 + thickness));
-        //Construct a line between two points, evaluate for x1 < x < x2. Then colour pixel(x, floor(f(x)))
-        for(double t = - thickness; t <= thickness != 0; t++) {
-
-            double gradient = ((y1Double - y2Double)) / ((x1Double - x2Double)); //Gradient is the same after shift (note t cancels)
-            double intercept = (y1Double - t) - (gradient * (x1Double));
-
-            for(double x = x1Double; x <= x2Double; x++) {
-
-                //NOTE: bitmap_colour_pixel does not return an error if the pixel is out of range - this is on purpose so the code below works
-                if(bitmap_colour_pixel(bitmapImage, x, floor((x * gradient) + intercept), red, green, blue) != _SUCCESS_) { //Colour the specific pixel
-
-                    return _INTERNAL_ERROR_;
-                }
-            }
-        }
-
+        memcpy(matrix->data, data, dataSize * rows * cols);
     }
 
-
-    return _SUCCESS_;
+    return true;
 }
 
 
@@ -317,237 +118,213 @@ RETURN_CODE bitmap_draw_line(BitmapImage *bitmapImage, size_t x1, size_t y1, siz
 
 
 /**
- * bitmap_greyscale 
+ * matrix_2D_add
  * ===============================================
- * Brief: Greyscales a bitmap image 
+ * Brief: Add two matricies
  * 
- * Param: *bitmapImage - Enstantiated bitmap of interest 
- * 
- * Return: bool - T/F depending on if addition was successful
+ * Param: *result - Result matrix
+ *        *arg1 - arg1 matrix
+ *        *arg2 - arg2 matrix
+ * Return: bool - T/F depending on if initialisation was successful
  * 
  */
-RETURN_CODE bitmap_greyscale(BitmapImage *bitmapImage) {
+bool matrix_2D_add(Matrix *const result, Matrix *const arg1, Matrix *const arg2) {
 
-    if(bitmapImage == NULL) {
-        return _INVALID_ARG_PASS_;
+    if(result == NULL || arg1 == NULL || arg2 == NULL) {
+        return false;
+
+
+    } else if(arg1->cols != arg2->cols 
+    || arg1->rows != arg2->rows 
+    || result->cols != arg1->cols 
+    || result->rows != arg1->rows
+    || result->dataSize != arg1->dataSize
+    || arg1->dataSize != arg2->dataSize
+    ) { //Incompatable dimensions
+        return false;
     } else {
 
-        //Have to place this here otherwies compiler complains
-        //Gray = 0.299 * R + 0.587 * G + 0.144 * B 
-        uint8_t red = 0;
-        uint8_t blue= 0;
-        uint8_t green = 0;
+        for(size_t i = 0; i < (result->rows) * (result->cols); i++) {
 
-        uint8_t grey = 0;
+            (result->data)[i * result->dataSize] = (arg1->data)[i * arg1->dataSize] + (arg2->data)[i * arg2->dataSize];
+        }
 
-        uint32_t *pixel = NULL;
+    }
+
+    return true;
+}
 
 
-        size_t numberOfPixels = vector_get_length(&(bitmapImage->bitmapData)) + 1;
-        //Will add more depths later
+
+/**
+ * matrix_2D_subtract
+ * ===============================================
+ * Brief: Subtract two matricies
+ * 
+ * Param: *result - Result matrix
+ *        *arg1 - arg1 matrix
+ *        *arg2 - arg2 matrix
+ * Return: bool - T/F depending on if initialisation was successful
+ * 
+ */
+bool matrix_2D_subtract(Matrix *const result, Matrix *const arg1, Matrix *const arg2) {
+
+    if(result == NULL || arg1 == NULL || arg2 == NULL) {
+        return false;
+
+
+    } else if(arg1->cols != arg2->cols 
+    || arg1->rows != arg2->rows 
+    || result->cols != arg1->cols 
+    || result->rows != arg1->rows
+    || result->dataSize != arg1->dataSize
+    || arg1->dataSize != arg2->dataSize
+    ) { //Incompatable dimensions
+        return false;
+    } else {
+
+        for(size_t i = 0; i < (result->rows) * (result->cols); i++) {
+
+            (result->data)[i * result->dataSize] = (arg1->data)[i * arg1->dataSize] - (arg2->data)[i * arg2->dataSize];
+        }
+
+    }
+
+    return true;
+}
+
+
+
+
+
+
+/**
+ * matrix_2D_multiply
+ * ===============================================
+ * Brief: Multiply two matricies
+ * 
+ * Param: *result - Result matrix
+ *        *arg1 - arg1 matrix
+ *        *arg2 - arg2 matrix
+ * Return: bool - T/F depending on if initialisation was successful
+ * 
+ */
+bool matrix_2D_multiply(Matrix *const result, Matrix *const arg1, Matrix *const arg2) {
+
+    if(result == NULL || arg1 == NULL || arg2 == NULL) {
+        return false;
+
+
+    } else if(arg1->cols != arg2->rows 
+    || result->rows != arg1->rows 
+    || result->cols != arg2->cols
+    || arg1->dataSize != arg2->dataSize
+    || arg1->dataSize != result->dataSize) { //Incompatable dimensions
+
+        //printf("arg1: %zu, arg2: %zu, result: %zu\n", arg1->dataSize, arg2->dataSize, result->dataSize);
+        //printf("arg1: rows: %zu, cols: %zu, arg2: rows: %zu, cols: %zu\n",arg1->rows, arg1->cols, arg2->rows, arg2->cols);
+        //printf("output: rows: %zu, cols: %zu\n",result->rows, result->cols);
+        return false;
+
+    } else {
+
+
         
+        for(size_t i = 0; i < arg1->rows; i++) {
+            for(size_t j = 0; j < arg2->cols; j++) {
 
+                (result->data)[(result->dataSize) * (i * result->cols + j)] = 0; 
+                //Zero before doing the sum - prevents needed additional sum temp variable
+                for(size_t k = 0; k < arg1->cols; k++) {
 
+                    (result->data)[(result->dataSize) * ((i * result->cols + j))] += 
+                    (arg1->data)[(arg1->dataSize) * (k + (arg1->cols * i))] * 
+                    (arg2->data)[(arg2->dataSize) * (j + (arg2->cols * k))];
 
-
-        switch (bitmapImage->bitmapMetadata.bitsPerPixel) {
-        case 24:
-
-
-            for(size_t i = 0; i < numberOfPixels; i++) {
-
-
-                pixel = (uint32_t*)vector_get_index(&(bitmapImage->bitmapData), i);
-
-                uint32_t pixelCopy = 0; 
-                memcpy(&pixelCopy, pixel, BYTES_PER_PIXEL_24); //Have to copy it since otherwise will dereference 8 bits over the end
-
-
-                if(pixel == NULL) {
-                    //Unexpected NULL ptr - will make better later
-                    return _INTERNAL_ERROR_;
                 }
-
-                //WARNING: assuming BGR format
-                blue = pixelCopy & (0xFF); //255
-                green = (pixelCopy & (0xFF00)) >> 8; //65280 then bitshift down 8 bits
-                red = (pixelCopy & (0xFF0000)) >> 16; //Same thing again
-
-
-                //Set greyscale
-                grey = (0.299 * red) + (0.587 * green) + (0.144 * blue);
-                uint32_t newPixel = grey;
-                newPixel <<= BITS_PER_BYTE;
-                newPixel += grey;
-                newPixel <<= BITS_PER_BYTE;
-                newPixel += grey;
-
-                //printf("Blue: %d, Green: %d, Red: %d, Grey: %d\n", blue, green, red, newPixel);
-
-                //Set new greyscale pixel
-
-                if(vector_set_index(&(bitmapImage->bitmapData), i, &newPixel) == false) {
-                    return _INTERNAL_ERROR_;
-                }
-
             }
-            
-            
-            break;
-        
-        default:
-            return _INTERNAL_ERROR_;
-            break;
         }
-
-
-
-
-
     }
 
-    return _SUCCESS_;
+    return true;
 }
-
-
 
 
 
 
 /**
- * bitmap_reconstruct_image 
+ * matrix_2D_transpose
  * ===============================================
- * Brief: Reconstruct an image from a bitmap 
+ * Brief: Transpose a matrix
  * 
- * Param: *bitmapImage - Bitmap of interest 
- *        *imagePath - Name for the image to be produced
- * 
- * Return: bool - T/F depending on if addition was successful
+ * Param: *result - Result matrix
+ *        *arg1 - arg1 matrix
+ * Return: bool - T/F depending on if initialisation was successful
  * 
  */
-RETURN_CODE bitmap_reconstruct_image(BitmapImage *bitmapImage, char *imagePath) {
+bool matrix_2D_transpose(Matrix *const result, Matrix *const arg1) {
 
-    if(bitmapImage == NULL || imagePath == NULL) {
-        return _INVALID_ARG_PASS_;
+    if(result == NULL || arg1 == NULL) {
+        return false;
+    } else if(result->cols != arg1->rows || result->rows != arg1->cols) {
+        return false;
     } else {
 
-        //Write the metadata
-        //Reconstruct the data (pad it) 
+        for(size_t i = 0; i < arg1->rows; i++) {
+            for(size_t j = 0; j < arg1->cols; j++) {
 
-        FILE *producedImagePtr = fopen(imagePath, "wb");
-        if(producedImagePtr == NULL) {
-            return _FILE_NOT_OPENED_;
-        }
-
-
-
-        //Write the metadata
-        if(fwrite(&(bitmapImage->bitmapHeader), sizeof(BitmapHeader), 1, producedImagePtr) != 1) {
-            return _INTERNAL_ERROR_;
-        }
-
-        if(fwrite(&(bitmapImage->bitmapMetadata), sizeof(BitmapMetadata), 1, producedImagePtr) != 1) {
-            return _INTERNAL_ERROR_;
-        }
-
-
-
-
-        //Reconstruct the image
-        size_t bytesPerPixel = (bitmapImage->bitmapMetadata.bitsPerPixel)/BITS_PER_BYTE;
-        size_t numberOfPixelsInRow = bitmapImage->bitmapMetadata.imageWidth;
-        size_t numberOfPixelsInCol = bitmapImage->bitmapMetadata.imageHeight;
-        size_t paddingPerRow = (PAD_CONSTANT - (bitmapImage->bitmapMetadata.imageWidth * bytesPerPixel % PAD_CONSTANT)) % PAD_CONSTANT;
-
-
-        //Write the row, then padding 
-
-        void *padding = NULL;
-        if(paddingPerRow != 0) {
-            padding = calloc(paddingPerRow, 1);
-
-            if(padding == NULL) {
-                return _ALLOC_FAILURE_;
+                (result->data)[(result->dataSize) * ((result->cols * j) + i)] = 
+                (arg1->data)[(arg1->dataSize) * ((arg1->cols * i) + j)];
             }
-        }
-
-
-        for(size_t i = 0; i < numberOfPixelsInCol; i++) {
-
-            //Writing row by row - therefore have to multiply by the size of the pixels
-            const void *dataToBeWritten = vector_get_index(&(bitmapImage->bitmapData), i * numberOfPixelsInRow);
-            //Write the pixels
-            if(fwrite(dataToBeWritten, numberOfPixelsInRow * bytesPerPixel, 1, producedImagePtr) != 1) {
-                return _INTERNAL_ERROR_;
-            }
-
-
-            if(paddingPerRow != 0) {
-                //Write the padding
-                if(fwrite(padding, paddingPerRow, 1, producedImagePtr) != 1) {
-                    return _INTERNAL_ERROR_;
-                }
-            }
-
         }
     }
-
-    return _SUCCESS_;
-}
-
-
-
-
-
-
-
-/**
- * bitmap_destroy 
- * ===============================================
- * Brief: Destroy all associated memory with a bitmap 
- * 
- * Param: *bitmapImage - Bitmap of interest 
- * 
- * Return: bool - T/F depending on if addition was successful
- * 
- */
-RETURN_CODE bitmap_destroy(BitmapImage *bitmapImage) {
-
-    if(bitmapImage == NULL) {
-        return _INVALID_ARG_PASS_;
-    } else {
-
-        vector_destroy(&(bitmapImage->bitmapData));
-    }
-
-    return _SUCCESS_;
+    return true;
 }
 
 
 
 /**
- * bitmap_return_metadata
+ * matrix_2D_free
  * ===============================================
- * Brief: Return metadata for an image 
+ * Brief: Free a matrix
  * 
- * Param: *bitmapImage - Bitmap of interest 
- *        *outputMetadata 
+ * Param: *matrix - Matrix of interest
  * 
- * Return: bool - T/F depending on if addition was successful
+ * Return: bool - T/F depending on if initialisation was successful
  * 
  */
-RETURN_CODE bitmap_return_metadata(BitmapImage *bitmapImage, BitmapMetadata *outputMetadata) {
+bool matrix_2D_free(Matrix *matrix) {
 
-    if(bitmapImage == NULL || outputMetadata == NULL) {
-        return _INVALID_ARG_PASS_;
-
+    if(matrix == NULL) {
+        return false; 
+    } else if(matrix->data == NULL) {
+        return false;
     } else {
-
-        *outputMetadata = bitmapImage->bitmapMetadata;
+        matrix->cols = 0;
+        matrix->rows = 0;
+        matrix->dataSize = 0;
+        free(matrix->data);
     }
-
-    return _SUCCESS_;
+    return true;
 }
+
+
+
+
+
+
+
+
+
+//Dot product, ReLU + Derivative, Sigmoid + Derivative, MSE
+
+
+
+
+
+
+
+
 
 
 
