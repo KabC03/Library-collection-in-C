@@ -41,7 +41,7 @@ bool MLP_randomise(Matrix *const matrix, float range, float min) {
 
 
         for(size_t i = 0; i < (matrix->cols * matrix->rows); i++) {
-            matrix->data[(matrix->dataSize) * i] = (min + (range * (float)rand())/RAND_MAX);
+            *((float*)(&(matrix->data[(matrix->dataSize) * i]))) = (min + (range * (float)rand())/RAND_MAX);
         }
 
     }
@@ -88,18 +88,23 @@ bool MLP_normalise(Matrix *const matrix, float value) {
  * Return: bool - T/F depending on if initialisation was successful
  * 
  */
-bool MLP_mean_square_error(Matrix *const matrix, float expectedValue ,float *output) {
+bool MLP_mean_square_error(Matrix *const matrix, Matrix *const expectedValues ,float *output) {
 
-    if(matrix == NULL || output == NULL) {
+    if(matrix == NULL || output == NULL || expectedValues == NULL) {
         return false;
     } else if(matrix->data == NULL) {
         return false;
     } else {
 
+        if(expectedValues->cols != matrix->cols || expectedValues->rows != matrix->rows) {
+            return false; //Invalid dimensions
+        }
+
+
         (*output) = 0;
         for(size_t i = 0; i < (matrix->rows * matrix->cols); i++) {
 
-            (*output) += square(((matrix->data)[i * matrix->dataSize]) - expectedValue);
+            (*output) += square((float)((matrix->data)[i * matrix->dataSize]) - (float)((expectedValues->data)[i * expectedValues->dataSize]));
         }
         (*output) /= (matrix->rows * matrix->cols);
 
@@ -139,7 +144,7 @@ bool MLP_ReLu(Matrix *const arg1, Matrix *const result) {
         for(size_t i = 0; i < (arg1->cols * arg1->rows); i++) {
 
             if(*(float*)(&((arg1->data)[(result->dataSize) * i])) < 0) {
-                *(float*)(&((result->data)[(result->dataSize) * i])) = 0;
+                *((float*)(&((result->data)[(result->dataSize) * i]))) = 0;
             } else {
                 *(float*)(&((result->data)[(result->dataSize) * i])) = *(float*)(&((arg1->data)[(arg1->dataSize) * i]));
             }
@@ -365,7 +370,7 @@ RETURN_CODE MLP_evaluate_input(Network *network, Vector *input) {
 
 
         Matrix *inputToLayer = &inputToInputLayer;
-        size_t numberOfLayers = vector_get_length(&(network->networkLayers));
+        size_t numberOfLayers = vector_get_length(&(network->networkLayers)) + 1;
         for(size_t i = 0; i < numberOfLayers; i++) {
 
             NetworkLayer *currentLayer = (NetworkLayer*)vector_get_index(&(network->networkLayers), i);
@@ -416,6 +421,67 @@ RETURN_CODE MLP_evaluate_input(Network *network, Vector *input) {
 
     return _SUCCESS_;
 }
+
+
+
+
+
+
+/**
+ * MLP_backpropagate
+ * ===============================================
+ * Brief: Perform backpropagation on the network
+ * 
+ * Param: *network - Network of interest
+ *        *expectedOutput - Expected output of output neurons
+ *        
+ * Return: bool - T/F depending on if initialisation was successful
+ * 
+ */
+RETURN_CODE MLP_backpropagate(Network *network, Matrix *expectedOutput) {
+
+    if(network == NULL || expectedOutput == NULL) {
+        return _INVALID_ARG_PASS_;
+
+    } else {
+
+        Matrix *outputLayer = vector_get_index(&(network->networkLayers), vector_get_length(&network->networkLayers));
+        if(outputLayer == NULL) {
+            return _INTERNAL_ERROR_;
+        }
+
+        if(outputLayer->cols != expectedOutput->cols || outputLayer->rows != expectedOutput->rows) {
+
+            return _INVALID_ARG_PASS_; //Invalid dimensions
+        }
+
+
+        //Calculate error
+        if(MLP_mean_square_error(outputLayer, expectedOutput, &(network->networkError)) == false) {
+            return _INTERNAL_ERROR_;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+    }
+
+    return _SUCCESS_;
+
+}
+
+
+
+
+
 
 
 
