@@ -69,7 +69,7 @@ bool MLP_normalise(Matrix *const matrix, float value) {
 
 
         for(size_t i = 0; i < (matrix->cols * matrix->rows); i++) {
-            matrix->data[(matrix->dataSize) * i] /= value;
+            *(float*)(&((matrix->data[(matrix->dataSize) * i]))) /= value;
         }
 
     }
@@ -322,32 +322,27 @@ RETURN_CODE MLP_evaluate_input(Network *network, Vector *input) {
         for(size_t i = 0; i < vector_get_length(input) + 1; i++) {
             const uint8_t *currentInt = vector_get_index(input, i); //Get the bottom 8 bits
 
+
+
             if(currentInt == NULL) {
                 return _INTERNAL_ERROR_;
             }
 
             float current = (float)(*currentInt); //Have to do it in one line otherwise a buffer overflow occurs
-
+            //printf("Int: %f\n", current);
             if(vector_quick_append(&inputAsFloat, &(current), 1) == false) {
                 return _INTERNAL_ERROR_;
             }
         }
 
-
-
-
-
         //Assign to new matrix
         if(matrix_2D_initialise(&inputToInputLayer, vector_get_length(input) + 1, 1, sizeof(float)) == false) {
-            return _INTERNAL_ERROR_;
-        }
-        if(MLP_normalise(&inputToInputLayer, BYTE_SIZE) == false) {
             return _INTERNAL_ERROR_;
         }
         if(matrix_2D_set(&inputToInputLayer, vector_get_length(&inputAsFloat) + 1, 1, inputAsFloat.data, sizeof(float)) == false) {
             return _INTERNAL_ERROR_;
         }
-
+        
         /*
         printf("Rows: %zu, Cols: %zu\n",inputToInputLayer.rows, inputToInputLayer.cols);
         if(matrix_2D_print(&inputToInputLayer) == false) {
@@ -355,6 +350,19 @@ RETURN_CODE MLP_evaluate_input(Network *network, Vector *input) {
         }
         printf("\n");
         */
+        
+        if(MLP_normalise(&inputToInputLayer, BYTE_SIZE) == false) {
+            return _INTERNAL_ERROR_;
+        }
+
+        /*
+        printf("NORM || Rows: %zu, Cols: %zu\n",inputToInputLayer.rows, inputToInputLayer.cols);
+        if(matrix_2D_print(&inputToInputLayer) == false) {
+            return _INTERNAL_ERROR_;
+        }
+        printf("\n");
+        */
+
 
         Matrix *inputToLayer = &inputToInputLayer;
         size_t numberOfLayers = vector_get_length(&(network->networkLayers));
@@ -366,10 +374,20 @@ RETURN_CODE MLP_evaluate_input(Network *network, Vector *input) {
             }
 
             //preActivatedOutput = [weights]*[input] + [bias]; //STORE THIS
-            if(matrix_2D_multiply(&(currentLayer->preActivationOutput), &(currentLayer->weight), inputToLayer) == false) { //ISSUE HERE
+            if(matrix_2D_multiply(&(currentLayer->preActivationOutput), &(currentLayer->weight), inputToLayer, matrix_2D_multiply_float_component) == false) {
                 return _INTERNAL_ERROR_;
             }
-            if(matrix_2D_add(&(currentLayer->preActivationOutput), &(currentLayer->preActivationOutput), &(currentLayer->bias)) == false) {
+            
+            /*
+            printf("Preactivation: %zu\n",i);
+            if(matrix_2D_print(&(currentLayer->preActivationOutput)) == false) {
+                return _INTERNAL_ERROR_;
+            }
+            printf("\n");
+            */
+
+
+            if(matrix_2D_add(&(currentLayer->preActivationOutput), &(currentLayer->preActivationOutput), &(currentLayer->bias), matrix_2D_add_float_component) == false) {
                 return _INTERNAL_ERROR_;
             }
 
@@ -432,7 +450,57 @@ RETURN_CODE MLP_print_output(Network *network) {
 
 
 
+/**
+ * MLP_print_layers
+ * ===============================================
+ * Brief: Print all layers of a network
+ * 
+ * Param: *network - Network of interest
+ *        
+ * Return: bool - T/F depending on if initialisation was successful
+ * 
+ */
+RETURN_CODE MLP_print_layers(Network *network) {
 
+    if(network == NULL) {
+        return _INVALID_ARG_PASS_;
+
+    } else {
+
+
+        for(size_t i = 0; i < vector_get_length(&(network->networkLayers)) + 1; i++) {
+            NetworkLayer *currentLayer = (NetworkLayer*)vector_get_index(&(network->networkLayers), i);
+
+
+            printf("Layer: %zu ||| Neurons: %zu\n", i, vector_get_size(&(network->networkLayers)) + 1);
+
+
+            printf("    bias:\n");
+            if(matrix_2D_print(&(currentLayer->bias)) == false) {
+                return _INTERNAL_ERROR_;
+            }
+
+            printf("    weight:\n");
+            if(matrix_2D_print(&(currentLayer->weight)) == false) {
+                return _INTERNAL_ERROR_;
+            }
+
+            printf("    pre-ac:\n");
+            if(matrix_2D_print(&(currentLayer->preActivationOutput)) == false) {
+                return _INTERNAL_ERROR_;
+            }
+
+            printf("    output:\n");
+            if(matrix_2D_print(&(currentLayer->output)) == false) {
+                return _INTERNAL_ERROR_;
+            }
+            printf("\n\n\n");
+        }
+
+    }
+
+    return _SUCCESS_;
+}
 
 
 
