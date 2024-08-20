@@ -114,7 +114,23 @@ bool matrix_2D_set(Matrix *const matrix, size_t rows, size_t cols, void *data, s
 
 
 
+/**
+ * matrix_2D_add_float_component
+ * ===============================================
+ * Brief: Add components of a matrix as floats - to be passed as a function pointer to matrix_2D_add
+ * 
+ * Param: *result - result float
+ *        *arg1 - arg1 float
+ *        *arg2 - arg2 float
+ * Return: void
+ * 
+ */
+void matrix_2D_add_float_component(float *result, float *arg1, float *arg2) {
 
+    *result = *arg1 + *arg2; //Result accumulates the multiplication
+
+    return;
+}
 
 
 /**
@@ -125,10 +141,11 @@ bool matrix_2D_set(Matrix *const matrix, size_t rows, size_t cols, void *data, s
  * Param: *result - Result matrix
  *        *arg1 - arg1 matrix
  *        *arg2 - arg2 matrix
+ *        *componentArithmatic - Function to complete arithmatic operations (e.g matrix_2D_add_float_component if matricies contain floats)
  * Return: bool - T/F depending on if initialisation was successful
  * 
  */
-bool matrix_2D_add(Matrix *const result, Matrix *const arg1, Matrix *const arg2) {
+bool matrix_2D_add(Matrix *const result, Matrix *const arg1, Matrix *const arg2, void (*componentArithmatic)(float*, float*, float*)) {
 
     if(result == NULL || arg1 == NULL || arg2 == NULL) {
         return false;
@@ -146,7 +163,7 @@ bool matrix_2D_add(Matrix *const result, Matrix *const arg1, Matrix *const arg2)
 
         for(size_t i = 0; i < (result->rows) * (result->cols); i++) {
 
-            (result->data)[i * result->dataSize] = (arg1->data)[i * arg1->dataSize] + (arg2->data)[i * arg2->dataSize];
+            matrix_2D_add_float_component((float*)(&(result->data)[i * result->dataSize]), (float*)(&(arg1->data)[i * arg1->dataSize]), (float*)(&(arg2->data)[i * arg2->dataSize]));
         }
 
     }
@@ -155,6 +172,24 @@ bool matrix_2D_add(Matrix *const result, Matrix *const arg1, Matrix *const arg2)
 }
 
 
+
+/**
+ * matrix_2D_subtract_float_component
+ * ===============================================
+ * Brief: Subtract components of a matrix as floats - to be passed as a function pointer to matrix_2D_subtract
+ * 
+ * Param: *result - result float
+ *        *arg1 - arg1 float
+ *        *arg2 - arg2 float
+ * Return: void
+ * 
+ */
+void matrix_2D_subtract_float_component(float *result, float *arg1, float *arg2) {
+
+    *result = *arg1 - *arg2; //Result accumulates the multiplication
+
+    return;
+}
 
 /**
  * matrix_2D_subtract
@@ -164,10 +199,11 @@ bool matrix_2D_add(Matrix *const result, Matrix *const arg1, Matrix *const arg2)
  * Param: *result - Result matrix
  *        *arg1 - arg1 matrix
  *        *arg2 - arg2 matrix
+ *        *componentArithmatic - Function to complete arithmatic operations (e.g matrix_2D_subtract_float_component if matricies contain floats)
  * Return: bool - T/F depending on if initialisation was successful
  * 
  */
-bool matrix_2D_subtract(Matrix *const result, Matrix *const arg1, Matrix *const arg2) {
+bool matrix_2D_subtract(Matrix *const result, Matrix *const arg1, Matrix *const arg2, void (*componentArithmatic)(float*, float*, float*)) {
 
     if(result == NULL || arg1 == NULL || arg2 == NULL) {
         return false;
@@ -185,7 +221,7 @@ bool matrix_2D_subtract(Matrix *const result, Matrix *const arg1, Matrix *const 
 
         for(size_t i = 0; i < (result->rows) * (result->cols); i++) {
 
-            (result->data)[i * result->dataSize] = (arg1->data)[i * arg1->dataSize] - (arg2->data)[i * arg2->dataSize];
+            matrix_2D_subtract_float_component((float*)(&(result->data)[i * result->dataSize]), (float*)(&(arg1->data)[i * arg1->dataSize]), (float*)(&(arg2->data)[i * arg2->dataSize]));
         }
 
     }
@@ -195,8 +231,23 @@ bool matrix_2D_subtract(Matrix *const result, Matrix *const arg1, Matrix *const 
 
 
 
+/**
+ * matrix_2D_multiply_float_component
+ * ===============================================
+ * Brief: Multiply components of a matrix as floats - to be passed as a function pointer to matrix_2D_multiply
+ * 
+ * Param: *result - result float
+ *        *arg1 - arg1 float
+ *        *arg2 - arg2 float
+ * Return: void
+ * 
+ */
+void matrix_2D_multiply_float_component(float *result, float *arg1, float *arg2) {
 
+    *result += *arg1 * *arg2; //Result accumulates the multiplication
 
+    return;
+}
 
 /**
  * matrix_2D_multiply
@@ -206,10 +257,11 @@ bool matrix_2D_subtract(Matrix *const result, Matrix *const arg1, Matrix *const 
  * Param: *result - Result matrix
  *        *arg1 - arg1 matrix
  *        *arg2 - arg2 matrix
+ *        *componentArithmatic - Function to complete arithmatic operations (e.g matrix_2D_multiply_float_component if matricies contain floats)
  * Return: bool - T/F depending on if initialisation was successful
  * 
  */
-bool matrix_2D_multiply(Matrix *const result, Matrix *const arg1, Matrix *const arg2) {
+bool matrix_2D_multiply(Matrix *const result, Matrix *const arg1, Matrix *const arg2, void (*componentArithmatic)(float*, float*, float*)) {
 
     if(result == NULL || arg1 == NULL || arg2 == NULL) {
         return false;
@@ -233,14 +285,21 @@ bool matrix_2D_multiply(Matrix *const result, Matrix *const arg1, Matrix *const 
         for(size_t i = 0; i < arg1->rows; i++) {
             for(size_t j = 0; j < arg2->cols; j++) {
 
-                (result->data)[(result->dataSize) * (i * result->cols + j)] = 0; 
+                //(result->data)[(result->dataSize) * (i * result->cols + j)] = 0;
+                
+                memset(&((result->data)[(result->dataSize) * (i * result->cols + j)]), 0, result->dataSize); //Not extremely portable sinze this assumes 0b0... always represents 10b0
+
                 //Zero before doing the sum - prevents needed additional sum temp variable
                 for(size_t k = 0; k < arg1->cols; k++) {
 
+                    matrix_2D_multiply_float_component((float*)(&(result->data)[(result->dataSize) * (i * result->cols + j)]), 
+                    (float*)(&(arg1->data)[(arg1->dataSize) * (k + (arg1->cols * i))]),
+                    (float*)(&(arg2->data)[(arg2->dataSize) * (j + (arg2->cols * k))]));
+                    /*
                     (result->data)[(result->dataSize) * ((i * result->cols + j))] += 
                     (arg1->data)[(arg1->dataSize) * (k + (arg1->cols * i))] * 
                     (arg2->data)[(arg2->dataSize) * (j + (arg2->cols * k))];
-
+                    */
                 }
             }
         }
