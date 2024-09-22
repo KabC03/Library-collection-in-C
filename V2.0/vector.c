@@ -3,6 +3,23 @@
 
 
 /**
+ * @brief :: Helper function for printing integers (for use in vector_disp) 
+ *
+ * @param :: *ptr :: Item to be printed
+ * 
+ * @return :: void
+ */
+void vector_print_integer(void *ptr) {
+
+    if(ptr == NULL) {
+        return;
+    } else {
+        printf("%d, ", *((int*)ptr));
+    }
+    return;
+}
+
+/**
  * @brief :: Display the status of a vector and all of its elements
  *
  * @param :: *vector :: Vector to be initialised

@@ -35,6 +35,7 @@ typedef struct Vector {
 } Vector;
 
 
+void vector_print_integer(void *ptr);
 void vector_disp(Vector *vector, void print_element(void *element));
 bool vector_init(Vector *vector, TYPE_DATASIZE dataSize, TYPE_NUMEL numel);
 bool vector_destroy(Vector *vector);
