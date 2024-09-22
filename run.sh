@@ -1,10 +1,10 @@
 #12 Aug
 
-library="./vector.c"
+library="./lib/arbitrary length.c"
 
 
 mkdir -p output
-clear && clang "$library" ./main.c -Wall -Werror -fsanitize=address -o ./output/exec && ./output/exec
+clear && clang "$library" ./lib/vector.c ./lib/main.c -Wall -Werror -fsanitize=address -o ./output/exec && ./output/exec
 
 
 

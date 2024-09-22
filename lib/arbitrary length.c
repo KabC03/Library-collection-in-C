@@ -55,7 +55,7 @@ void arbitrary_integer_destroy(ArbitraryInteger *arg) {
  */
 bool arbitrary_integer_set(ArbitraryInteger *arg, size_t *data, VECTOR_TYPE_DATA numel) {
     vector_destroy(&(arg->magnitude)); //This is really unoptimised - should implement something for this in vector.c
-    vector_append(&(arg->magnitude), data, numel);
+    return vector_append(&(arg->magnitude), data, numel);
 }
 
 
@@ -87,8 +87,8 @@ bool arbitrary_integer_add(ArbitraryInteger *arg1, ArbitraryInteger *arg2) {
     size_t propagate = 0;
     for(VECTOR_TYPE_DATA i = 0; i < arg2->magnitude.top; i++) {
 
-        size_t arg1Part = vector_access_index(&(arg1->magnitude), i);
-        size_t arg2Part = vector_access_index(&(arg2->magnitude), i);
+        size_t arg1Part = *(size_t*)vector_access_index(&(arg1->magnitude), i);
+        size_t arg2Part = *(size_t*)vector_access_index(&(arg2->magnitude), i);
 
         size_t temp = arg1Part + arg2Part + propagate;
 
