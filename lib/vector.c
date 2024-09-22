@@ -81,13 +81,14 @@ bool vector_init(Vector *vector, TYPE_DATASIZE dataSize, TYPE_NUMEL numel) {
  * 
  * @return :: void
  */
-bool vector_destroy(Vector *vector) {
+void vector_destroy(Vector *vector) {
 
     free(vector->data);
+    vector->data = NULL;
     vector->capacity = 0;
     vector->top = 0;
 
-    return true;
+    return;
 }
 
 

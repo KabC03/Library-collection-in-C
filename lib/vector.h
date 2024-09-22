@@ -38,7 +38,7 @@ typedef struct Vector {
 void vector_print_integer(void *ptr);
 void vector_disp(Vector *vector, void print_element(void *element));
 bool vector_init(Vector *vector, TYPE_DATASIZE dataSize, TYPE_NUMEL numel);
-bool vector_destroy(Vector *vector);
+void vector_destroy(Vector *vector);
 bool vector_resize(Vector *vector, TYPE_NUMEL numel );
 bool vector_append(Vector *vector, void *data, TYPE_NUMEL numel);
 void *vector_access_index(Vector *vector, TYPE_INDEX index);
