@@ -17,18 +17,17 @@ void vector_disp(Vector *vector, void print_element(void *element)) {
         printf("NULL\n");
         return;
     }
-    printf("\tCapacity: %zu\n\tTop: %zu\n\tData size: %zu\n\n",vector->capacity, vector->top, vector->dataSize);
+    MACRO_DISP(vector->capacity, vector->top, vector->dataSize);
 
-    printf("Data:\b");
+    printf("Data:\n");
     if(vector->data == NULL) {
         printf("NULL\n");
         return;
     }
-
     for(TYPE_TOP i = 0; i < vector->top; i++) {
         print_element(&((vector->data)[i * vector->dataSize]));
     }
-    printf("=======================\n");
+    printf("\n=======================\n");
 
     return;
 }
