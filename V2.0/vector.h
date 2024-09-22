@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdint.h>
 
 
 #define TYPE_TOP short unsigned int
@@ -26,7 +27,7 @@
 
 typedef struct Vector {
 
-    void *data;
+    uint8_t *data;
     TYPE_TOP top;
     TYPE_CAPACITY capacity;
     TYPE_DATASIZE dataSize;

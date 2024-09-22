@@ -25,7 +25,7 @@ void vector_disp(Vector *vector, void print_element(void *element)) {
         return;
     }
     for(TYPE_TOP i = 0; i < vector->top; i++) {
-        print_element(&((vector->data)[i * vector->dataSize]));
+        print_element((void*)(&((vector->data)[i * vector->dataSize])));
     }
     printf("\n=======================\n");
 
@@ -114,15 +114,15 @@ bool vector_append(Vector *vector, void *data, TYPE_NUMEL numel) {
         //No reallocation required
     } else {
         //Allocation required
-        vector->data = MACRO_REALLOC(vector->data, vector->capacity * CONST_REALLOC_EXPANSION, vector->dataSize);
+        vector->data = MACRO_REALLOC(vector->data, (vector->capacity + numel) * CONST_REALLOC_EXPANSION, vector->dataSize);
         if(vector->data == NULL) {
             //NOTE: Realloc function is responsible for maintaining original vector state if allocation fails 
             return false;
         } else {
-            vector->capacity *= CONST_REALLOC_EXPANSION;
+            vector->capacity = (vector->capacity + numel) * CONST_REALLOC_EXPANSION;
         }
     }
-    MACRO_MEMCPY(vector->data, data, numel * vector->dataSize); 
+    MACRO_MEMCPY(vector->data + vector->top * vector->dataSize, data, numel * vector->dataSize); 
     vector->top += numel;
 
 
@@ -142,7 +142,7 @@ bool vector_append(Vector *vector, void *data, TYPE_NUMEL numel) {
  */
 void *vector_access_index(Vector *vector, TYPE_INDEX index) {
 
-    return &((vector->data)[index * vector->dataSize]);
+    return (void*)(&((vector->data)[index * vector->dataSize]));
 }
 
 
