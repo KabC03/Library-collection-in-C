@@ -3,6 +3,7 @@ data/*
 .DS_Store
 .vscode/
 *.swp
+V2.0/output*
 
 
 
