@@ -80,7 +80,6 @@ bool wav_reconstruct(Wav *wav, char *name) {
     }
     fwrite(&wav->wavHeader, sizeof(WavHeader), 1, output);
     fwrite(wav->data.data, sizeof(uint8_t), wav->wavHeader.subchunk2Size, output);
-    vector_disp(&(wav->data), vector_print_uint8_8);
     fclose(output);
 
     return true;
