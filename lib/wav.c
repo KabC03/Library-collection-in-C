@@ -50,10 +50,10 @@ bool wav_init(Wav *wav, FILE *fptr) {
  */
 bool wav_append(Wav *dest, Wav *src) {
 
-    if(vector_append(&(dest->data), src->data.data, src->data.top) == false) {
+    if(vector_append(&(dest->data), src->data.data, src->wavHeader.subchunk2Size) == false) {
         return false;
     }
-    //Update chunk size
+
     dest->wavHeader.subchunk2Size += src->wavHeader.subchunk2Size;
     dest->wavHeader.chunkSize = (sizeof(WavHeader) - 8) + dest->wavHeader.subchunk2Size;
 
@@ -79,8 +79,8 @@ bool wav_reconstruct(Wav *wav, char *name) {
         return false;
     }
     fwrite(&wav->wavHeader, sizeof(WavHeader), 1, output);
-    fwrite(wav->data.data, 1, wav->data.top, output);
-
+    fwrite(wav->data.data, sizeof(uint8_t), wav->wavHeader.subchunk2Size, output);
+    vector_disp(&(wav->data), vector_print_uint8_8);
     fclose(output);
 
     return true;

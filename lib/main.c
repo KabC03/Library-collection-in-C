@@ -6,7 +6,7 @@ int main(void) {
     Wav two;
 
     FILE *src = fopen("./data/tone.wav", "rb");
-    FILE *dest = fopen("./data/tone.wav", "rb");
+    FILE *dest = fopen("./data/tone copy.wav", "rb");
     if(!src || !dest) {
         printf("Cannot open\n");
         return 1;
@@ -23,12 +23,12 @@ int main(void) {
         return 1;
     }
 
-    /*
+    
     if(!wav_append(&two, &one)) {
         printf("Cannot append\n");
         return 1;
     }
-    */
+     
 
     if(!wav_reconstruct(&two, "./output/reconstructed.wav")) {
         printf("Reconstruct failed\n");

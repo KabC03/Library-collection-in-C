@@ -43,6 +43,26 @@ void vector_print_integer(void *ptr) {
     return;
 }
 
+
+
+/**
+ * @brief :: Helper function for printing uint8_t (for use in vector_disp) 
+ *
+ * @param :: *ptr :: Item to be printed
+ * 
+ * @return :: void
+ */
+void vector_print_uint8_8(void *ptr) {
+
+    if(ptr == NULL) {
+        return;
+    } else {
+        printf("%u ", *((unsigned int*)ptr));
+    }
+    return;
+}
+
+
 /**
  * @brief :: Display the status of a vector and all of its elements
  *
@@ -165,7 +185,10 @@ bool vector_append(Vector *vector, void *data, VECTOR_TYPE_NUMEL numel) {
         }
     }
     MACRO_MEMCPY(vector->data + vector->top * vector->dataSize, data, numel * vector->dataSize); 
+    printf("Top: %d\n", vector->top);
     vector->top += numel;
+    printf("Top: %d, %zu\n", vector->top, numel);
+
 
 
     return true;
