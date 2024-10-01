@@ -9,8 +9,8 @@
 #include <stdint.h>
 
 
-#define VECTOR_TYPE_DATA unsigned int
-#define VECTOR_TYPE_DATASIZE unsigned int
+#define VECTOR_TYPE_DATA size_t 
+#define VECTOR_TYPE_DATASIZE size_t 
 #define VECTOR_TYPE_NUMEL size_t
 
 

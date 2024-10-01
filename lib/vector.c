@@ -7,7 +7,7 @@
 #define MACRO_MEMCPY(dest, src, n) memcpy(dest, src, n)
 
 #define MACRO_DISP(capacity, top, dataSize) \
-    printf("\tCapacity: %hu\n\tTop: %hu\n\tData size: %hu\n\n",capacity, top, dataSize);
+    printf("\tCapacity: %zu\n\tTop: %zu\n\tData size: %zu\n\n",capacity, top, dataSize);
 
 
 /**

@@ -29,7 +29,7 @@ bool wav_init(Wav *wav, FILE *fptr) {
 
     //Fseek to the data segment
     
-    fseek(fptr, sizeof(WavHeader), SEEK_SET);
+    fseek(fptr, sizeof(WavHeader), SEEK_SET); //NOTE: BECAUSE OF THIS ONLY CERTIAN WAV FILES WORK
 
     //This is a bit scuffed - shouldnt really be doing manual access on vectors like this
     fread(wav->data.data, wav->wavHeader.subchunk2Size, 1, fptr);

@@ -5,8 +5,8 @@ int main(void) {
     Wav one;
     Wav two;
 
-    FILE *src = fopen("./data/cavemono.wav", "rb");
-    FILE *dest = fopen("./data/tone copy.wav", "rb");
+    FILE *src = fopen("./data/tone.wav", "rb");
+    FILE *dest = fopen("./data/cavemono.wav", "rb");
     if(!src || !dest) {
         printf("Cannot open\n");
         return 1;
