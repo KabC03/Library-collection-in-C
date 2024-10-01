@@ -34,17 +34,16 @@ typedef struct Wav {
 
 /*
 TODO:
-- Initialise a wav struct
-- Append to a wav
 - Convolve two wavs
 - Trim a wav
 - Generate a wav from FT coefficients
-- Reconstruct a wav from struct
 */
 
 bool wav_init(Wav *wav, FILE *fptr);
 bool wav_append(Wav *dest, Wav *src);
 bool wav_reconstruct(Wav *wav, char *name);
+bool wav_destroy(Wav *wav);
+
 
 #endif 
 

@@ -88,6 +88,22 @@ bool wav_reconstruct(Wav *wav, char *name) {
 
 
 
+/**
+ * @brief :: Destroy a wav and associated memory 
+ *
+ * @param :: *wav :: Wav to destroy 
+ * 
+ * @return :: void 
+ */
+bool wav_destroy(Wav *wav) {
+
+    vector_destroy(&(wav->data));
+
+    return true;
+}
+
+
+
 
 
 
