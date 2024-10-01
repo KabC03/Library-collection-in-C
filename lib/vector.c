@@ -185,9 +185,7 @@ bool vector_append(Vector *vector, void *data, VECTOR_TYPE_NUMEL numel) {
         }
     }
     MACRO_MEMCPY(vector->data + vector->top * vector->dataSize, data, numel * vector->dataSize); 
-    printf("Top: %d\n", vector->top);
     vector->top += numel;
-    printf("Top: %d, %zu\n", vector->top, numel);
 
 
 
