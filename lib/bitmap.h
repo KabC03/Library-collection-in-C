@@ -10,7 +10,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <math.h>
-#include "vector.h" 
+#include "vector.h" //NOTE: THIS IS THE OLD VECTOR LIBRARY (the unsafe one)
 #include "return codes.h"
 
 

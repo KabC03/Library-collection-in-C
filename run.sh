@@ -1,6 +1,6 @@
 #12 Aug
 
-library="./lib/arbitrary length.c"
+library="./lib/wav.c"
 
 
 mkdir -p output
