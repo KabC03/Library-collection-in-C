@@ -150,14 +150,14 @@ bool list_append(List *list, void *data) {
 
 
 /**
- * @brief :: prepend an item to a list. The list is unchanged upon failure. The list is unchanged if the prepend is unsuccessful
+ * @brief :: Push an item to a list. The list is unchanged upon failure. The list is unchanged if the push is unsuccessful
  *
- * @param :: *list :: List to prepend an item too 
- * @param :: *data :: Data to prepend to list
+ * @param :: *list :: List to push an item too 
+ * @param :: *data :: Data to push to list
  * 
- * @return :: bool :: Indication of if item was prepended 
+ * @return :: bool :: Indication of if item was pushed 
  */
-bool list_prepend(List *list, void *data) {
+bool list_push(List *list, void *data) {
 
     //Set up new node
     Node *newNode = MACRO_MALLOC(1, sizeof(Node) + list->dataSize);
@@ -174,6 +174,25 @@ bool list_prepend(List *list, void *data) {
 
     return true;
 }
+
+
+
+/**
+ * @brief :: Pop an item from the front of a list
+ *
+ * @param :: *list :: List to pop an item from 
+ * 
+ * @return :: void* :: Item popped from the list 
+ */
+void *list_pop(List *list) {
+
+    Node *temp = list->head;
+    list->head = list->head->next;
+    free(temp);
+
+    return list->head->data;
+}
+
 
 
 
