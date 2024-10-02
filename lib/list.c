@@ -163,6 +163,7 @@ Node *list_dequeue(List *list) {
     }
     temp = *current;
     current = NULL;
+    list->size--;
 
     return temp;
 }
