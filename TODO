@@ -1,7 +1,22 @@
 - Queues
+    - Enqueue, dequeue, peak, print, initialise, destroy
+    - Priority Queue versions of above functions
+
 - Bitmaps
+    - Redo everything in the old library just make it less spaghetti
+
+- Wav
+    - Make it compatable with non standard Wavs
+    - Generate Wav from DFT
+
 - Hashmaps
+    - Embedded node linked list
+    - Hashmap insert, search, destroy, resize, initialise
 - String Hashmaps
+    - Embedded node linked list
+    - Hashmap insert, search, destroy, resize, initialise
+
+
 - Arbitrary precision numbers
 
 
