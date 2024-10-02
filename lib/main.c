@@ -10,7 +10,8 @@ int main(void) {
     strings_set(&s1, "hello", strlen("hello"));
     strings_set(&s2, "hello", strlen("hello"));
 
-    strings_concatanate(&s1, &s2);
+    printf("%d\n", strings_compare(&s1, &s2));
+
 
     strings_print(&s1);
 

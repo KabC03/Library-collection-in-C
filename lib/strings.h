@@ -24,7 +24,7 @@ bool strings_set(String *string, void *data, size_t length);
 size_t strings_length(String *string);
 char *strings_read(String *string);
 bool strings_concatanate(String *dest, String *src);
-
+bool strings_compare(String *arg1, String *arg2);
 
 
 #endif 

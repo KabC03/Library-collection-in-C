@@ -126,5 +126,28 @@ bool strings_concatanate(String *dest, String *src) {
 }
 
 
+/**
+ * @brief :: Compare two strings to see if they are the same 
+ *
+ * @param :: *arg1:: Destination string 
+ * @param :: *arg2:: Destination string 
+ * 
+ * @return :: bool :: Indication of if the strings are the same 
+ */
+bool strings_compare(String *arg1, String *arg2) {
+
+    if(strcmp(arg1->data, arg2->data) == 0) {
+        return true;
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
+
+
+
+
 
 
