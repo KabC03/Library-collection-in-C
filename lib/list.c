@@ -89,6 +89,27 @@ bool list_init(List *list, size_t dataSize) {
     return true;
 }
 
+/**
+ * @brief :: Destroy a list and all associated memory 
+ *
+ * @param :: *list :: List to be destroyed 
+ * 
+ * @return :: void
+ */
+void list_destroy(List *list) {
+
+    Node **current = &(list->head);
+    Node **previous = current;
+    for(size_t i = 0; i < list->size; i++) {
+        current = &((*current)->next);
+        free(previous);
+        previous = current;
+    }
+
+    return;
+}
+
+
 
 
 /**

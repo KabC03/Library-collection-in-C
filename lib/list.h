@@ -11,7 +11,7 @@
 typedef struct Node {
 
     struct Node *next;
-    uint8_t *data[]; //Flexible length array
+    uint8_t data[]; //Flexible length array
 
 } Node;
 typedef struct List {
@@ -26,6 +26,7 @@ typedef struct List {
 - Delete index
 - Delete front
 - Delete back
+- Destroy list
 */
 
 
