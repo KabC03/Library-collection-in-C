@@ -11,7 +11,7 @@
 
 typedef struct String {
 
-    size_t length;
+    size_t length; //NOTE: This includes the NULL terminator
     char *data;
 
 } String;
