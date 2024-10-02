@@ -22,10 +22,6 @@ typedef struct List {
 
 } List;
 
-/*
-- Delete index
-*/
-
 
 void list_print_uint8_8(void *ptr);
 void list_print_integer(void *ptr);
