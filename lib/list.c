@@ -234,6 +234,39 @@ Node *list_pop(List *list) {
 
 
 
+/**
+ * @brief :: Peak the front of a list. The list is unchanged 
+ *           NOTE: Peaking from an empty list is undefined
+ *
+ * @param :: *list :: List to peak an item from 
+ * 
+ * @return :: Node* :: Item peaked from the list 
+ */
+Node *list_peak_front(List *list) {
+    return list->head; 
+}
+
+
+
+
+/**
+ * @brief :: Peak the back of a list. The list is unchanged 
+ *           NOTE: Peaking from an empty list is undefined
+ *
+ * @param :: *list :: List to peak an item from 
+ * 
+ * @return :: Node* :: Item peaked from the list 
+ */
+Node *list_peak_back(List *list) {
+    Node *current = list->head;
+    for(size_t i = 0; i < list->size - 1; i++) {
+        current = current->next;
+    }
+    return current;
+}
+
+
+
 
 /**
  * @brief :: Insert an item at an index in a list. The list is unchanged if the insertion is not successful

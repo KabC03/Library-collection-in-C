@@ -32,6 +32,8 @@ Node *list_dequeue(List *list);
 bool list_push(List *list, void *data);
 bool list_enqueue(List *list, void *data); //Alternative name for list_push
 Node *list_pop(List *list);
+Node *list_peak_front(List *list);
+Node *list_peak_back(List *list);
 bool list_insert_index(List *list, size_t index, void *data);
 Node *list_delete_index(List *list, size_t index);
 void *list_access_index(List *list, size_t index);

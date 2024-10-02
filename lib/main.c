@@ -1,19 +1,17 @@
-#include "strings.h"
+#include "list.h"
 
 int main(void) {
 
-    String s1;
-    String s2;
-    strings_init(&s1);
-    strings_init(&s2);
+    List l1;
+    list_init(&l1, sizeof(int));
+    
+    for(int i = 0; i < 10; i++) {
+        list_append(&l1, &i);
+    }
 
-    strings_set(&s1, "hello", strlen("hello"));
-    strings_set(&s2, "hello", strlen("hello"));
+    list_disp(&l1, list_print_integer);
+    printf("%d\n", *(int*)(list_peak_back(&l1)->data));
 
-    printf("%d\n", strings_compare(&s1, &s2));
-
-
-    strings_print(&s1);
 
     return 0;
 }
