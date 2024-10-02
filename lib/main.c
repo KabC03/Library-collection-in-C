@@ -5,7 +5,7 @@ int main(void) {
     List l1;
     list_init(&l1, sizeof(int));
     
-    for(int i = 0; i < 10; i++) {
+    for(int i = 0; i < 1000000; i++) {
         list_append(&l1, &i);
     }
 
