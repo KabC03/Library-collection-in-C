@@ -3,6 +3,7 @@
 
 #define MACRO_MALLOC(numel, size) malloc(numel * size)
 #define MACRO_MEMCPY(dest, src, n) memcpy(dest, src, n)
+#define MACRO_FREE(ptr) free(ptr)
 
 
 /**
@@ -103,7 +104,7 @@ void list_destroy(List *list) {
     Node *previous = current;
     for(size_t i = 0; i < list->size; i++) {
         current = current->next;
-        free(previous);
+        MACRO_FREE(previous);
         previous = current;
     }
 

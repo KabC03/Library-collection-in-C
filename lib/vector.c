@@ -3,6 +3,7 @@
 
 #define MACRO_MALLOC(numel, size) malloc(numel * size)
 #define MACRO_REALLOC(ptr, numel, size) realloc(ptr, numel * size)
+#define MACRO_FREE(ptr) free(ptr)
 #define CONST_REALLOC_EXPANSION 2
 #define MACRO_MEMCPY(dest, src, n) memcpy(dest, src, n)
 
@@ -127,7 +128,7 @@ bool vector_init(Vector *vector, uint8_t dataSize, size_t numel) {
  */
 void vector_destroy(Vector *vector) {
 
-    free(vector->data);
+    MACRO_FREE(vector->data);
     vector->data = NULL;
     vector->capacity = 0;
     vector->top = 0;
