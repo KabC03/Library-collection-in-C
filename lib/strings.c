@@ -25,7 +25,7 @@ void strings_print(String *string) {
  * 
  * @return :: void
  */
-bool strings_init(String *string) {
+void strings_init(String *string) {
 
     string->data = NULL;
     string->length = 0;
@@ -42,7 +42,7 @@ bool strings_init(String *string) {
  * 
  * @return :: void
  */
-bool strings_destroy(String *string) {
+void strings_destroy(String *string) {
 
     free(string->data);
     string->length = 0;
@@ -57,13 +57,14 @@ bool strings_destroy(String *string) {
  *
  * @param :: *string :: String to be initialised
  * @param :: *data :: String to bet used 
- * @param :: length :: Length of the string to be used
+ * @param :: length :: Length of the string to be used (does not include NULL terminator)
  * 
  * @return :: bool :: Indication of string was successfully set 
  */
 bool strings_set(String *string, void *data, size_t length) {
 
-    MACRO_REALLOC(string->data, length, sizeof(char));
+    length++; //Account for NULL terminator
+    string->data = MACRO_REALLOC(string->data, length, sizeof(char));
     if(string->data == NULL) {
         return false;
     }
@@ -114,13 +115,12 @@ char *strings_read(String *string) {
  */
 bool strings_concatanate(String *dest, String *src) {
 
-    MACRO_REALLOC(dest->data, dest->length + src->length, sizeof(char));
+    dest->data = MACRO_REALLOC(dest->data, dest->length + src->length, sizeof(char));
     if(dest->data == NULL) {
         return false;
     }
-    MACRO_MEMCPY(dest->data + src->length, src->data, src->length);
+    MACRO_MEMCPY(dest->data + dest->length - 1, src->data, src->length);
     dest->length += src->length;
-
 
     return true;
 }

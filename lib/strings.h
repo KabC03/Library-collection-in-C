@@ -16,14 +16,10 @@ typedef struct String {
 
 } String;
 
-/*
-- Concatanate
-*/
-
 
 void strings_print(String *string);
-bool strings_init(String *string);
-bool strings_destroy(String *string);
+void strings_init(String *string);
+void strings_destroy(String *string);
 bool strings_set(String *string, void *data, size_t length);
 size_t strings_length(String *string);
 char *strings_read(String *string);

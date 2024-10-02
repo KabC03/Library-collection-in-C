@@ -1,6 +1,6 @@
 #12 Aug
 
-library="./lib/list.c"
+library="./lib/strings.c"
 
 
 mkdir -p output
