@@ -8,12 +8,16 @@ int main(void) {
         return 1;
     }
 
-    for(int i = 0; i < 0; i++) {
+    for(int i = 0; i < 1; i++) {
         list_append(&l1, &i);
     }
 
     list_disp(&l1, list_print_integer);
-    printf("Dequeue: %d\n", *(int*)list_dequeue(&l1)->data);
+    Node *node = list_delete_index(&l1,0);
+    printf("%d\n", *(int*)(node->data));
+    free(node);
+
+
     list_disp(&l1, list_print_integer);
 
     list_destroy(&l1);

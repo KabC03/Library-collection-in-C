@@ -35,8 +35,10 @@ void list_disp(List *list , void print_element(void *element));
 bool list_append(List *list, void *data);
 Node *list_dequeue(List *list);
 bool list_push(List *list, void *data);
+bool list_enqueue(List *list, void *data); //Alternative name for list_push
 Node *list_pop(List *list);
 bool list_insert_index(List *list, size_t index, void *data);
+Node *list_delete_index(List *list, size_t index);
 void *list_access_index(List *list, size_t index);
 
 

@@ -149,6 +149,7 @@ bool list_append(List *list, void *data) {
 /**
  * @brief :: Dequeues an item from a list
  *           NOTE: Returned node must be freed manually
+ *           NOTE: Dequeueing from an empty list is undefined
  *
  * @param :: *list :: List to append an item too 
  * 
@@ -162,7 +163,7 @@ Node *list_dequeue(List *list) {
         current = &((*current)->next);
     }
     temp = *current;
-    current = NULL;
+    *current = NULL;
     list->size--;
 
     return temp;
@@ -197,10 +198,24 @@ bool list_push(List *list, void *data) {
 }
 
 
+/**
+ * @brief :: Enqueue an item to a list. The list is unchanged upon failure. The list is unchanged if the enqueue is unsuccessful
+ *
+ * @param :: *list :: List to enqueue an item too 
+ * @param :: *data :: Data to enqueue to list
+ * 
+ * @return :: bool :: Indication of if item was enqueue 
+ */
+bool list_enqueue(List *list, void *data) { 
+    //Alternative name for list_push
+    return list_push(list, data);
+}
+
 
 /**
  * @brief :: Pop an item from the front of a list
  *           NOTE: Returned item MUST be freed manually
+ *           NOTE: Popping from an empty list is undefined
  *
  * @param :: *list :: List to pop an item from 
  * 
@@ -252,10 +267,33 @@ bool list_insert_index(List *list, size_t index, void *data) {
 
 
 
+/**
+ * @brief :: Deletes an item at an index from a list 
+ *           NOTE: Returned node must be freed manually
+ *           NOTE: Deleting from an empty list is undefined
+ *
+ * @param :: *list :: List to append an item too 
+ * @param :: index :: Index to remove
+ * 
+ * @return :: Node* :: Deleted node 
+ */
+Node *list_delete_index(List *list, size_t index) {
+
+    Node *temp = NULL;
+    Node **current = &(list->head);
+    for(size_t i = 0; i < index; i++) {
+        current = &((*current)->next);
+    }
+    temp = *current;
+    *current = (*current)->next;
+    list->size--;
+
+    return temp;
+}
 
 
 /**
- * @brief :: Get an item at an index from a list 
+ * @brief :: Get an item at an index from a list
  *
  * @param :: *list :: List to index 
  * @param :: index :: Index to insert the data 
