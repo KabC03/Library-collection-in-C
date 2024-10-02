@@ -24,7 +24,6 @@ typedef struct List {
 
 /*
 - Delete index
-- Delete front
 - Delete back
 */
 
@@ -35,8 +34,9 @@ bool list_init(List *list, size_t dataSize);
 void list_destroy(List *list);
 void list_disp(List *list , void print_element(void *element));
 bool list_append(List *list, void *data);
+Node *list_dequeue(List *list);
 bool list_push(List *list, void *data);
-void *list_pop(List *list);
+Node *list_pop(List *list);
 bool list_insert_index(List *list, size_t index, void *data);
 void *list_access_index(List *list, size_t index);
 

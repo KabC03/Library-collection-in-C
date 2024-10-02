@@ -146,6 +146,30 @@ bool list_append(List *list, void *data) {
 }
 
 
+/**
+ * @brief :: Dequeues an item from a list
+ *           NOTE: Returned node must be freed manually
+ *
+ * @param :: *list :: List to append an item too 
+ * 
+ * @return :: Node* :: Dequeued node 
+ */
+Node *list_dequeue(List *list) {
+
+    Node *temp = NULL;
+    Node *current = list->head;
+    list->size--;
+    if(list->size == 1) {
+        return current;
+    }
+    for(size_t i = 0; i < list->size - 1; i++) { //Get to the second last item in the list
+        current = current->next; 
+    }
+    temp = current->next;
+    current->next = NULL;
+
+    return temp;
+}
 
 
 
@@ -179,18 +203,20 @@ bool list_push(List *list, void *data) {
 
 /**
  * @brief :: Pop an item from the front of a list
+ *           NOTE: Returned item MUST be freed manually
  *
  * @param :: *list :: List to pop an item from 
  * 
- * @return :: void* :: Item popped from the list 
+ * @return :: Node* :: Item popped from the list 
  */
-void *list_pop(List *list) {
+Node *list_pop(List *list) {
 
     Node *temp = list->head;
     list->head = list->head->next;
-    free(temp);
+    //free(temp);
+    list->size--;
 
-    return list->head->data;
+    return temp; 
 }
 
 

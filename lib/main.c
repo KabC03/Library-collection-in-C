@@ -7,38 +7,15 @@ int main(void) {
         printf("Init failed\n");
         return 1;
     }
-    int data = 0;
 
-
-    data = 0;
-    if(!list_prepend(&l1, &data)) {
-        printf("Failed to prepend\n");
-        return 1;
+    for(int i = 0; i < 10; i++) {
+        list_append(&l1, &i);
     }
-    data = 4;
-    if(!list_prepend(&l1, &data)) {
-        printf("Failed to prepend\n");
-        return 1;
-    }
-    data = 3;
-    if(!list_prepend(&l1, &data)) {
-        printf("Failed to prepend\n");
-        return 1;
-    }
-
-
-
-    data = 1;
-    if(!list_insert_index(&l1, 0, &data)) {
-        printf("Failed to insert\n");
-        return 1;
-    }
-
-    printf("Item: %d\n", *(int*)list_access_index(&l1, 2));
-
-
 
     list_disp(&l1, list_print_integer);
+    printf("Dequeue: %d\n", *(int*)list_dequeue(&l1)->data);
+    list_disp(&l1, list_print_integer);
+
     list_destroy(&l1);
 
     return 0;
