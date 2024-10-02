@@ -129,8 +129,8 @@ bool strings_concatanate(String *dest, String *src) {
 /**
  * @brief :: Compare two strings to see if they are the same 
  *
- * @param :: *arg1:: Destination string 
- * @param :: *arg2:: Destination string 
+ * @param :: *arg1:: First string 
+ * @param :: *arg2:: Second string 
  * 
  * @return :: bool :: Indication of if the strings are the same 
  */

@@ -6,7 +6,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
-#define DATA_SIZE sizeof(int)
 
 typedef struct Node {
 
@@ -18,7 +17,7 @@ typedef struct List {
 
     size_t size; //Size of the list (number of elements)
     unsigned short int dataSize; //Data size of item stored in list
-    struct Node *head; //Embed first node
+    struct Node *head;
 
 } List;
 
