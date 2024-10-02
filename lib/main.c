@@ -39,7 +39,7 @@ int main(void) {
 
 
     list_disp(&l1, list_print_integer);
-
+    list_destroy(&l1);
 
     return 0;
 }

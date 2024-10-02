@@ -85,6 +85,7 @@ bool list_init(List *list, size_t dataSize) {
 
     list->dataSize = dataSize;
     list->size = 0;
+    list->head = NULL;
 
     return true;
 }
@@ -98,13 +99,16 @@ bool list_init(List *list, size_t dataSize) {
  */
 void list_destroy(List *list) {
 
-    Node **current = &(list->head);
-    Node **previous = current;
+    Node *current = list->head;
+    Node *previous = current;
     for(size_t i = 0; i < list->size; i++) {
-        current = &((*current)->next);
+        current = current->next;
         free(previous);
         previous = current;
     }
+
+    list->head = NULL;
+    list->size = 0;
 
     return;
 }
@@ -127,6 +131,7 @@ bool list_append(List *list, void *data) {
     if(newNode == NULL) {
         return false;
     }
+    newNode->next = NULL;
     MACRO_MEMCPY(newNode->data, data, list->dataSize);
     
     //Append node
@@ -159,6 +164,7 @@ bool list_prepend(List *list, void *data) {
     if(newNode == NULL) {
         return false;
     }
+    newNode->next = NULL;
     MACRO_MEMCPY(newNode->data, data, list->dataSize);
     
     //Append node
@@ -187,6 +193,7 @@ bool list_insert_index(List *list, size_t index, void *data) {
     if(newNode == NULL) {
         return false;
     }
+    newNode->next = NULL;
     MACRO_MEMCPY(newNode->data, data, list->dataSize);
     
     //Append node
