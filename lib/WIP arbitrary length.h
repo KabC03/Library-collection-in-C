@@ -25,7 +25,7 @@ typedef struct ArbitraryInteger {
 void arbitrary_integer_print(ArbitraryInteger *arg);
 bool arbitrary_integer_init(ArbitraryInteger *arg);
 void arbitrary_integer_destroy(ArbitraryInteger *arg);
-bool arbitrary_integer_set(ArbitraryInteger *arg, size_t *data, VECTOR_TYPE_DATA numel);
+bool arbitrary_integer_set(ArbitraryInteger *arg, size_t *data, size_t numel);
 bool arbitrary_integer_add(ArbitraryInteger *arg1, ArbitraryInteger *arg2);
 
 #endif 

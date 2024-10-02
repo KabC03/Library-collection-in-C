@@ -6,8 +6,8 @@
 #define CONST_REALLOC_EXPANSION 2
 #define MACRO_MEMCPY(dest, src, n) memcpy(dest, src, n)
 
-#define MACRO_DISP(capacity, top, dataSize) \
-    printf("\tCapacity: %zu\n\tTop: %zu\n\tData size: %zu\n\n",capacity, top, dataSize);
+
+
 
 
 /**
@@ -66,7 +66,7 @@ void vector_print_uint8_8(void *ptr) {
 /**
  * @brief :: Display the status of a vector and all of its elements
  *
- * @param :: *vector :: Vector to be initialised
+ * @param :: *vector :: Vector to be displayed
  * @param :: print_element :: Print function for individual element
  * 
  * @return :: void
@@ -78,14 +78,14 @@ void vector_disp(Vector *vector, void print_element(void *element)) {
         printf("NULL\n");
         return;
     }
-    MACRO_DISP(vector->capacity, vector->top, vector->dataSize);
+    printf("\tCapacity: %zu\n\tTop: %zu\n\tData size: %d\n\n",vector->capacity, vector->top, vector->dataSize);
 
     printf("Data:\n");
     if(vector->data == NULL) {
         printf("NULL\n");
         return;
     }
-    for(VECTOR_TYPE_DATA i = 0; i < vector->top; i++) {
+    for(size_t i = 0; i < vector->top; i++) {
         print_element((void*)(&((vector->data)[i * vector->dataSize])));
     }
     printf("\n=======================\n");
@@ -97,12 +97,12 @@ void vector_disp(Vector *vector, void print_element(void *element)) {
  * @brief :: Initialises a vector with a specified datasize and initial capacity
  *
  * @param :: *vector :: Vector to be initialised
- * @param :: dataSize:: Size of individual vector element
+ * @param :: dataSize :: Size of individual vector element
  * @param :: numel :: Number of initial elements in vector
  * 
  * @return :: bool :: Indicates if memory was successfully allocated for vector
  */
-bool vector_init(Vector *vector, VECTOR_TYPE_DATASIZE dataSize, VECTOR_TYPE_NUMEL numel) {
+bool vector_init(Vector *vector, uint8_t dataSize, size_t numel) {
 
     vector->data = MACRO_MALLOC(dataSize, numel);
     if(vector->data == NULL) {
@@ -144,7 +144,7 @@ void vector_destroy(Vector *vector) {
  * 
  * @return :: bool :: Indicates if resizing was successful
  */
-bool vector_resize(Vector *vector, VECTOR_TYPE_NUMEL numel ) {
+bool vector_resize(Vector *vector, size_t numel ) {
 
     vector->data = MACRO_REALLOC(vector->data, numel, vector->dataSize);
     if(vector->data == NULL) {
@@ -170,7 +170,7 @@ bool vector_resize(Vector *vector, VECTOR_TYPE_NUMEL numel ) {
  * 
  * @return :: bool :: Indicates if elements were successfully added to the vector
  */
-bool vector_append(Vector *vector, void *data, VECTOR_TYPE_NUMEL numel) {
+bool vector_append(Vector *vector, void *data, size_t numel) {
 
     if(vector->capacity >= vector->top + numel) {
         //No reallocation required
@@ -203,7 +203,7 @@ bool vector_append(Vector *vector, void *data, VECTOR_TYPE_NUMEL numel) {
  * 
  * @return :: *void :: Data at index of interest
  */
-void *vector_access_index(Vector *vector, VECTOR_TYPE_DATA index) {
+void *vector_access_index(Vector *vector, size_t index) {
 
     return (void*)(&((vector->data)[index * vector->dataSize]));
 }
@@ -218,7 +218,7 @@ void *vector_access_index(Vector *vector, VECTOR_TYPE_DATA index) {
  * 
  * @return :: *void :: Data at index of interest
  */
-void vector_set_index(Vector *vector, void *data, VECTOR_TYPE_DATA index) {
+void vector_set_index(Vector *vector, void *data, size_t index) {
 
     void *dest = &((vector->data)[index * vector->dataSize]);
     MACRO_MEMCPY(dest, data, vector->dataSize);
