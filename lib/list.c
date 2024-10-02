@@ -157,16 +157,12 @@ bool list_append(List *list, void *data) {
 Node *list_dequeue(List *list) {
 
     Node *temp = NULL;
-    Node *current = list->head;
-    list->size--;
-    if(list->size == 1) {
-        return current;
+    Node **current = &(list->head);
+    for(size_t i = 0; i < list->size - 1; i++) {
+        current = &((*current)->next);
     }
-    for(size_t i = 0; i < list->size - 1; i++) { //Get to the second last item in the list
-        current = current->next; 
-    }
-    temp = current->next;
-    current->next = NULL;
+    temp = *current;
+    current = NULL;
 
     return temp;
 }

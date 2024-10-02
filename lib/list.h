@@ -24,7 +24,6 @@ typedef struct List {
 
 /*
 - Delete index
-- Delete back
 */
 
 
