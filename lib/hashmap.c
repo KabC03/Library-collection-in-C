@@ -157,7 +157,7 @@ Node *hashmap_search(Hashmap *hashmap, HashmapItem *entryData) {
 
 
 /**
- * @brief :: Resize a hashmap. It is modified upon failure
+ * @brief :: Reconfigure a hashmap. It is modified upon failure
  *
  * @param :: *hashmap :: Hashmap of interest 
  * @param :: size :: New size of the hashmap
