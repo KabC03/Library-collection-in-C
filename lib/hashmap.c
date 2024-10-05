@@ -175,11 +175,19 @@ bool hashmap_resize(Hashmap *hashmap, size_t size, size_t (*hashmapFunction)(uin
         if(vector_resize(&(hashmap->buckets), size) == false) {
             return false;
         }
+
+        //Initialise upper lists
+        for(int i = oldSize; i < size; i++) {
+            List *list = vector_access_index(&(hashmap->buckets), i);
+            if(list_init(list, sizeof(HashmapItem)) == false) {
+                vector_destroy(&(hashmap->buckets));
+                return false;
+            }
+        }
     } 
 
     for(size_t i = 0; i < oldSize; i++) {
         List *list = vector_access_index(&(hashmap->buckets), i);
-        
         
         Node **current = &(list->head);
         Node *temp = list->head;
