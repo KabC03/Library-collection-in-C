@@ -183,7 +183,7 @@ bool hashmap_resize(Hashmap *hashmap, size_t size, size_t (*hashmapFunction)(uin
         
         Node **current = &(list->head);
         Node *temp = list->head;
-        for(size_t j = 0; j < list->size; j++) {
+        for(size_t j = 0; j < *current != NULL; j++) {
             EntryData *entryData = (EntryData*)((*current)->data);
 
             //Insertion algoritm
