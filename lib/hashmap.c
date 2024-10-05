@@ -61,7 +61,7 @@ bool hashmap_init(Hashmap *hashmap, size_t initialSize) {
 /**
  * @brief :: Destroy a hashmap and associated memory 
  *
- * @param :: *Hashmap :: Hashmap to be destroyed 
+ * @param :: *hashmap :: Hashmap to be destroyed 
  * 
  * @return :: void 
  */
@@ -80,7 +80,21 @@ void hashmap_destroy(Hashmap *hashmap) {
 
 
 
+/**
+ * @brief :: Destroy a hashmap and associated memory 
+ *
+ * @param :: *hashmap :: Hashmap to be destroyed 
+ * @param :: *entryData :: Entry data to insert to hashmap 
+ * 
+ * @return :: bool :: Indication of if insertion was successful 
+ */
+bool hashmap_insert(Hashmap *hashmap, EntryData *entryData, size_t hashmap_hash(uint8_t *input, size_t size)) {
 
+    size_t index = hashmap_hash(entryData->key, entryData->keySize); //Index to insert
+    
+
+    return true;
+}
 
 
 
