@@ -29,12 +29,17 @@ bool wav_init(Wav *wav, FILE *fptr) {
 
     //Fseek to the data segment
     
-    fseek(fptr, sizeof(WavHeader), SEEK_SET); //NOTE: BECAUSE OF THIS ONLY CERTIAN WAV FILES WORK
+    if(fseek(fptr, sizeof(WavHeader), SEEK_SET) != 0) {//NOTE: BECAUSE OF THIS ONLY CERTIAN WAV FILES WORK
+        vector_destroy(&(wav->data));
+        return false; 
+    }
 
     //This is a bit scuffed - shouldnt really be doing manual access on vectors like this
-    fread(wav->data.data, wav->wavHeader.subchunk2Size, 1, fptr);
+    if(fread(wav->data.data, wav->wavHeader.subchunk2Size, 1, fptr) != 1) {
+        vector_destroy(&(wav->data));
+        return false;
+    }
     wav->data.top = wav->wavHeader.subchunk2Size;
-
     return true;
 }
 

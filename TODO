@@ -3,11 +3,20 @@
     - Priority Queue versions of above functions
 
 - Bitmaps
-    - Redo everything in the old library just make it less spaghetti
+    - Read bitmap
+    - Generate blank bitmap, filled
+    - Draw a line in a bitmap
+    - Colour a pixel in a bitmap
+    - Greyscale a bitmap
+    - Convolve bitmaps
+    - Reconstruct a bitmap
+    - Destroy a bitmap structure
 
 - Wav
     - Make it compatable with non standard Wavs
     - Generate Wav from DFT
+    - DFT of wav
+    - Convolve audio files
 
 - Hashmaps
     - Embedded node linked list

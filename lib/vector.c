@@ -53,12 +53,12 @@ void vector_print_integer(void *ptr) {
  * 
  * @return :: void
  */
-void vector_print_uint8_8(void *ptr) {
+void vector_print_uint8_t(void *ptr) {
 
     if(ptr == NULL) {
         return;
     } else {
-        printf("%u ", *((unsigned int*)ptr));
+        printf("%u ", *((uint8_t*)ptr));
     }
     return;
 }
@@ -225,6 +225,10 @@ void vector_set_index(Vector *vector, void *data, size_t index) {
     MACRO_MEMCPY(dest, data, vector->dataSize);
     return;
 }
+
+
+
+
 
 
 

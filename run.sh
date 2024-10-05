@@ -1,6 +1,6 @@
 #12 Aug
 
-library="./lib/list.c"
+library="./lib/bitmap.c"
 
 
 mkdir -p output

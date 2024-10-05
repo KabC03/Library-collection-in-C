@@ -22,7 +22,7 @@ typedef struct Vector {
 
 void vector_print_size_t(void *ptr);
 void vector_print_integer(void *ptr);
-void vector_print_uint8_8(void *ptr);
+void vector_print_uint8_t(void *ptr);
 void vector_disp(Vector *vector, void print_element(void *element));
 bool vector_init(Vector *vector, uint8_t dataSize, size_t numel);
 void vector_destroy(Vector *vector);
