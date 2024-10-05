@@ -7,7 +7,7 @@
 int main(void) {
 
     Hashmap h1;
-    if(!hashmap_init(&h1, 100)) {
+    if(!hashmap_init(&h1, 100, hashmap_djb2)) {
         printf("Init failed\n");
     }
 

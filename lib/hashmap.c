@@ -13,11 +13,12 @@
  * @brief :: DJB2 hash of an input stream of bytes 
  *
  * @param :: *input :: Input to be hashed 
- * @param :: *size :: Size of the input 
+ * @param :: size :: Size of the input 
+ * @param :: buckets :: Number of buckets in the map 
  * 
  * @return :: size_t :: Hash output 
  */
-size_t hashmap_djb2(uint8_t *input, size_t size) {
+size_t hashmap_djb2(uint8_t *input, size_t size, size_t buckets) {
 
     size_t hash = 5381;
 
@@ -37,10 +38,11 @@ size_t hashmap_djb2(uint8_t *input, size_t size) {
  *
  * @param :: *Hashmap :: Hashmap to be initialised 
  * @param :: initialSize :: Initial size of the hashmap 
+ * @param :: *hashmapFunction :: Hash function to be used for this hashmap
  * 
  * @return :: bool :: Indication of if hashmap initialisation was successful
  */
-bool hashmap_init(Hashmap *hashmap, size_t initialSize) {
+bool hashmap_init(Hashmap *hashmap, size_t initialSize, size_t (*hashmapFunction)(uint8_t *input, size_t size, size_t buckets)) {
 
     if(vector_init(&(hashmap->buckets), sizeof(List), initialSize) == false) {
         return false;
@@ -52,6 +54,8 @@ bool hashmap_init(Hashmap *hashmap, size_t initialSize) {
             return false;
         }
     }
+    hashmap->hashmapFunction = hashmapFunction;
+
     return true;
 }
 
@@ -81,17 +85,21 @@ void hashmap_destroy(Hashmap *hashmap) {
 
 
 /**
- * @brief :: Destroy a hashmap and associated memory 
+ * @brief :: Insert an item into a hashmap 
  *
- * @param :: *hashmap :: Hashmap to be destroyed 
+ * @param :: *hashmap :: Hashmap to be inserted into 
  * @param :: *entryData :: Entry data to insert to hashmap 
  * 
  * @return :: bool :: Indication of if insertion was successful 
  */
-bool hashmap_insert(Hashmap *hashmap, EntryData *entryData, size_t hashmap_hash(uint8_t *input, size_t size)) {
+bool hashmap_insert(Hashmap *hashmap, EntryData *entryData) {
 
-    size_t index = hashmap_hash(entryData->key, entryData->keySize); //Index to insert
-    
+    size_t index = hashmap->hashmapFunction(entryData->key, entryData->keySize, hashmap->buckets.top); 
+
+    List *list = vector_access_index(&(hashmap->buckets), index);
+    if(list_push(list, entryData) == false) { //Push to front so resizing is easier
+        return false;
+    }
 
     return true;
 }
@@ -100,14 +108,111 @@ bool hashmap_insert(Hashmap *hashmap, EntryData *entryData, size_t hashmap_hash(
 
 
 
+/**
+ * @brief :: Delete an item from a hashmap 
+ *
+ * @param :: *hashmap :: Hashmap of interest 
+ * @param :: *entryData :: Entry data to delete from hashmap
+ * 
+ * @return :: bool :: Indication of if deletion was successful 
+ */
+bool hashmap_remove(Hashmap *hashmap, EntryData *entryData) {
+
+    size_t index = hashmap->hashmapFunction(entryData->key, entryData->keySize, hashmap->buckets.top); 
+
+    List *list = vector_access_index(&(hashmap->buckets), index);
+    if(list_find_and_delete(list, entryData) == false) {
+        return false;
+    }
+
+    return true;
+}
 
 
 
 
+/**
+ * @brief :: Search a hashmap for an item 
+ *
+ * @param :: *hashmap :: Hashmap of interest 
+ * @param :: *entryData :: Entry data to search hashmap for 
+ * 
+ * @return :: node* :: Node in hashmap (NULL is returned if the item is not found) 
+ */
+Node *hashmap_search(Hashmap *hashmap, EntryData *entryData) {
+
+    size_t index = hashmap->hashmapFunction(entryData->key, entryData->keySize, hashmap->buckets.top); 
+
+    List *list = vector_access_index(&(hashmap->buckets), index);
+
+
+    Node *node = list_find(list, entryData);
+    if(node == NULL) {
+        return NULL;
+    }
+
+    return node;
+}
 
 
 
+/**
+ * @brief :: Resize a hashmap. It is modified upon failure
+ *
+ * @param :: *hashmap :: Hashmap of interest 
+ * @param :: size :: New size of the hashmap
+ * @param :: *hashmapFunction :: Hash function to be used for this hashmap 
+ * 
+ * @return :: bool :: Indication of if the hashmap was resized 
+ */
+bool hashmap_resize(Hashmap *hashmap, size_t size, size_t (*hashmapFunction)(uint8_t *input, size_t size, size_t buckets)) {
 
+    size_t oldSize = hashmap->buckets.top;
+    hashmap->hashmapFunction = hashmapFunction;
+
+    //If new size is bigger must expand vector to new size
+    if(size > hashmap->buckets.top) {
+        if(vector_resize(&(hashmap->buckets), size) == false) {
+            return false;
+        }
+    } 
+
+    for(size_t i = 0; i < oldSize; i++) {
+        List *list = vector_access_index(&(hashmap->buckets), i);
+        
+        
+        Node **current = &(list->head);
+        Node *temp = list->head;
+        for(size_t j = 0; j < list->size; j++) {
+            EntryData *entryData = (EntryData*)((*current)->data);
+
+            //Insertion algoritm
+            size_t index = hashmap->hashmapFunction(entryData->key, entryData->keySize, size); 
+            List *listInsert = vector_access_index(&(hashmap->buckets), index);
+            if(list_push(listInsert, entryData) == false) { //Push to front so resizing is easier
+                return false;
+            }
+
+
+            //Delete old node
+
+            temp = *current;
+            *current = (*current)->next;
+            list->size--;
+            MACRO_FREE(temp);
+        }
+    }
+
+
+
+    if(size < hashmap->buckets.top) { //If the hashmap has shrunk shrink the vector
+        if(vector_resize(&(hashmap->buckets), size) == false) {
+            return false;
+        }
+    }  
+
+    return true;
+}
 
 
 

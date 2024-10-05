@@ -20,7 +20,7 @@
 
 - Hashmaps (hashmap)
     - Dont embed first node
-    - Hashmap insert, search, resize
+    - Hashmap resize
 
 - Strings
     - String vector
