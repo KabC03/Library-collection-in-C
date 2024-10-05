@@ -10,7 +10,7 @@
 #include "vector.h"
 #include "list.h"
 
-typedef struct EntryData { //This is embedded into a list in list.h
+typedef struct HashmapItem { //This is embedded into a list in list.h
 
     size_t keySize;
     void *key;
@@ -18,7 +18,7 @@ typedef struct EntryData { //This is embedded into a list in list.h
     size_t valueSize;
     void *value;
 
-} EntryData;
+} HashmapItem;
 typedef struct Hashmap {
 
     size_t (*hashmapFunction)(uint8_t *input, size_t size, size_t buckets); //Hash function
@@ -31,9 +31,9 @@ typedef struct Hashmap {
 size_t hashmap_djb2(uint8_t *input, size_t size, size_t buckets);
 bool hashmap_init(Hashmap *hashmap, size_t initialSize, size_t (*hashmapFunction)(uint8_t *input, size_t size, size_t buckets));
 void hashmap_destroy(Hashmap *hashmap);
-bool hashmap_insert(Hashmap *hashmap, EntryData *entryData);
-bool hashmap_remove(Hashmap *hashmap, EntryData *entryData);
-Node *hashmap_search(Hashmap *hashmap, EntryData *entryData);
+bool hashmap_insert(Hashmap *hashmap, HashmapItem *entryData);
+bool hashmap_remove(Hashmap *hashmap, HashmapItem *entryData);
+Node *hashmap_search(Hashmap *hashmap, HashmapItem *entryData);
 bool hashmap_resize(Hashmap *hashmap, size_t size, size_t (*hashmapFunction)(uint8_t *input, size_t size, size_t buckets));
 
 

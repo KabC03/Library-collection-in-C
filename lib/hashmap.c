@@ -49,7 +49,7 @@ bool hashmap_init(Hashmap *hashmap, size_t initialSize, size_t (*hashmapFunction
     }
     for(size_t i = 0; i < initialSize; i++) {
         List *list = vector_access_index(&(hashmap->buckets), i);
-        if(list_init(list, sizeof(EntryData)) == false) {
+        if(list_init(list, sizeof(HashmapItem)) == false) {
             vector_destroy(&(hashmap->buckets));
             return false;
         }
@@ -92,7 +92,7 @@ void hashmap_destroy(Hashmap *hashmap) {
  * 
  * @return :: bool :: Indication of if insertion was successful 
  */
-bool hashmap_insert(Hashmap *hashmap, EntryData *entryData) {
+bool hashmap_insert(Hashmap *hashmap, HashmapItem *entryData) {
 
     size_t index = hashmap->hashmapFunction(entryData->key, entryData->keySize, hashmap->buckets.top); 
 
@@ -116,7 +116,7 @@ bool hashmap_insert(Hashmap *hashmap, EntryData *entryData) {
  * 
  * @return :: bool :: Indication of if deletion was successful 
  */
-bool hashmap_remove(Hashmap *hashmap, EntryData *entryData) {
+bool hashmap_remove(Hashmap *hashmap, HashmapItem *entryData) {
 
     size_t index = hashmap->hashmapFunction(entryData->key, entryData->keySize, hashmap->buckets.top); 
 
@@ -139,7 +139,7 @@ bool hashmap_remove(Hashmap *hashmap, EntryData *entryData) {
  * 
  * @return :: node* :: Node in hashmap (NULL is returned if the item is not found) 
  */
-Node *hashmap_search(Hashmap *hashmap, EntryData *entryData) {
+Node *hashmap_search(Hashmap *hashmap, HashmapItem *entryData) {
 
     size_t index = hashmap->hashmapFunction(entryData->key, entryData->keySize, hashmap->buckets.top); 
 
@@ -184,7 +184,7 @@ bool hashmap_resize(Hashmap *hashmap, size_t size, size_t (*hashmapFunction)(uin
         Node **current = &(list->head);
         Node *temp = list->head;
         while(*current != NULL) {
-            EntryData *entryData = (EntryData*)((*current)->data);
+            HashmapItem *entryData = (HashmapItem*)((*current)->data);
 
             //Insertion algoritm
             size_t index = hashmap->hashmapFunction(entryData->key, entryData->keySize, size); 

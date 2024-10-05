@@ -11,7 +11,21 @@ int main(void) {
         printf("Init failed\n");
     }
 
-    
+
+    HashmapItem h2;
+    for(int i = 0; i < 100; i++) {
+        h2.key = &i;
+        h2.keySize = sizeof(int);
+        h2.value = &i;
+        h2.valueSize = sizeof(int);
+
+        hashmap_insert(&h1, &h2);
+    }
+
+
+
+
+    hashmap_resize(&h1, 5, hashmap_djb2);
 
     hashmap_destroy(&h1);
 
