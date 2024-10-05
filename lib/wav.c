@@ -83,12 +83,25 @@ bool wav_reconstruct(Wav *wav, char *name) {
     if(output == NULL) {
         return false;
     }
-    fwrite(&wav->wavHeader, sizeof(WavHeader), 1, output);
-    fwrite(wav->data.data, sizeof(uint8_t), wav->wavHeader.subchunk2Size, output);
-    fclose(output);
+    if(fwrite(&wav->wavHeader, sizeof(WavHeader), 1, output) != 1) {
+        goto close;
+    }
+    if(fwrite(wav->data.data, sizeof(uint8_t), wav->wavHeader.subchunk2Size, output) != wav->wavHeader.subchunk2Size) {
+        goto close;
+    }
+
+
+    if(fclose(output) != 0) {
+        return false;
+    }
 
     return true;
-}
+
+
+close:
+    fclose(output);
+    return false;
+} 
 
 
 

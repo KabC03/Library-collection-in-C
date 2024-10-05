@@ -2,29 +2,28 @@
     - Enqueue, dequeue, peak, print, initialise, destroy
     - Priority Queue versions of above functions
 
-- Bitmaps
-    - Read bitmap
+- Bitmaps (focus on depths > 8)
     - Generate blank bitmap, filled
     - Draw a line in a bitmap
     - Colour a pixel in a bitmap
     - Greyscale a bitmap
     - Convolve bitmaps
-    - Reconstruct a bitmap
-    - Destroy a bitmap structure
+    - Each should take a function pointer for bitmap_set_pixel(x,y) and/of bitmap_get_pixel(x,y) for each bit depth
+
 
 - Wav
     - Make it compatable with non standard Wavs
+    - Trim a wav
     - Generate Wav from DFT
     - DFT of wav
     - Convolve audio files
 
-- Hashmaps
-    - Embedded node linked list
-    - Hashmap insert, search, destroy, resize, initialise
-- String Hashmaps
+- Hashmaps (hashmap)
     - Embedded node linked list
     - Hashmap insert, search, destroy, resize, initialise
 
+- Strings
+    - String vector
 
 - Arbitrary precision numbers
 

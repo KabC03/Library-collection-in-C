@@ -1,4 +1,5 @@
-
+//6 October
+//This library only works with bitmaps > 8 bit colour depth
 #ifndef BITMAP_H 
 #define BITMAP_H
 #include <stdio.h>
@@ -46,8 +47,8 @@ typedef struct Bitmap {
 
 
 bool bitmap_init(FILE *fptr, Bitmap *bitmap);
-
-
+bool bitmap_reconstruct(Bitmap *bitmap, char *name);
+void bitmap_destroy(Bitmap *bitmap);
 
 #endif 
 

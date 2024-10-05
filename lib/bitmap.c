@@ -39,16 +39,59 @@ bool bitmap_init(FILE *fptr, Bitmap *bitmap) {
 
 
 
+/**
+ * @brief :: Reconstruct a bitmap image from data 
+ *
+ * @param :: *bitmap :: Bitmap image to be reconstructed 
+ * @param :: *char :: File name of output bitmap 
+ * 
+ * @return :: bool :: Indication of if read was successful 
+ */
+bool bitmap_reconstruct(Bitmap *bitmap, char *name) {
+
+    FILE *output = fopen(name, "wb");
+    if(output == NULL) {
+        return false;
+    }
+
+    if(fwrite(&(bitmap->bitmapFileHeader), sizeof(BitmapFileHeader), 1, output) != 1) {
+        goto close;
+    }    
+    if(fwrite(&(bitmap->bitmapInfoHeader), sizeof(BitmapInfoHeader), 1, output) != 1) {
+        goto close;
+    }
+
+    if(fwrite(bitmap->data.data, sizeof(uint8_t), bitmap->data.top, output) != bitmap->data.top) {
+        goto close;
+    }
+
+    if(fclose(output) != 0) {
+        return false;
+    }
+
+    return true;
+
+close:
+    fclose(output);
+    return false;
+}
 
 
 
 
+/**
+ * @brief :: Destroy a bitmap structure 
+ *
+ * @param :: *bitmap :: Bitmap structure to be destroyed 
+ * 
+ * @return :: void
+ */
+void bitmap_destroy(Bitmap *bitmap) {
 
+    vector_destroy(&bitmap->data);
 
-
-
-
-
+    return;
+}
 
 
 
