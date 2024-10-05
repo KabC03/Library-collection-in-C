@@ -25,7 +25,7 @@ int main(void) {
 
 
 
-    hashmap_resize(&h1, 5, hashmap_djb2);
+    hashmap_reconfigure(&h1, 5, hashmap_djb2);
 
     hashmap_destroy(&h1);
 

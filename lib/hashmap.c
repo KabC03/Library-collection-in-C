@@ -165,7 +165,7 @@ Node *hashmap_search(Hashmap *hashmap, HashmapItem *entryData) {
  * 
  * @return :: bool :: Indication of if the hashmap was resized 
  */
-bool hashmap_resize(Hashmap *hashmap, size_t size, size_t (*hashmapFunction)(uint8_t *input, size_t size, size_t buckets)) {
+bool hashmap_reconfigure(Hashmap *hashmap, size_t size, size_t (*hashmapFunction)(uint8_t *input, size_t size, size_t buckets)) {
 
     size_t oldSize = hashmap->buckets.top;
     hashmap->hashmapFunction = hashmapFunction;
