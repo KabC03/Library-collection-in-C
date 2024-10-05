@@ -171,7 +171,7 @@ bool hashmap_resize(Hashmap *hashmap, size_t size, size_t (*hashmapFunction)(uin
     hashmap->hashmapFunction = hashmapFunction;
 
     //If new size is bigger must expand vector to new size
-    if(size > hashmap->buckets.top) {
+    if(size > oldSize) {
         if(vector_resize(&(hashmap->buckets), size) == false) {
             return false;
         }
@@ -205,7 +205,7 @@ bool hashmap_resize(Hashmap *hashmap, size_t size, size_t (*hashmapFunction)(uin
 
 
 
-    if(size < hashmap->buckets.top) { //If the hashmap has shrunk shrink the vector
+    if(oldSize > size) { //If the hashmap has shrunk shrink the vector
         if(vector_resize(&(hashmap->buckets), size) == false) {
             return false;
         }
