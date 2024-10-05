@@ -19,17 +19,17 @@ typedef struct EntryData { //This is embedded into a list in list.h
     void *value;
 
 } EntryData;
-typedef struct DynamicHashmap {
+typedef struct Hashmap {
 
-    Vector bucket;
+    Vector buckets;
 
-} DynamicHashmap;
+} Hashmap;
 
 
 
 size_t hashmap_djb2(uint8_t *input, size_t size);
-
-
+bool hashmap_init(Hashmap *hashmap, size_t initialSize);
+void hashmap_destroy(Hashmap *hashmap);
 
 #endif 
 

@@ -19,8 +19,8 @@
     - Convolve audio files
 
 - Hashmaps (hashmap)
-    - Embedded node linked list
-    - Hashmap insert, search, destroy, resize, initialise
+    - Dont embed first node
+    - Hashmap insert, search, resize
 
 - Strings
     - String vector

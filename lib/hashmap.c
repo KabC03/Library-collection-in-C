@@ -8,12 +8,6 @@
 #define MACRO_FREE(ptr) free(ptr)
 
 
-/*
-- Prepend to list
-- Remove via key
-- Destroy a list
-*/
-
 
 /**
  * @brief :: DJB2 hash of an input stream of bytes 
@@ -33,6 +27,78 @@ size_t hashmap_djb2(uint8_t *input, size_t size) {
 
     return hash;
 }
+
+
+
+
+
+/**
+ * @brief :: Initialise a hashmap 
+ *
+ * @param :: *Hashmap :: Hashmap to be initialised 
+ * @param :: initialSize :: Initial size of the hashmap 
+ * 
+ * @return :: bool :: Indication of if hashmap initialisation was successful
+ */
+bool hashmap_init(Hashmap *hashmap, size_t initialSize) {
+
+    if(vector_init(&(hashmap->buckets), sizeof(List), initialSize) == false) {
+        return false;
+    }
+    for(size_t i = 0; i < initialSize; i++) {
+        List *list = vector_access_index(&(hashmap->buckets), i);
+        if(list_init(list, sizeof(EntryData)) == false) {
+            vector_destroy(&(hashmap->buckets));
+            return false;
+        }
+    }
+    return true;
+}
+
+
+
+
+/**
+ * @brief :: Destroy a hashmap and associated memory 
+ *
+ * @param :: *Hashmap :: Hashmap to be destroyed 
+ * 
+ * @return :: void 
+ */
+void hashmap_destroy(Hashmap *hashmap) {
+
+    size_t buckets = hashmap->buckets.top;
+    for(size_t i = 0; i < buckets; i++) {
+        List *list = vector_access_index(&(hashmap->buckets), i);
+        list_destroy(list);
+    }
+
+    vector_destroy(&(hashmap->buckets));
+
+    return;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

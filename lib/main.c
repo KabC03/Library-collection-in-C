@@ -6,25 +6,13 @@
 
 int main(void) {
 
-    List l1;
-    list_init(&l1, sizeof(int));
-
-    for(int i = 0; i <= 10000; i++) {
-        list_append(&l1, &i);
+    Hashmap h1;
+    if(!hashmap_init(&h1, 100)) {
+        printf("Init failed\n");
     }
 
-    int search = 10000;
-    if(!list_find_and_delete(&l1, &search)) {
-        printf("Not deleted\n");
-    }
-    Node *data = list_find(&l1, &search);
 
-    if(data == NULL) {
-        printf("Not found\n");
-    } else {
-        printf("Found: %d\n", *(int*)(data->data));
-    }
-
+    hashmap_destroy(&h1);
 
     return 0;
 }
