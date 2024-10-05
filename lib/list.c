@@ -4,7 +4,7 @@
 #define MACRO_MALLOC(numel, size) malloc(numel * size)
 #define MACRO_MEMCPY(dest, src, n) memcpy(dest, src, n)
 #define MACRO_FREE(ptr) free(ptr)
-
+#define MACRO_MEMCMP(arg1, arg2, n) memcmp(arg1, arg2, n)
 
 /**
  * @brief :: Helper function for printing uint8_t (for use in list_disp) 
@@ -345,7 +345,27 @@ void *list_access_index(List *list, size_t index) {
 }
 
 
+/**
+ * @brief :: Find an item in a list 
+ *
+ * @param :: *list :: List to search item in 
+ * @param :: *data :: Data to find in list
+ * 
+ * @return :: Node* :: Node containing the item, is NULL if the item is not found
+ */
+Node *list_find(List *list, void *data) {
 
+    Node **current = &(list->head);
+    for(size_t i = 0; i < list->size; i++) {
+
+        if(MACRO_MEMCMP((*current)->data, data, list->dataSize) == 0) {
+            return *current;
+        }
+        current = &((*current)->next); 
+    }
+
+    return NULL;
+}
 
 
 

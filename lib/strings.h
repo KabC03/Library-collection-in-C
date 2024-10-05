@@ -15,6 +15,11 @@ typedef struct String {
     char *data;
 
 } String;
+typedef struct StringVector {
+
+    String *data;
+
+} StringVector;
 
 
 void strings_print(String *string);
@@ -25,6 +30,10 @@ size_t strings_length(String *string);
 char *strings_read(String *string);
 bool strings_concatanate(String *dest, String *src);
 bool strings_compare(String *arg1, String *arg2);
+
+
+
+void strings_vector_init(StringVector *stringVector);
 
 
 #endif 

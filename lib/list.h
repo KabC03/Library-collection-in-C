@@ -37,7 +37,7 @@ Node *list_peak_back(List *list);
 bool list_insert_index(List *list, size_t index, void *data);
 Node *list_delete_index(List *list, size_t index);
 void *list_access_index(List *list, size_t index);
-
+Node *list_find(List *list, void *data);
 
 
 #endif 
