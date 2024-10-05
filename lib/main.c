@@ -11,6 +11,7 @@ int main(void) {
         printf("Init failed\n");
     }
 
+    
 
     hashmap_destroy(&h1);
 

@@ -34,7 +34,7 @@ void hashmap_destroy(Hashmap *hashmap);
 bool hashmap_insert(Hashmap *hashmap, EntryData *entryData);
 bool hashmap_remove(Hashmap *hashmap, EntryData *entryData);
 Node *hashmap_search(Hashmap *hashmap, EntryData *entryData);
-
+bool hashmap_resize(Hashmap *hashmap, size_t size, size_t (*hashmapFunction)(uint8_t *input, size_t size, size_t buckets));
 
 
 #endif 
