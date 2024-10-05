@@ -19,8 +19,7 @@
     - Convolve audio files
 
 - Hashmaps (hashmap)
-    - Dont embed first node
-    - Hashmap resize
+    - Test it works
 
 - Strings
     - String vector
