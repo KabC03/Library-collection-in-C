@@ -13,7 +13,10 @@ int main(void) {
         list_append(&l1, &i);
     }
 
-    int search = 10000;
+    int search = 100;
+    if(!list_find_and_delete(&l1, &search)) {
+        printf("Not deleted\n");
+    }
     Node *data = list_find(&l1, &search);
 
     if(data == NULL) {

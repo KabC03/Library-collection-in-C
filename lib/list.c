@@ -369,7 +369,34 @@ Node *list_find(List *list, void *data) {
 
 
 
+/**
+ * @brief :: Find and delete an item in a list 
+ *
+ * @param :: *list :: List to search item in 
+ * @param :: *data :: Data to find in list
+ * 
+ * @return :: bool :: Indication of if item was deleted from the list 
+ */
+bool list_find_and_delete(List *list, void *data) {
 
+    Node *temp = NULL;
+    Node **current = &(list->head);
+    for(size_t i = 0; i < list->size; i++) {
+
+        if(MACRO_MEMCMP((*current)->data, data, list->dataSize) == 0) {
+            //Element found
+            list->size--;
+            temp = *current;
+            *current = (*current)->next;
+            MACRO_FREE(temp);
+            return true;
+        }
+        current = &((*current)->next); 
+    }
+
+
+    return false;
+}
 
 
 
