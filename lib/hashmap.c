@@ -97,8 +97,13 @@ bool hashmap_insert(Hashmap *hashmap, HashmapItem *entryData) {
     size_t index = hashmap->hashmapFunction(entryData->key, entryData->keySize, hashmap->buckets.top); 
 
     List *list = vector_access_index(&(hashmap->buckets), index);
-    if(list_push(list, entryData) == false) { //Push to front so resizing is easier
+    Node *node = list_push(list, entryData);
+
+    if(node == NULL) { //Push to front so resizing is easier
         return false;
+
+    } else {
+        MACRO_MEMCPY((void*)(node->data), entryData, sizeof(HashmapItem)); //Copy the new node in
     }
 
     return true;
@@ -121,6 +126,18 @@ bool hashmap_remove(Hashmap *hashmap, HashmapItem *entryData) {
     size_t index = hashmap->hashmapFunction(entryData->key, entryData->keySize, hashmap->buckets.top); 
 
     List *list = vector_access_index(&(hashmap->buckets), index);
+
+    //This is really inefficient, the list is iterated over twice
+    Node *node = list_find(list, entryData);
+    if(node == NULL) {
+        return false;
+    } else {
+        HashmapItem *item = (HashmapItem*)(node->data);
+        MACRO_FREE(item->key);
+        MACRO_FREE(item->value); 
+    }
+
+    //Second iteration over list
     if(list_find_and_delete(list, entryData) == false) {
         return false;
     }
@@ -205,6 +222,8 @@ bool hashmap_reconfigure(Hashmap *hashmap, size_t size, size_t (*hashmapFunction
             //Delete old node
 
             temp = *current;
+            MACRO_FREE(entryData->key);
+            MACRO_FREE(entryData->value);
             *current = (*current)->next;
             list->size--;
             MACRO_FREE(temp);

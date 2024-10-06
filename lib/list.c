@@ -123,14 +123,14 @@ void list_destroy(List *list) {
  * @param :: *list :: List to append an item too 
  * @param :: *data :: Data to append to list
  * 
- * @return :: bool :: Indication of if item was appended 
+ * @return :: Node* :: New node  
  */
-bool list_append(List *list, void *data) {
+Node *list_append(List *list, void *data) {
 
     //Set up new node
     Node *newNode = MACRO_MALLOC(1, sizeof(Node) + list->dataSize);
     if(newNode == NULL) {
-        return false;
+        return NULL;
     }
     newNode->next = NULL;
     MACRO_MEMCPY(newNode->data, data, list->dataSize);
@@ -143,7 +143,7 @@ bool list_append(List *list, void *data) {
     *current = newNode;
     list->size++;
 
-    return true;
+    return *current;
 }
 
 
@@ -178,9 +178,9 @@ Node *list_dequeue(List *list) {
  * @param :: *list :: List to push an item too 
  * @param :: *data :: Data to push to list
  * 
- * @return :: bool :: Indication of if item was pushed 
+ * @return :: Node* :: New node in list 
  */
-bool list_push(List *list, void *data) {
+Node *list_push(List *list, void *data) {
 
     //Set up new node
     Node *newNode = MACRO_MALLOC(1, sizeof(Node) + list->dataSize);
@@ -195,7 +195,7 @@ bool list_push(List *list, void *data) {
     list->head = newNode;
     list->size++;
 
-    return true;
+    return list->head;
 }
 
 
@@ -205,9 +205,9 @@ bool list_push(List *list, void *data) {
  * @param :: *list :: List to enqueue an item too 
  * @param :: *data :: Data to enqueue to list
  * 
- * @return :: bool :: Indication of if item was enqueue 
+ * @return :: Node* :: New node in list
  */
-bool list_enqueue(List *list, void *data) { 
+Node *list_enqueue(List *list, void *data) { 
     //Alternative name for list_push
     return list_push(list, data);
 }
@@ -275,14 +275,14 @@ Node *list_peak_back(List *list) {
  * @param :: index :: Index to insert the data 
  * @param :: *data :: Data to insert to list
  * 
- * @return :: bool :: Indication of if item was inserted 
+ * @return :: Node* :: New appended node 
  */
-bool list_insert_index(List *list, size_t index, void *data) {
+Node *list_insert_index(List *list, size_t index, void *data) {
 
     //Set up new node
     Node *newNode = MACRO_MALLOC(1, sizeof(Node) + list->dataSize);
     if(newNode == NULL) {
-        return false;
+        return NULL;
     }
     newNode->next = NULL;
     MACRO_MEMCPY(newNode->data, data, list->dataSize);
@@ -296,7 +296,7 @@ bool list_insert_index(List *list, size_t index, void *data) {
     *current = newNode;
     list->size++;
 
-    return true;
+    return *current;
 }
 
 
@@ -332,16 +332,16 @@ Node *list_delete_index(List *list, size_t index) {
  * @param :: *list :: List to index 
  * @param :: index :: Index to insert the data 
  * 
- * @return :: bool :: Indication of if item was inserted 
+ * @return :: Node* :: Node at index 
  */
-void *list_access_index(List *list, size_t index) {
+Node *list_access_index(List *list, size_t index) {
 
     Node *current = list->head;
     for(size_t i = 0; i < index; i++) { //This is technically unsafe, no bounds checking done here
         current = current->next; 
     }
 
-    return current->data;
+    return current;
 }
 
 
