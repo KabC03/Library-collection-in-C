@@ -13,7 +13,7 @@
  * 
  * @return :: void
  */
-void list_print_uint8_8(void *ptr) {
+void list_print_uint8_t(void *ptr) {
 
     if(ptr == NULL) {
         return;

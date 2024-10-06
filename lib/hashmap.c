@@ -25,7 +25,7 @@ size_t hashmap_djb2(uint8_t *input, size_t size, size_t buckets) {
     for(size_t i = 0; i < size; i++) {
         hash = (hash << 5) + hash + input[i];
     }
-
+    
     return hash % buckets;
 }
 

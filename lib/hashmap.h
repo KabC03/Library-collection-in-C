@@ -28,15 +28,6 @@ typedef struct Hashmap {
 
 
 
-size_t hashmap_djb2(uint8_t *input, size_t size, size_t buckets);
-bool hashmap_init(Hashmap *hashmap, size_t initialSize, size_t (*hashmapFunction)(uint8_t *input, size_t size, size_t buckets));
-void hashmap_destroy(Hashmap *hashmap);
-bool hashmap_insert(Hashmap *hashmap, HashmapItem *entryData);
-bool hashmap_remove(Hashmap *hashmap, HashmapItem *entryData);
-HashmapItem *hashmap_search(Hashmap *hashmap, HashmapItem *hashmapItem);
-bool hashmap_reconfigure(Hashmap *hashmap, size_t size, size_t (*hashmapFunction)(uint8_t *input, size_t size, size_t buckets));
-
-
 #endif 
 
 
