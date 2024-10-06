@@ -169,9 +169,9 @@ bool vector_resize(Vector *vector, size_t numel ) {
  * @param :: *data :: Data to be appended to vector
  * @param :: numel :: Number of elements to be appended
  * 
- * @return :: bool :: Indicates if elements were successfully added to the vector
+ * @return :: void* :: Newly inserted item in the vector 
  */
-bool vector_append(Vector *vector, void *data, size_t numel) {
+void *vector_append(Vector *vector, void *data, size_t numel) {
 
     if(vector->capacity >= vector->top + numel) {
         //No reallocation required
@@ -180,17 +180,18 @@ bool vector_append(Vector *vector, void *data, size_t numel) {
         vector->data = MACRO_REALLOC(vector->data, (vector->capacity + numel) * CONST_REALLOC_EXPANSION, vector->dataSize);
         if(vector->data == NULL) {
             //NOTE: Realloc function is responsible for maintaining original vector state if allocation fails 
-            return false;
+            return NULL;
         } else {
             vector->capacity = (vector->capacity + numel) * CONST_REALLOC_EXPANSION;
         }
     }
-    MACRO_MEMCPY(vector->data + vector->top * vector->dataSize, data, numel * vector->dataSize); 
+    void *position = vector->data + vector->top * vector->dataSize;
+    MACRO_MEMCPY(position, data, numel * vector->dataSize); 
     vector->top += numel;
 
 
 
-    return true;
+    return position;
 }
 
 
@@ -211,19 +212,20 @@ void *vector_access_index(Vector *vector, size_t index) {
 
 
 /**
- * @brief :: Set a vector index to a value. UNSAFE
+ * @brief :: Set a vector index to a value. The top is adjusted to be equal to the index. UNSAFE
  *
  * @param :: *vector :: Vector of interest
  * @param :: *data :: Data to place into vector
  * @param :: index ::  Index of access
  * 
- * @return :: *void :: Data at index of interest
+ * @return :: void :: Data at index of interest
  */
-void vector_set_index(Vector *vector, void *data, size_t index) {
+void *vector_set_index(Vector *vector, void *data, size_t index) {
 
     void *dest = &((vector->data)[index * vector->dataSize]);
     MACRO_MEMCPY(dest, data, vector->dataSize);
-    return;
+    vector->top = index; 
+    return dest;
 }
 
 

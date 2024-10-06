@@ -27,9 +27,9 @@ void vector_disp(Vector *vector, void print_element(void *element));
 bool vector_init(Vector *vector, uint8_t dataSize, size_t numel);
 void vector_destroy(Vector *vector);
 bool vector_resize(Vector *vector, size_t numel );
-bool vector_append(Vector *vector, void *data, size_t numel);
+void *vector_append(Vector *vector, void *data, size_t numel);
 void *vector_access_index(Vector *vector, size_t index);
-void vector_set_index(Vector *vector, void *data, size_t index);
+void *vector_set_index(Vector *vector, void *data, size_t index);
 
 
 #endif 

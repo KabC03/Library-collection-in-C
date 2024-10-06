@@ -5,7 +5,7 @@
 
 
 int main(void) {
-    
+
     Hashmap h1;
     if(!hashmap_init(&h1, 100, hashmap_djb2)) {
         printf("Init failed\n");
@@ -24,7 +24,10 @@ int main(void) {
         hashmap_insert(&h1, &h2);
     }
 
-
+    data = -1;
+    h2.key = &data;
+    HashmapItem *item = hashmap_search(&h1, &h2);
+    printf("Found: %d\n", *(int*)(item->value));
 
 
     hashmap_reconfigure(&h1, 5, hashmap_djb2);

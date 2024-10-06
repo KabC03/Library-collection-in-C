@@ -55,7 +55,7 @@ bool wav_init(Wav *wav, FILE *fptr) {
  */
 bool wav_append(Wav *dest, Wav *src) {
 
-    if(vector_append(&(dest->data), src->data.data, src->wavHeader.subchunk2Size) == false) {
+    if(vector_append(&(dest->data), src->data.data, src->wavHeader.subchunk2Size) == NULL) {
         return false;
     }
 

@@ -33,7 +33,7 @@ bool hashmap_init(Hashmap *hashmap, size_t initialSize, size_t (*hashmapFunction
 void hashmap_destroy(Hashmap *hashmap);
 bool hashmap_insert(Hashmap *hashmap, HashmapItem *entryData);
 bool hashmap_remove(Hashmap *hashmap, HashmapItem *entryData);
-Node *hashmap_search(Hashmap *hashmap, HashmapItem *entryData);
+HashmapItem *hashmap_search(Hashmap *hashmap, HashmapItem *hashmapItem);
 bool hashmap_reconfigure(Hashmap *hashmap, size_t size, size_t (*hashmapFunction)(uint8_t *input, size_t size, size_t buckets));
 
 
