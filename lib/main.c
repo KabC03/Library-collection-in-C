@@ -20,7 +20,9 @@ int main(void) {
     }
 
 
-    size_t data = 20;
+
+
+    size_t data = 90;
     hashmap_remove(&h1, &data, sizeof(size_t));
     if(!hashmap_find(&h1, &data, sizeof(size_t))) {
         printf("Failed to find %zu\n", data);
@@ -29,6 +31,16 @@ int main(void) {
         printf("Rehash failed\n");
         return 1;
     }
+
+    for(size_t i = 0; i < 50; i++) {
+        if(!hashmap_find(&h1, &i, sizeof(size_t))) {
+            printf("Didnt rehash\n");
+            return 1;
+        }
+    }
+
+
+
 
     hashmap_destroy(&h1);
 
