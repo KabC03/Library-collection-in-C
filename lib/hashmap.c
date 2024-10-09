@@ -209,7 +209,7 @@ void *hashmap_insert(Hashmap *hashmap, void *key, size_t keySize, void *value, s
 
     InternalNode *new = internal_list_append(internalList, key, keySize, value, valueSize);
     if(new == NULL) {
-        return false;
+        return NULL;
     } 
 
     return ((uint8_t*)(new->data) + keySize);
