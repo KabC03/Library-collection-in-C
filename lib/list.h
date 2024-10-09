@@ -27,17 +27,17 @@ void list_print_integer(void *ptr);
 bool list_init(List *list, size_t dataSize);
 void list_destroy(List *list);
 void list_disp(List *list , void print_element(void *element));
-Node *list_append(List *list, void *data);
+void *list_append(List *list, void *data);
 Node *list_dequeue(List *list);
-Node *list_push(List *list, void *data);
-Node *list_enqueue(List *list, void *data); //Alternative name for list_push
+void *list_push(List *list, void *data);
+void *list_enqueue(List *list, void *data); //Alternative name for list_push
 Node *list_pop(List *list);
-Node *list_peak_front(List *list);
-Node *list_peak_back(List *list);
-Node *list_insert_index(List *list, size_t index, void *data);
+void *list_peak_front(List *list);
+void *list_peak_back(List *list);
+void *list_insert_index(List *list, size_t index, void *data);
 Node *list_delete_index(List *list, size_t index);
-Node *list_access_index(List *list, size_t index);
-Node *list_find(List *list, void *data);
+void *list_access_index(List *list, size_t index);
+void *list_find(List *list, void *data);
 bool list_find_and_delete(List *list, void *data);
 
 #endif 

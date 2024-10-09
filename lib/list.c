@@ -123,9 +123,9 @@ void list_destroy(List *list) {
  * @param :: *list :: List to append an item too 
  * @param :: *data :: Data to append to list
  * 
- * @return :: Node* :: New node  
+ * @return :: void* :: New node  
  */
-Node *list_append(List *list, void *data) {
+void *list_append(List *list, void *data) {
 
     //Set up new node
     Node *newNode = MACRO_MALLOC(1, sizeof(Node) + list->dataSize);
@@ -143,7 +143,7 @@ Node *list_append(List *list, void *data) {
     *current = newNode;
     list->size++;
 
-    return *current;
+    return (*current)->data;
 }
 
 
@@ -178,9 +178,9 @@ Node *list_dequeue(List *list) {
  * @param :: *list :: List to push an item too 
  * @param :: *data :: Data to push to list
  * 
- * @return :: Node* :: New node in list 
+ * @return :: void* :: New node in list 
  */
-Node *list_push(List *list, void *data) {
+void *list_push(List *list, void *data) {
 
     //Set up new node
     Node *newNode = MACRO_MALLOC(1, sizeof(Node) + list->dataSize);
@@ -195,7 +195,7 @@ Node *list_push(List *list, void *data) {
     list->head = newNode;
     list->size++;
 
-    return list->head;
+    return (list->head)->data;
 }
 
 
@@ -205,9 +205,9 @@ Node *list_push(List *list, void *data) {
  * @param :: *list :: List to enqueue an item too 
  * @param :: *data :: Data to enqueue to list
  * 
- * @return :: Node* :: New node in list
+ * @return :: void* :: New node in list
  */
-Node *list_enqueue(List *list, void *data) { 
+void *list_enqueue(List *list, void *data) { 
     //Alternative name for list_push
     return list_push(list, data);
 }
@@ -240,10 +240,10 @@ Node *list_pop(List *list) {
  *
  * @param :: *list :: List to peak an item from 
  * 
- * @return :: Node* :: Item peaked from the list 
+ * @return :: void* :: Item peaked from the list 
  */
-Node *list_peak_front(List *list) {
-    return list->head; 
+void *list_peak_front(List *list) {
+    return (list->head)->data; 
 }
 
 
@@ -255,14 +255,14 @@ Node *list_peak_front(List *list) {
  *
  * @param :: *list :: List to peak an item from 
  * 
- * @return :: Node* :: Item peaked from the list 
+ * @return :: void* :: Item peaked from the list 
  */
-Node *list_peak_back(List *list) {
+void *list_peak_back(List *list) {
     Node *current = list->head;
     for(size_t i = 0; i < list->size - 1; i++) {
         current = current->next;
     }
-    return current;
+    return current->data;
 }
 
 
@@ -275,9 +275,9 @@ Node *list_peak_back(List *list) {
  * @param :: index :: Index to insert the data 
  * @param :: *data :: Data to insert to list
  * 
- * @return :: Node* :: New appended node 
+ * @return :: void* :: New appended node 
  */
-Node *list_insert_index(List *list, size_t index, void *data) {
+void *list_insert_index(List *list, size_t index, void *data) {
 
     //Set up new node
     Node *newNode = MACRO_MALLOC(1, sizeof(Node) + list->dataSize);
@@ -296,7 +296,7 @@ Node *list_insert_index(List *list, size_t index, void *data) {
     *current = newNode;
     list->size++;
 
-    return *current;
+    return (*current)->data;
 }
 
 
@@ -332,16 +332,16 @@ Node *list_delete_index(List *list, size_t index) {
  * @param :: *list :: List to index 
  * @param :: index :: Index to insert the data 
  * 
- * @return :: Node* :: Node at index 
+ * @return :: void* :: Node at index 
  */
-Node *list_access_index(List *list, size_t index) {
+void *list_access_index(List *list, size_t index) {
 
     Node *current = list->head;
     for(size_t i = 0; i < index; i++) { //This is technically unsafe, no bounds checking done here
         current = current->next; 
     }
 
-    return current;
+    return current->data;
 }
 
 
@@ -351,15 +351,15 @@ Node *list_access_index(List *list, size_t index) {
  * @param :: *list :: List to search item in 
  * @param :: *data :: Data to find in list
  * 
- * @return :: Node* :: Node containing the item, is NULL if the item is not found
+ * @return :: void* :: Node containing the item, is NULL if the item is not found
  */
-Node *list_find(List *list, void *data) {
+void *list_find(List *list, void *data) {
 
     Node **current = &(list->head);
     for(size_t i = 0; i < list->size; i++) {
 
         if(MACRO_MEMCMP((*current)->data, data, list->dataSize) == 0) {
-            return *current;
+            return (*current)->data;
         }
         current = &((*current)->next); 
     }

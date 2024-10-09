@@ -18,9 +18,11 @@
     - DFT of wav
     - Convolve audio files
 
-- Hashmaps (hashmap)
-    - Hashmap print
-    - Test it works
+- Hashmaps
+    - Append
+    - Rehash(change function and resize table)
+    - Remove
+
 
 - Strings
     - String vector
@@ -28,4 +30,13 @@
 - Arbitrary precision numbers
 
 
-
+- Mat2D
+    - Addition
+    - Subtraction
+    - Multiplication
+    - Fill
+    - Instantiate
+    - Set
+    - Destroy
+    - Determinant
+    - Inverse (Gaussian elimination)
