@@ -287,20 +287,18 @@ size_t (*hashmap_hash)(uint8_t *input, size_t keySize, size_t buckets)) {
         //Iterate through list, rehash, append to front then remove current node
         InternalList *oldBucket = vector_access_index(&(hashmap->buckets), i);
 
-        InternalNode **current = &(oldBucket->head);
-        while(*current != NULL) {
-            InternalNode *temp = *current;
+        InternalNode *current = oldBucket->head;
+        oldBucket->head = NULL;
+        while(current != NULL) {
 
-            //Skip the current node
-            (*current) = (*current)->next; //Skip the node
-            current = &((*current)->next);
-
+            InternalNode *temp = current;
+            current = current->next;
 
             //Extract data from old node
             size_t keySize = temp->keySize;
             size_t valueSize = temp->valueSize;
             void *key = temp->data;
-            void *value = (uint8_t*)(temp->data + valueSize);
+            void *value = (uint8_t*)(temp->data + keySize);
 
 
             //Insertion
@@ -309,8 +307,16 @@ size_t (*hashmap_hash)(uint8_t *input, size_t keySize, size_t buckets)) {
             //Insert at the front
             InternalNode *new = internal_list_append(internalList, key, keySize, value, valueSize);
             if(new == NULL) {
+
+                InternalNode **end = &(oldBucket->head);
+                while(*end != NULL) {
+                    end = &((*end)->next);
+                }
+                *end= temp;
+
                 return false;
             } 
+
 
             //Free the old node
             MACRO_FREE(temp);
