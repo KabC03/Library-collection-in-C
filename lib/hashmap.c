@@ -68,6 +68,24 @@ void internal_list_remove(InternalList *InternalList, void *key, size_t keySize)
 
     return;
 }
+//Find an item in a list
+void *internal_list_find(InternalList *InternalList, void *key, size_t keySize) {
+
+    InternalNode *current = InternalList->head;
+    while(current != NULL) {
+
+        if(current->keySize == keySize) {
+            if(MACRO_MEMCMP(current->data, key, keySize) == 0) { //Found item
+
+                return ((uint8_t*)(current->data) + keySize);
+            }
+        }
+
+        current = current->next;
+    }
+
+    return NULL;
+}
 //Destroy a list
 void internal_list_destroy(InternalList *InternalList) {
 
@@ -219,7 +237,22 @@ void hashmap_remove(Hashmap *hashmap, void *key, size_t keySize) {
 }
 
 
+/**
+ * @brief :: Find an item in a hashmap 
+ *
+ * @param :: *hashmap :: Hashmap of interest 
+ * @param :: *key :: Key of interest 
+ * @param :: keySize :: Size of key 
+ * 
+ * @return :: void* :: Pointer to value in map
+ */
+void *hashmap_find(Hashmap *hashmap, void *key, size_t keySize) {
 
+    size_t bucketIndex = hashmap->hashmapFunction(key, keySize, hashmap->buckets.capacity);
+    InternalList *internalList = vector_access_index(&(hashmap->buckets), bucketIndex);
+
+    return internal_list_find(internalList, key, keySize);
+}
 
 
 

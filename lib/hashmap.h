@@ -25,7 +25,7 @@ bool hashmap_init(Hashmap *hashmap, size_t buckets, size_t (*hashmap_hash)(uint8
 void hashmap_destroy(Hashmap *hashmap);
 void *hashmap_insert(Hashmap *hashmap, void *key, size_t keySize, void *value, size_t valueSize);
 void hashmap_remove(Hashmap *hashmap, void *key, size_t keySize);
-
+void *hashmap_find(Hashmap *hashmap, void *key, size_t keySize);
 
 #endif 
 
