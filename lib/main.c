@@ -27,7 +27,7 @@ int main(void) {
     if(!hashmap_find(&h1, &data, sizeof(size_t))) {
         printf("Failed to find %zu\n", data);
     }
-    if(!hashmap_rehash(&h1, 5, hashmap_djb2)) {
+    if(!hashmap_rehash(&h1, 100, hashmap_djb2)) {
         printf("Rehash failed\n");
         return 1;
     }
