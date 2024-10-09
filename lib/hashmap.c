@@ -104,6 +104,121 @@ void internal_list_destroy(InternalList *InternalList) {
 
 
 /**
+ * @brief :: Helper function for printing size_t (for use in hashmap_disp) 
+ *
+ * @param :: *ptr :: Item to be printed
+ * 
+ * @return :: void
+ */
+void hashmap_print_size_t(void *ptr) {
+
+    if(ptr == NULL) {
+        return;
+    } else {
+        printf("%zu", *((size_t*)ptr));
+    }
+    return;
+}
+/**
+ * @brief :: Helper function for printing integers (for use in hashmap_disp) 
+ *
+ * @param :: *ptr :: Item to be printed
+ * 
+ * @return :: void
+ */
+void hashmap_print_integer(void *ptr) {
+
+    if(ptr == NULL) {
+        return;
+    } else {
+        printf("%d", *((int*)ptr));
+    }
+    return;
+}
+
+
+
+/**
+ * @brief :: Helper function for printing uint8_t (for use in hashmap_disp) 
+ *
+ * @param :: *ptr :: Item to be printed
+ * 
+ * @return :: void
+ */
+void hashmap_print_uint8_t(void *ptr) {
+
+    if(ptr == NULL) {
+        return;
+    } else {
+        printf("%u", *((uint8_t*)ptr));
+    }
+    return;
+}
+
+/**
+ * @brief :: Helper function for printing strings (for use in hashmap_disp) 
+ *
+ * @param :: *ptr :: Item to be printed
+ * 
+ * @return :: void
+ */
+void hashmap_print_string(void *ptr) {
+
+    if(ptr == NULL) {
+        return;
+    } else {
+        printf("%s", (char*)ptr);
+    }
+    return;
+}
+
+/**
+ * @brief :: Display a hashmap and its contents
+ *
+ * @param :: *input :: Input to be hashed 
+ * @param :: inputSize :: Size of the input 
+ * @param :: buckets :: Number of buckets in the map 
+ * 
+ * @return :: void
+ */
+void hashmap_disp(Hashmap *hashmap, void (print_key)(void *key), void (print_value)(void *value)) {
+
+
+    printf("==============HASHMAP STATUS==============\n");
+    size_t buckets = hashmap->buckets.top;
+    printf("BUCKET\t||\tKEY\t||\tVALUE\n");
+    printf("==========================================\n");
+    for(size_t i = 0; i < buckets; i++) {
+
+        InternalList *internalList = vector_access_index(&(hashmap->buckets), i);
+        if(internalList == NULL) {
+            printf("\t||\n");
+            continue;
+        }
+
+
+        InternalNode *current = internalList->head;
+        if(current == NULL) {
+            printf("\t||\n");
+            continue;
+        }
+        while(current != NULL) {
+
+            printf("%zu",i);
+            printf("\t||\t");
+            print_key(current->data);
+            printf("\t||\t");
+            print_value(((uint8_t*)current->data + current->keySize));
+            printf("\t||\n");
+            current = current->next;
+        }
+        printf("------------------------------------------\n");
+    }
+    printf("==========================================\n");
+    return;
+}
+
+/**
  * @brief :: DJB2 hash of an input stream of bytes 
  *
  * @param :: *input :: Input to be hashed 

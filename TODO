@@ -19,7 +19,6 @@
     - Convolve audio files
 
 - Hashmaps
-    - Rehash(change function and resize table)
     - Print hashmap
 
 - Strings

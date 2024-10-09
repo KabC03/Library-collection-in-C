@@ -27,19 +27,19 @@ int main(void) {
     if(!hashmap_find(&h1, &data, sizeof(size_t))) {
         printf("Failed to find %zu\n", data);
     }
-    if(!hashmap_rehash(&h1, 20, hashmap_djb2)) {
+    if(!hashmap_rehash(&h1, 5, hashmap_djb2)) {
         printf("Rehash failed\n");
         return 1;
     }
 
     for(size_t i = 0; i < 50; i++) {
         if(!hashmap_find(&h1, &i, sizeof(size_t))) {
-            printf("Didnt rehash\n");
+            printf("Didnt rehash %zu\n", i);
             return 1;
         }
     }
 
-
+    hashmap_disp(&h1, hashmap_print_size_t, hashmap_print_size_t);
 
 
     hashmap_destroy(&h1);

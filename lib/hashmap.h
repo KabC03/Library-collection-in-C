@@ -8,7 +8,6 @@
 #include <string.h>
 #include <stdint.h>
 #include "vector.h"
-#include "list.h"
 
 typedef struct Hashmap {
 
@@ -20,6 +19,11 @@ typedef struct Hashmap {
 
 
 
+void hashmap_print_size_t(void *ptr);
+void hashmap_print_integer(void *ptr);
+void hashmap_print_uint8_t(void *ptr);
+void hashmap_print_string(void *ptr);
+void hashmap_disp(Hashmap *hashmap, void (print_key)(void *key), void (print_value)(void *value));
 size_t hashmap_djb2(uint8_t *input, size_t inputSize, size_t buckets);
 bool hashmap_init(Hashmap *hashmap, size_t buckets, size_t (*hashmap_hash)(uint8_t *input, size_t keySize, size_t buckets));
 void hashmap_destroy(Hashmap *hashmap);
