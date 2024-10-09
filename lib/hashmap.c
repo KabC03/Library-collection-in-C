@@ -30,7 +30,7 @@ void internal_list_init(InternalList *internalList) {
     return;
 }
 //Insert at front, list is unchanged otherwise
-void *internal_list_append(InternalList *internalList, size_t keySize, size_t valueSize, void *key, void *value) {
+void *internal_list_append(InternalList *internalList, void *key, size_t keySize, void *value, size_t valueSize) {
 
     InternalNode *newNode = MACRO_MALLOC(1, sizeof(InternalNode) + keySize + valueSize); 
     if(newNode == NULL) {
@@ -170,9 +170,12 @@ void *hashmap_insert(Hashmap *hashmap, void *key, size_t keySize, void *value, s
     size_t bucketIndex = hashmap->hashmapFunction(key, keySize, hashmap->buckets.capacity);
     InternalList *internalList = vector_access_index(&(hashmap->buckets), bucketIndex);
 
-    
+    InternalNode *new = internal_list_append(internalList, key, keySize, value, valueSize);
+    if(new == NULL) {
+        return false;
+    } 
 
-    return;
+    return ((uint8_t*)(new->data) + keySize);
 }
 
 
