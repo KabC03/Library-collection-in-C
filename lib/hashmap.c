@@ -177,10 +177,10 @@ void hashmap_destroy(Hashmap *hashmap) {
  * @brief :: Insert an item to a hashmap. Upon failure the map is unchanged
  *
  * @param :: *hashmap :: Hashmap of interest 
- * @param :: *key :: Hashmap of interest 
- * @param :: keySize :: Hashmap of interest 
- * @param :: *value :: Hashmap of interest 
- * @param :: valueSize :: Hashmap of interest 
+ * @param :: *key :: Key of interest 
+ * @param :: keySize :: Size of key 
+ * @param :: *value :: value of interest 
+ * @param :: valueSize :: Size of value 
  * 
  * @return :: void* :: Pointer to new element in map 
  */
@@ -199,7 +199,24 @@ void *hashmap_insert(Hashmap *hashmap, void *key, size_t keySize, void *value, s
 
 
 
+/**
+ * @brief :: Delete an item from a hashmap 
+ *
+ * @param :: *hashmap :: Hashmap of interest 
+ * @param :: *key :: Key of interest 
+ * @param :: keySize :: Size of key 
+ * 
+ * @return :: void
+ */
+void hashmap_remove(Hashmap *hashmap, void *key, size_t keySize) {
 
+    size_t bucketIndex = hashmap->hashmapFunction(key, keySize, hashmap->buckets.capacity);
+    InternalList *internalList = vector_access_index(&(hashmap->buckets), bucketIndex);
+
+    internal_list_remove(internalList, key, keySize);
+
+    return;
+}
 
 
 

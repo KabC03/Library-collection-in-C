@@ -23,6 +23,9 @@ typedef struct Hashmap {
 size_t hashmap_djb2(uint8_t *input, size_t inputSize, size_t buckets);
 bool hashmap_init(Hashmap *hashmap, size_t buckets, size_t (*hashmap_hash)(uint8_t *input, size_t keySize, size_t buckets));
 void hashmap_destroy(Hashmap *hashmap);
+void *hashmap_insert(Hashmap *hashmap, void *key, size_t keySize, void *value, size_t valueSize);
+void hashmap_remove(Hashmap *hashmap, void *key, size_t keySize);
+
 
 #endif 
 
