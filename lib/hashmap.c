@@ -186,7 +186,7 @@ void hashmap_disp(Hashmap *hashmap, void (print_key)(void *key), void (print_val
 
     printf("==============HASHMAP STATUS==============\n");
     size_t buckets = hashmap->buckets.top;
-    printf("BUCKET\t||\tKEY\t||\tVALUE\n");
+    printf("BUCKET\t||\tKEY\t||\tVALUE\t||\n");
     printf("==========================================\n");
     for(size_t i = 0; i < buckets; i++) {
 
