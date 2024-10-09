@@ -224,7 +224,10 @@ void *vector_set_index(Vector *vector, void *data, size_t index) {
 
     void *dest = &((vector->data)[index * vector->dataSize]);
     MACRO_MEMCPY(dest, data, vector->dataSize);
-    vector->top = index; 
+
+    if(index > vector->top - 1) {
+        vector->top = index + 1; 
+    }
     return dest;
 }
 

@@ -19,7 +19,9 @@ int main(void) {
         }
     }
 
-    size_t data = 1000;
+
+    size_t data = 20;
+    hashmap_remove(&h1, &data, sizeof(size_t));
     if(!hashmap_find(&h1, &data, sizeof(size_t))) {
         printf("Failed to find %zu\n", data);
     }
