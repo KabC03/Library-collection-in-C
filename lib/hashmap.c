@@ -47,6 +47,27 @@ void *internal_list_append(InternalList *internalList, void *key, size_t keySize
 
     return newNode;
 }
+//Remove an item from a list
+void internal_list_remove(InternalList *InternalList, void *key, size_t keySize) {
+
+    InternalNode **current = &(InternalList->head);
+    while(*current != NULL) {
+
+        if((*current)->keySize == keySize) {
+            if(MACRO_MEMCMP((*current)->data, key, keySize) == 0) { //Found item
+
+                InternalNode *temp = *current;
+                (*current) = (*current)->next;
+                MACRO_FREE(temp);
+                break;
+            }
+        }
+
+        current = &((*current)->next);
+    }
+
+    return;
+}
 //Destroy a list
 void internal_list_destroy(InternalList *InternalList) {
 
@@ -60,8 +81,6 @@ void internal_list_destroy(InternalList *InternalList) {
 
     return;
 }
-
-
 
 
 
