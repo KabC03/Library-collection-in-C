@@ -59,6 +59,7 @@ void internal_list_remove(InternalList *InternalList, void *key, size_t keySize)
                 InternalNode *temp = *current;
                 (*current) = (*current)->next;
                 MACRO_FREE(temp);
+                return;
                 break;
             }
         }
@@ -156,8 +157,6 @@ size_t (*hashmap_hash)(uint8_t *input, size_t keySize, size_t buckets)) {
             vector_destroy(&(hashmap->buckets));
             return false;
         }
-
-
     } 
 
     return true;
@@ -175,7 +174,7 @@ size_t (*hashmap_hash)(uint8_t *input, size_t keySize, size_t buckets)) {
  */
 void hashmap_destroy(Hashmap *hashmap) {
 
-    size_t buckets = hashmap->buckets.capacity;
+    size_t buckets = hashmap->buckets.top;
 
     for(size_t i = 0; i < buckets; i++) {
         InternalList *current = vector_access_index(&(hashmap->buckets), i);
@@ -218,7 +217,7 @@ void *hashmap_insert(Hashmap *hashmap, void *key, size_t keySize, void *value, s
 
 
 /**
- * @brief :: Delete an item from a hashmap 
+ * @brief :: Delete an item from a hashmap
  *
  * @param :: *hashmap :: Hashmap of interest 
  * @param :: *key :: Key of interest 
@@ -228,7 +227,7 @@ void *hashmap_insert(Hashmap *hashmap, void *key, size_t keySize, void *value, s
  */
 void hashmap_remove(Hashmap *hashmap, void *key, size_t keySize) {
 
-    size_t bucketIndex = hashmap->hashmapFunction(key, keySize, hashmap->buckets.capacity);
+    size_t bucketIndex = hashmap->hashmapFunction(key, keySize, hashmap->buckets.top);
     InternalList *internalList = vector_access_index(&(hashmap->buckets), bucketIndex);
 
     internal_list_remove(internalList, key, keySize);
@@ -248,11 +247,93 @@ void hashmap_remove(Hashmap *hashmap, void *key, size_t keySize) {
  */
 void *hashmap_find(Hashmap *hashmap, void *key, size_t keySize) {
 
-    size_t bucketIndex = hashmap->hashmapFunction(key, keySize, hashmap->buckets.capacity);
+    size_t bucketIndex = hashmap->hashmapFunction(key, keySize, hashmap->buckets.top);
     InternalList *internalList = vector_access_index(&(hashmap->buckets), bucketIndex);
 
     return internal_list_find(internalList, key, keySize);
 }
 
 
+
+
+/**
+ * @brief :: Rehash a hashmap and assign it a new function and size. The map is irreversibly altered upon failure
+ *
+ * @param :: *hashmap :: Hashmap of interest 
+ * @param :: buckets :: New amount of buckets in the map 
+ * @param :: hashmap_hash :: New hash function for the map 
+ * 
+ * @return :: bool :: Indication of rehash was successful 
+ */
+bool hashmap_rehash(Hashmap *hashmap, size_t buckets, 
+size_t (*hashmap_hash)(uint8_t *input, size_t keySize, size_t buckets)) {
+
+    hashmap->hashmapFunction = hashmap_hash;
+    size_t oldSize = hashmap->buckets.top;
+    //If new size is larger, alloacte more space
+    if(buckets > oldSize) {
+        //Allocate more buckets
+        InternalList internalList;
+        internal_list_init(&internalList);
+        for(size_t i = oldSize; i < buckets; i++) {
+            if(vector_append(&(hashmap->buckets), &internalList, 1) == NULL) {
+                //Dont destroy the map so it can still be destroyed explicity
+                return false;
+            }
+        } 
+    }
+
+    for(size_t i = 0; i < oldSize; i++) {
+        //Iterate through list, rehash, append to front then remove current node
+        InternalList *oldBucket = vector_access_index(&(hashmap->buckets), i);
+
+        InternalNode **current = &(oldBucket->head);
+        while(*current != NULL) {
+            InternalNode *temp = *current;
+
+            //Skip the current node
+            (*current) = (*current)->next; //Skip the node
+            current = &((*current)->next);
+
+
+            //Extract data from old node
+            size_t keySize = temp->keySize;
+            size_t valueSize = temp->valueSize;
+            void *key = temp->data;
+            void *value = (uint8_t*)(temp->data + valueSize);
+
+
+            //Insertion
+            size_t bucketIndex = hashmap->hashmapFunction(key, keySize, buckets);
+            InternalList *internalList = vector_access_index(&(hashmap->buckets), bucketIndex);
+            //Insert at the front
+            InternalNode *new = internal_list_append(internalList, key, keySize, value, valueSize);
+            if(new == NULL) {
+                return false;
+            } 
+
+            //Free the old node
+            MACRO_FREE(temp);
+        }
+
+
+    }
+
+
+    //If map shrunk then resize it smaller
+    if(buckets < oldSize) {
+        //Free upper list nodes
+        for(size_t i = buckets; i < oldSize; i++) {
+            InternalList *list = vector_access_index(&(hashmap->buckets),i);
+            internal_list_destroy(list);
+        }
+
+        //Resize the map
+        if(vector_resize(&(hashmap->buckets), buckets) == false) {
+            return false;
+        }
+    }
+
+    return true;
+}
 

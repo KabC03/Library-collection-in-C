@@ -26,6 +26,8 @@ void hashmap_destroy(Hashmap *hashmap);
 void *hashmap_insert(Hashmap *hashmap, void *key, size_t keySize, void *value, size_t valueSize);
 void hashmap_remove(Hashmap *hashmap, void *key, size_t keySize);
 void *hashmap_find(Hashmap *hashmap, void *key, size_t keySize);
+bool hashmap_rehash(Hashmap *hashmap, size_t buckets, size_t (*hashmap_hash)(uint8_t *input, size_t keySize, size_t buckets));
+
 
 #endif 
 
