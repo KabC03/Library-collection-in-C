@@ -12,7 +12,7 @@
 
 typedef struct Vector {
 
-    uint8_t *data;
+    uint8_t *data; //Dont use a FLM here since it means entire structure needs to be reallocated upon reisze
     size_t top;
     size_t capacity;
     uint8_t dataSize;
