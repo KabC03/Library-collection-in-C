@@ -2,48 +2,33 @@
 #include "bitmap.h"
 #include "hashmap.h"
 #include "list.h"
+#include "matrix.h"
+
+
+void mul(void *dest, void *m1, void *m2) {
+
+    *((int*)dest) = *((int*)m1) * *((int*)m2);
+
+    return;
+}
 
 
 int main(void) {
 
-    Hashmap h1;
-    if(!hashmap_init(&h1, 10, hashmap_djb2)) {
-        printf("Init failed\n");
-        return 1;
-    }
+    int data[] = {1,2,3,4};
 
-    for(size_t i = 0; i < 50; i++) {
-        if(!hashmap_insert(&h1, &i, sizeof(size_t), &i, sizeof(size_t))) {
-            printf("Failed to add %zu\n", i);
-            return 1;
-        }
-    }
+    Matrix m1;
+    Matrix m2;
 
+    matrix_init(&m1, sizeof(int), 2, 2);
+    matrix_init(&m2, sizeof(int), 2, 2);
 
+    matrix_fill(&m1, data);
+    matrix_fill(&m2, data);
 
+    matrix_multiply(&m2, &m1, &m2, mul);
 
-    size_t data = 90;
-    hashmap_remove(&h1, &data, sizeof(size_t));
-    if(!hashmap_find(&h1, &data, sizeof(size_t))) {
-        printf("Failed to find %zu\n", data);
-    }
-    if(!hashmap_rehash(&h1, 10, hashmap_djb2)) {
-        printf("Rehash failed\n");
-        return 1;
-    }
-
-    for(size_t i = 0; i < 50; i++) {
-        if(!hashmap_find(&h1, &i, sizeof(size_t))) {
-            printf("Didnt rehash %zu\n", i);
-            return 1;
-        }
-    }
-
-    hashmap_disp(&h1, hashmap_print_size_t, hashmap_print_size_t);
-
-
-    hashmap_destroy(&h1);
-
+    matrix_disp(&m2, vector_print_integer);
 
     return 0;
 }

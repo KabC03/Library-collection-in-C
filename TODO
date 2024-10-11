@@ -26,12 +26,10 @@
 
 
 - Mat2D
-    - Addition
-    - Subtraction
-    - Multiplication
-    - Fill
-    - Instantiate
-    - Set
-    - Destroy
     - Determinant
     - Inverse (Gaussian elimination)
+    - Scale
+    - Transpose
+    - Multiply
+    - Activate
+    - Multiply

@@ -30,7 +30,7 @@ bool vector_resize(Vector *vector, size_t numel );
 void *vector_append(Vector *vector, void *data, size_t numel);
 void *vector_access_index(Vector *vector, size_t index);
 void *vector_set_index(Vector *vector, void *data, size_t index);
-
+void vector_fill(Vector *vector, void *data);
 
 #endif 
 

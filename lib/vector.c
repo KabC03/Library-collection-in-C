@@ -218,7 +218,7 @@ void *vector_access_index(Vector *vector, size_t index) {
  * @param :: *data :: Data to place into vector
  * @param :: index ::  Index of access
  * 
- * @return :: void :: Data at index of interest
+ * @return :: void* :: Data at index of interest
  */
 void *vector_set_index(Vector *vector, void *data, size_t index) {
 
@@ -232,7 +232,25 @@ void *vector_set_index(Vector *vector, void *data, size_t index) {
 }
 
 
+/**
+ * @brief :: Fill a matrix with data 
+ *
+ * @param :: *vector :: Vector of interest
+ * @param :: *data :: Data to place into vector
+ * 
+ * @return :: void
+ */
+void vector_fill(Vector *vector, void *data) {
 
+    vector->top = vector->capacity;
+    uint8_t *ptr = data;
+    for(size_t i = 0; i < vector->top; i++) {
+        size_t index = i * vector->dataSize;
+        MACRO_MEMCPY(&((vector->data)[index]), &((ptr)[index]), vector->dataSize);
+    }
+
+    return;    
+}
 
 
 
