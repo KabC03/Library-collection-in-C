@@ -7,7 +7,7 @@
     }
 
 
-
+    
 
 
 
@@ -23,6 +23,10 @@ void matrix_disp(Matrix *matrix, void print_element(void *element)) {
 
     MACRO_ITERATE_MATRIX(matrix, {
         print_element(current);
+
+        if((i + 1) % matrix->cols == 0) {
+            printf("\n");
+        }
     });
 
     return;
@@ -131,6 +135,18 @@ void matrix_sub(Matrix *dest, Matrix *src1, Matrix *src2, void sub_element(void 
 
 
 
+//Function to multiply two matrix elements together
+void matrix_multiply_element_float(Matrix *dest, Matrix *src1, Matrix *src2, size_t i, size_t j) {
+
+    float sum = 0;
+    for(size_t k = 0; k < src1->cols; k++) {
+        sum += *(float*)((src1->data.data) + (i * src1->cols * src1->data.dataSize) + (k * src1->data.dataSize)) *
+        *(float*)((src2->data.data) + (k * src2->cols * src2->data.dataSize) + (j * src2->data.dataSize));
+    }
+    *(float*)((dest->data.data) + (i * dest->cols * dest->data.dataSize) + (j * dest->data.dataSize)) = sum;
+
+    return;
+}
 
 
 /**
@@ -143,22 +159,68 @@ void matrix_sub(Matrix *dest, Matrix *src1, Matrix *src2, void sub_element(void 
  * 
  * @return :: void 
  */
-void matrix_multiply(Matrix *dest, Matrix *src1, Matrix *src2, void multiply_element(void *dest, void *src1, void *src2)) {
+void matrix_multiply(Matrix *dest, Matrix *src1, Matrix *src2, 
+void multiply_element(Matrix *dest, Matrix *src1, Matrix *src2, size_t i, size_t j)) {
 
-    size_t size = src1->data.dataSize;
-    for(size_t i = 0; i < src1->rows; i++) {
-        for(size_t j = 0; j < src2->cols; j++) {
-            //For each element - handles sum
-            //void *src1Element = dest->data.data + i * size + j;
-            //void *src2Element = dest->data.data + j * size + i;
-            //void *= 0;
-
-            multiply_element(destElement, src1Element, src2Element);
+    for(size_t i = 0; i < src1->rows; i++) { //For row
+        for(size_t j = 0; j < src2->cols; j++) { //For col
+        
+            multiply_element(dest, src1, src2, i, j);
         }
     }
 
     return;
 }
+
+
+
+
+
+//Scale a matrix by 2 (this is a test function)
+void matrix_activate_scale_2(void *element) {
+
+    *(float*)(element) = *(float*)(element) * 2;
+    return;
+}
+
+
+/**
+ * @brief :: Activate a matrix with a function 
+ *
+ * @param :: *matrix:: Matrix to activate 
+ * @param :: *activate :: Function to activate matrix with 
+ * 
+ * @return :: void 
+ */
+void matrix_activate(Matrix *matrix, void activate(void *element)) {
+
+    MACRO_ITERATE_MATRIX(matrix, {
+        activate(current);
+    });
+
+    return;
+}
+
+
+
+
+
+/**
+ * @brief :: Transpose a matrix 
+ *
+ * @param :: *matrix :: Matrix to be transposed
+ * 
+ * @return :: void 
+ */
+void matrix_transpose(Matrix *matrix) {
+
+    size_t temp = matrix->cols;
+    matrix->cols = matrix->rows;
+    matrix->rows = temp; 
+
+    return;
+}
+
 
 
 

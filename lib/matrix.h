@@ -24,7 +24,19 @@ void matrix_destroy(Matrix *matrix);
 void matrix_fill(Matrix *matrix, void *data);
 void matrix_add(Matrix *dest, Matrix *src1, Matrix *src2, void add_element(void *dest, void *src1, void *src2));
 void matrix_sub(Matrix *dest, Matrix *src1, Matrix *src2, void sub_element(void *dest, void *src1, void *src2));
-void matrix_multiply(Matrix *dest, Matrix *src1, Matrix *src2, void multiply_element(void *dest, void *src1, void *src2));
+
+
+
+void matrix_multiply_element_float(Matrix *dest, Matrix *src1, Matrix *src2, size_t i, size_t j);
+void matrix_multiply(Matrix *dest, Matrix *src1, Matrix *src2, 
+void multiply_element(Matrix *dest, Matrix *src1, Matrix *src2, size_t i, size_t j));
+
+
+void matrix_activate_scale_2(void *element); //Test function
+void matrix_activate(Matrix *matrix, void activate(void *element));
+
+void matrix_transpose(Matrix *matrix);
+
 
 #endif 
 

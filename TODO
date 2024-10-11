@@ -28,8 +28,8 @@
 - Mat2D
     - Determinant
     - Inverse (Gaussian elimination)
-    - Scale
     - Transpose
-    - Multiply
-    - Activate
-    - Multiply
+
+
+
+
