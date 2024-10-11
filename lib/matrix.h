@@ -18,6 +18,7 @@ typedef struct Matrix {
 
 
 
+void matrix_print_float(void *element);
 void matrix_disp(Matrix *matrix, void print_element(void *element));
 bool matrix_init(Matrix *matrix, size_t dataSize, size_t rows, size_t cols);
 void matrix_destroy(Matrix *matrix);
@@ -35,7 +36,7 @@ void multiply_element(Matrix *dest, Matrix *src1, Matrix *src2, size_t i, size_t
 void matrix_activate_scale_2(void *element); //Test function
 void matrix_activate(Matrix *matrix, void activate(void *element));
 
-void matrix_transpose(Matrix *matrix);
+void matrix_transpose(Matrix *dest, Matrix *src);
 
 
 #endif 

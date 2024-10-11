@@ -6,10 +6,25 @@
         code;\
     }
 
+#define MACRO_MALLOC(numel, size) malloc(numel * size)
+#define MACRO_REALLOC(ptr, numel, size) realloc(ptr, numel * size)
+#define MACRO_FREE(ptr) free(ptr)
+#define CONST_REALLOC_EXPANSION 2
+#define MACRO_MEMCPY(dest, src, n) memcpy(dest, src, n)
 
     
+/**
+ * @brief :: Print a float element of a matrix 
+ *
+ * @param :: *element :: Element to be printed
+ * 
+ * @return :: void 
+ */
+void matrix_print_float(void *element) {
 
-
+    printf("%f ", *(float*)(element));
+    return;
+}
 
 /**
  * @brief :: Print a matrix 
@@ -206,17 +221,24 @@ void matrix_activate(Matrix *matrix, void activate(void *element)) {
 
 
 /**
- * @brief :: Transpose a matrix 
+ * @brief :: Transpose a matrix in place
  *
- * @param :: *matrix :: Matrix to be transposed
+ * @param :: *dest :: Destination (In dimensions of desired output already)
+ * @param :: *src:: Src matrix 
  * 
  * @return :: void 
  */
-void matrix_transpose(Matrix *matrix) {
+void matrix_transpose(Matrix *dest, Matrix *src) { //NOT WORKING
 
-    size_t temp = matrix->cols;
-    matrix->cols = matrix->rows;
-    matrix->rows = temp; 
+
+    for(size_t i = 0; i < src->cols; i++) {
+        for(size_t j = 0; j < src->rows; j++) {
+            size_t indexSrc = (i * src->cols + j) * src->data.dataSize;
+            size_t indexDest = (j * dest->rows + i) * dest->data.dataSize;
+
+            MACRO_MEMCPY(dest->data.data + indexDest, src->data.data + indexSrc, src->data.dataSize);
+        }
+    }
 
     return;
 }
