@@ -221,22 +221,21 @@ void matrix_activate(Matrix *matrix, void activate(void *element)) {
 
 
 /**
- * @brief :: Transpose a matrix in place
+ * @brief :: Transpose a matrix
  *
  * @param :: *dest :: Destination (In dimensions of desired output already)
  * @param :: *src:: Src matrix 
  * 
  * @return :: void 
  */
-void matrix_transpose(Matrix *dest, Matrix *src) { //NOT WORKING
+void matrix_transpose(Matrix *dest, Matrix *src) {
 
-
-    for(size_t i = 0; i < src->cols; i++) {
-        for(size_t j = 0; j < src->rows; j++) {
-            size_t indexSrc = (i * src->cols + j) * src->data.dataSize;
-            size_t indexDest = (j * dest->rows + i) * dest->data.dataSize;
-
-            MACRO_MEMCPY(dest->data.data + indexDest, src->data.data + indexSrc, src->data.dataSize);
+    //Assume dest is already the correct dimensions
+    for(size_t i = 0; i < src->rows; i++) {
+        for(size_t j = 0; j < src->cols; j++) {
+            void *srcAdr = src->data.data + (src->cols * i + j) * src->data.dataSize;
+            void *destAdr = dest->data.data + (dest->cols * j + i) * dest->data.dataSize;
+            MACRO_MEMCPY(destAdr, srcAdr, src->data.dataSize);
         }
     }
 
