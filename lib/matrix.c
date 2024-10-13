@@ -282,7 +282,7 @@ void matrix_randomise_float(void *element, void *min, void *max) {
 void matrix_randomise(Matrix *matrix, void *min, void *max, void randomise(void *element, void *min, void *max)) {
 
     //Assume dest is already the correct dimensions
-    for(size_t i = 0; i < matrix->rows; i++) {
+    for(size_t i = 0; i < matrix->rows * matrix->cols; i++) {
         void *element = matrix->data.data + i * matrix->data.dataSize; 
         randomise(element, min, max);
     }
