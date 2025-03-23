@@ -1,5 +1,4 @@
 - Queues
-    - Enqueue, dequeue, peak, print, initialise, destroy
     - Priority Queue versions of above functions
 
 - Bitmaps (focus on depths > 8)
