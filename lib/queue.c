@@ -142,3 +142,31 @@ QueueNode *queue_dequeue(Queue *queue) {
 	return returnNode;
 } 
 
+
+
+/**
+ * @brief :: Destroy memory associated with a queue 
+ *
+ * @param :: *queue :: Queue to destroy
+ * 
+ * @return :: void
+ */
+void queue_destroy(Queue *queue) {
+
+	QueueNode *current = queue->tail;
+	QueueNode *freeNode = queue->tail;
+	queue->head = NULL;
+
+	while(current != NULL) {
+		current = current->next;
+		freeNode = current;
+		current = current->next;
+		free(freeNode);
+	}	
+
+	return;
+}
+
+
+
+
