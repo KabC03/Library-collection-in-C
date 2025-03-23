@@ -30,6 +30,7 @@ void queue_disp(Queue *queue, void print_element(void *element));
 void queue_init(Queue *queue, unsigned short int dataSize);
 bool queue_enqueue(Queue *queue, void *data);
 QueueNode *queue_dequeue(Queue *queue);
+void queue_destroy(Queue *queue);
 
 #endif
 
