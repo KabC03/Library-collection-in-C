@@ -57,10 +57,10 @@ void queue_disp(Queue *queue, void print_element(void *element)) {
         return;
     }
 
-    printf("\tData size: %d\nSize: %zu\n", queue->dataSize, queue->size);
+    printf("\tData size: %d\n\tSize: %zu\n", queue->dataSize, queue->size);
 
     printf("Data:\n");
-    QueueNode *current = queue->head;
+    QueueNode *current = queue->tail;
     for(size_t i = 0; i < queue->size; i++) { //Get to the last item in the list
         print_element(current->data);
         current = current->next; 
@@ -111,22 +111,20 @@ size_t queue_get_size(Queue *queue) {
  */
 bool queue_enqueue(Queue *queue, void *data) {
 
-    queue->size++;
 	QueueNode *newNode = MACRO_MALLOC(1, sizeof(QueueNode) + queue->dataSize);
+	newNode->next = NULL; 
 	if(newNode == NULL) {
 		return false;
 	}
 	if(queue->head != NULL) {
 		queue->head->next = newNode; 
-	}
-	newNode->next = NULL; 
+	} else { //Empty queue
+		queue->tail = newNode;
+    }
 	queue->head = newNode;
 	MACRO_MEMCPY(newNode->data, data, queue->dataSize);
 
-	if(queue->tail == NULL) { //Empty list
-		queue->tail = newNode;
-	}
-
+    queue->size++;
 	return true;
 } 
 
@@ -157,10 +155,10 @@ QueueNode *queue_dequeue(Queue *queue) {
     
     queue->size--;
 	QueueNode *returnNode = queue->tail;
-	if(queue->head == queue->tail) { //Was last node in the list 
+	queue->tail = queue->tail->next;
+	if(queue->tail == NULL) { //Was last node in the list 
 		queue->head = NULL;
 	}
-	queue->tail = queue->tail->next;
 
 	return returnNode;
 } 
