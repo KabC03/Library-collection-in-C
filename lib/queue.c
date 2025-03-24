@@ -57,7 +57,7 @@ void queue_disp(Queue *queue, void print_element(void *element)) {
         return;
     }
 
-    printf("\tData size: %d\n", queue->dataSize);
+    printf("\tData size: %d\nSize: %zu\n", queue->dataSize, queue->size);
 
     printf("Data:\n");
     QueueNode *current = queue->head;
@@ -81,6 +81,7 @@ void queue_disp(Queue *queue, void print_element(void *element)) {
  */
 void queue_init(Queue *queue, unsigned short int dataSize) {
 
+    queue->size = 0;
 	queue->dataSize = dataSize;	
 	queue->head = NULL;
 	queue->tail = NULL;
@@ -101,6 +102,7 @@ void queue_init(Queue *queue, unsigned short int dataSize) {
  */
 bool queue_enqueue(Queue *queue, void *data) {
 
+    queue->size++;
 	QueueNode *newNode = MACRO_MALLOC(1, sizeof(QueueNode) + queue->dataSize);
 	if(newNode == NULL) {
 		return false;
@@ -122,6 +124,17 @@ bool queue_enqueue(Queue *queue, void *data) {
 
 
 
+/**
+ * @brief :: Peak a queue node 
+ *
+ * @param :: *queue :: Queue to peak from 
+ * 
+ * @return :: QueueNode :: Peaked node 
+ */
+QueueNode *queue_peak(Queue *queue) {
+    
+	return queue->tail;
+} 
 
 
 /**
@@ -132,7 +145,8 @@ bool queue_enqueue(Queue *queue, void *data) {
  * @return :: QueueNode :: Dequeued node 
  */
 QueueNode *queue_dequeue(Queue *queue) {
-
+    
+    queue->size--;
 	QueueNode *returnNode = queue->tail;
 	if(queue->head == queue->tail) { //Was last node in the list 
 		queue->head = NULL;
@@ -153,6 +167,7 @@ QueueNode *queue_dequeue(Queue *queue) {
  */
 void queue_destroy(Queue *queue) {
 
+    queue->size = 0;
 	QueueNode *current = queue->tail;
 	QueueNode *freeNode = queue->tail;
 	queue->head = NULL;

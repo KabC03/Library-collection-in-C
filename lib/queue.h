@@ -1,4 +1,4 @@
-//23 Mar
+//24 Mar
 #ifndef QUEUE_H 
 #define QUEUE_H
 #include <stdlib.h>
@@ -16,6 +16,7 @@ typedef struct QueueNode {
 
 typedef struct Queue {
 
+    size_t size;
 	unsigned short int dataSize;
 	struct QueueNode *head;
 	struct QueueNode *tail;
@@ -30,6 +31,7 @@ void queue_disp(Queue *queue, void print_element(void *element));
 void queue_init(Queue *queue, unsigned short int dataSize);
 bool queue_enqueue(Queue *queue, void *data);
 QueueNode *queue_dequeue(Queue *queue);
+QueueNode *queue_peak(Queue *queue);
 void queue_destroy(Queue *queue);
 
 #endif
