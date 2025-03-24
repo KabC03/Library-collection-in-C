@@ -29,6 +29,7 @@ void queue_print_uint8_t(void *ptr);
 void queue_print_integer(void *ptr);
 void queue_disp(Queue *queue, void print_element(void *element));
 void queue_init(Queue *queue, unsigned short int dataSize);
+size_t queue_get_size(Queue *queue);
 bool queue_enqueue(Queue *queue, void *data);
 QueueNode *queue_dequeue(Queue *queue);
 QueueNode *queue_peak(Queue *queue);

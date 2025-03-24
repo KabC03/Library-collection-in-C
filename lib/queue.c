@@ -61,7 +61,7 @@ void queue_disp(Queue *queue, void print_element(void *element)) {
 
     printf("Data:\n");
     QueueNode *current = queue->head;
-    while(current != NULL) { //Get to the last item in the list
+    for(size_t i = 0; i < queue->size; i++) { //Get to the last item in the list
         print_element(current->data);
         current = current->next; 
     }
@@ -89,7 +89,16 @@ void queue_init(Queue *queue, unsigned short int dataSize) {
 }
 
 
-
+/**
+ * @brief :: Get a queue size 
+ *
+ * @param :: *queue :: Queue to insert to 
+ * 
+ * @return :: size_t :: Queue size
+ */
+size_t queue_get_size(Queue *queue) {
+    return queue->size;
+}
 
 
 /**
