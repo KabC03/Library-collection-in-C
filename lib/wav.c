@@ -34,12 +34,10 @@ bool wav_init(Wav *wav, FILE *fptr) {
         return false; 
     }
 
-    //This is a bit scuffed - shouldnt really be doing manual access on vectors like this
-    if(fread(wav->data.data, wav->wavHeader.subchunk2Size, 1, fptr) != 1) {
-        vector_destroy(&(wav->data));
+    if(vector_fread_append(&(wav->data), fptr, wav->wavHeader.subchunk2Size) == NULL) {
         return false;
     }
-    wav->data.top = wav->wavHeader.subchunk2Size;
+
     return true;
 }
 

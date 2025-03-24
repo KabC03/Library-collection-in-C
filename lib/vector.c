@@ -1,5 +1,5 @@
 #include "vector.h"
-//23 September 2024
+//24 Mar 2025
 
 #define MACRO_MALLOC(numel, size) malloc(numel * size)
 #define MACRO_REALLOC(ptr, numel, size) realloc(ptr, numel * size)
@@ -116,6 +116,40 @@ bool vector_init(Vector *vector, uint8_t dataSize, size_t numel) {
 
     return true;
 }
+
+
+
+/**
+ * @brief :: Append a file stream into a vector, destroys vector on failure
+ *
+ * @param :: *vector :: Vector destination 
+ * @param :: *fptr :: Open file pointer
+ *
+ * @return :: void* :: Newly appended elements 
+ */
+void *vector_fread_append(Vector *vector, FILE *fptr, size_t numel) {
+    
+    if(vector->capacity >= vector->top + numel) {
+        //No reallocation required
+    } else {
+        //Allocation required
+        vector->data = MACRO_REALLOC(vector->data, (vector->capacity + numel) * CONST_REALLOC_EXPANSION, vector->dataSize);
+        if(vector->data == NULL) {
+            //NOTE: Realloc function is responsible for maintaining original vector state if allocation fails 
+            return NULL;
+        } else {
+            vector->capacity = (vector->capacity + numel) * CONST_REALLOC_EXPANSION;
+        }
+    }
+    void *position = vector->data + vector->top * vector->dataSize;
+    vector->top += numel;
+    if(fread(position, vector->dataSize, numel, fptr) != numel) {
+        vector_destroy(vector);
+        return NULL;
+    }
+    return position;
+}
+
 
 
 
