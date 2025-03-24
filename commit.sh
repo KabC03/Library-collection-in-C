@@ -20,7 +20,7 @@ fi
 
 
 
-git push -force
+git push --force
 if [[ $? -ne 0 ]]; then
 
     printf "\n\n[SHELL] Unable to push to repo\n\n"
