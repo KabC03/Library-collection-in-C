@@ -3,25 +3,16 @@
 #include <assert.h>
 #include "vector.h"
 #include "list.h"
+#include "hashmap.h"
 
 //Graph as an adjacency list
 
-typedef struct GraphNode {
-
-    size_t nodeID; //Store an identifier for the node
-    uint8_t data[];
-
-} GraphNode;
-
 typedef struct GraphList { 
-    //Optimised for node deletion, using a vector here would mean deletions become really slow
-    //Though consider... lots of pointer dereferencing going on here, HORRIBLE cache locality
-    //Maybe in future consider hashing nodeID -> vector index of node
+    //For deletions - do swap and pop
+    Hashmap ID2Index; //Hash node ID -> index into vectors
+    Vector graphNodes; //Vector of graph nodes
+    Vector adjacencyList; //Vector of linked lists (adjacency lists)
 
-    List adjacencyList; //List of linked lists
-    //Was considering directly mapping insertion order -> list index but this makes deletion really hard
-    //Since every node must have its index adjusted once the list resizes
-    List graphNodes; //List of graph nodes
     size_t dataSize;
 
 } GraphList;

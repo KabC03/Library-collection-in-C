@@ -16,32 +16,38 @@
  * @return :: bool :: Indication of success or failure
  */
 bool graph_list_init(GraphList *graphList, size_t initialNumNodes, size_t dataSize) {
-    //Optimised for node deletion, using a vector here would mean deletions become really slow
-    //Though consider... lots of pointer dereferencing going on here, HORRIBLE cache locality
-    //Maybe in future consider hashing nodeID -> vector index of node
+
     graphList->dataSize = dataSize;
-    if(list_init(&(graphList->adjacencyList), sizeof(List)) == false) {
+    if(hashmap_init(&(graphList->ID2Index), initialNumNodes, hashmap_djb2) == false) {
         return false;
     }
-    if(list_init(&(graphList->graphNodes), sizeof(GraphNode) + dataSize) == false) {
-        list_destroy(&(graphList->adjacencyList));
-        return false;
+    if(vector_init(&(graphList->graphNodes), dataSize, initialNumNodes) == false) {
+        goto cleanup_A;
+    }
+    if(vector_init(&(graphList->adjacencyList), sizeof(List), initialNumNodes) == false) {
+        goto cleanup_B;
     }
 
     for(size_t i = 0; i < initialNumNodes; i++) {
-        List *currentList = list_access_index(&(graphList->adjacencyList), i);
 
-        if(list_init(currentList, sizeof(size_t)) == false) { //Allocation failure
+        List *currentList = vector_access_index(&(graphList->adjacencyList), i);
+        if(list_init(currentList, dataSize) == false) {
             for(size_t j = 0; j < i; j++) {
-                currentList = list_access_index(&(graphList->adjacencyList), j);
+                currentList = vector_access_index(&(graphList->adjacencyList), j);
                 list_destroy(currentList);
             }
-            list_destroy(&(graphList->adjacencyList));
-            return false;
+            goto cleanup_C;
         }
     }
 
     return true;
+cleanup_C:
+    vector_destroy(&(graphList->adjacencyList));
+cleanup_B:
+    vector_destroy(&(graphList->graphNodes));
+cleanup_A:
+    hashmap_destroy(&(graphList->ID2Index));
+    return false;
 }
 
 
@@ -59,12 +65,11 @@ bool graph_list_init(GraphList *graphList, size_t initialNumNodes, size_t dataSi
  */
 void *graph_list_insert(GraphList *graphList, Vector *incommincConnections, Vector *outgoingConnections, void *data, size_t nodeID) {
 
-    GraphNode *newNode = MACRO_MALLOC(1, sizeof(GraphNode));
+    uint8_t *newNode = MACRO_MALLOC(1, graphList->dataSize);
     if(newNode == NULL) {
         return NULL;
     }
-    newNode->nodeID = nodeID;
-    MACRO_MEMCPY(newNode->data, data, graphList->dataSize);
+    //Insert nodes into adjacency list by decending order to minimise lookup time
 
 
     return newNode;
