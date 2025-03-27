@@ -147,22 +147,21 @@ bool queue_priority_enqueue(Queue *queue, void *data, size_t priority) {
 	if(newNode == NULL) {
 		return false;
 	}
-	
+
 	newNode->priority = priority;
 	if(queue->head == NULL) {
 		queue->tail = newNode;
-	}
-
-	QueueNode **current = &(queue->head);
-	while(*current != NULL) {
-		if(newNode->priority > (*current)->priority) {
-			current = &((*current)->next);
-		} else {
-			newNode->next = (*current);
-			(*current) = newNode;
+	} else {
+		QueueNode **current = &(queue->head);
+		while(*current != NULL) {
+			if(newNode->priority > (*current)->priority) {
+				current = &((*current)->next);
+			} else {
+				newNode->next = (*current);
+				(*current) = newNode;
+			}
 		}
 	}
-	*current = newNode;
 
 	MACRO_MEMCPY(newNode->data, data, queue->dataSize);
 
