@@ -1,10 +1,12 @@
-#12 Aug
+#27 Mar
 
 library="./lib/*.c"
 
 
 mkdir -p output
-clear && clang $library -Wall -Werror -fsanitize=address -o ./output/exec && ./output/exec 
+clear && clang $library -Wall -Werror -fsanitize=address -o ./output/exec
+echo "Compiled"
+./output/exec 
 
 #xxd ./output/reconstructed.wav > ./data/reconstructed.txt
 #xxd ./data/tone.wav > ./data/input.txt    

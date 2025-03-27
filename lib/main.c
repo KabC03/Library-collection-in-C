@@ -26,6 +26,7 @@ int main(void) {
     for(size_t i = 0; i < 10; i++) {
         queue_priority_enqueue(&q1, &i, 10 - i);
     }
+    printf("Inserted\n");
     queue_disp(&q1, queue_print_integer);
 
 

@@ -149,17 +149,23 @@ bool queue_priority_enqueue(Queue *queue, void *data, size_t priority) {
 	}
 
 	newNode->priority = priority;
-	if(queue->head == NULL) {
-		queue->tail = newNode;
-	} else {
-		QueueNode **current = &(queue->head);
-		while(*current != NULL) {
-			if(newNode->priority > (*current)->priority) {
-				current = &((*current)->next);
-			} else {
-				newNode->next = (*current);
-				(*current) = newNode;
+	QueueNode **current = &(queue->head);
+	while(1) {
+		if(*current == NULL) { //End of list or empty list
+			if(queue->head == NULL) { //Empty list
+				queue->tail = newNode;
 			}
+			newNode->next = NULL;
+			(*current) = newNode;
+			break;
+
+		} else if(newNode->priority > (*current)->priority) {
+			newNode->next = (*current);
+			(*current) = newNode;
+			break;
+			
+		} else {
+			current = &((*current)->next);
 		}
 	}
 
