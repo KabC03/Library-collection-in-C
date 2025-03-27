@@ -194,15 +194,17 @@ cleanup_A:
  * @param :: *graphList :: Graph to initialise
  * @param :: nodeID :: Node to remove
  * 
- * @return :: void
+ * @return :: bool :: Indication of item was found and removed
  */
-void graph_list_delete(GraphList *graphList, size_t nodeID) {
+bool graph_list_delete(GraphList *graphList, size_t nodeID) {
 
     for(size_t i = 0; i < vector_get_size(&(graphList->adjacencyList)); i++) {
 
         List *currentList = vector_access_index(&(graphList->adjacencyList), i);
 
-        list_find_and_delete(currentList, &nodeID); //Delete the node from the other adjacency lists
+        if(list_find_and_delete(currentList, &nodeID) == false) { //Delete the node from the other adjacency lists
+            return false;
+        } 
     }
 
     //Swap and pop out last node
@@ -218,7 +220,7 @@ void graph_list_delete(GraphList *graphList, size_t nodeID) {
     vector_pop(&(graphList->graphNodes));
     hashmap_remove(&(graphList->ID2Index), &nodeID, sizeof(nodeID));
 
-    return;
+    return true;
 }
 
 

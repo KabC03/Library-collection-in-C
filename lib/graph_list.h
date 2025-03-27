@@ -22,7 +22,7 @@ void graph_list_print_integer(void *ptr);
 void graph_list_disp(GraphList *graphList, void (print_element)(void *element));
 bool graph_list_init(GraphList *graphList, size_t initialNumNodes, size_t dataSize);
 void *graph_list_insert(GraphList *graphList, Vector *incommingConnections, Vector *outgoingConnections, void *data, size_t nodeID);
-void graph_list_delete(GraphList *graphList, size_t nodeID);
+bool graph_list_delete(GraphList *graphList, size_t nodeID);
 void *graph_list_set(GraphList *graphList, size_t nodeID, void *data);
 void *graph_list_find(GraphList *graphList, size_t nodeID);
 
