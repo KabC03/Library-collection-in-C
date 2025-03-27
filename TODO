@@ -27,6 +27,7 @@
     - Inverse (Gaussian elimination)
 
 - Graphs
+    - Reduce code duplication in graph_list insert functions
     - Trees (Adjacencey list)
     - Adjacency matrix
 

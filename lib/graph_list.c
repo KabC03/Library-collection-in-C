@@ -33,6 +33,7 @@ void graph_list_print_integer(void *ptr) {
  */
 void graph_list_disp(GraphList *graphList, void (print_element)(void *element)) {
 
+    printf("\tGraph nodes: %zu\n", graphList->numNodes);
     printf("\n\n\tGraph hashmap:\n");
     hashmap_disp(&(graphList->ID2Index), hashmap_print_size_t, hashmap_print_size_t);
 
@@ -52,6 +53,23 @@ void graph_list_disp(GraphList *graphList, void (print_element)(void *element)) 
     return;
 }
 
+
+
+/**
+ * @brief :: Return number of nodes in graph
+ *
+ * @param :: *graphList :: Graph of interest
+ * 
+ * @return :: size_t :: Number of nodes
+ */
+size_t graph_list_get_num_nodes(GraphList *graphList) {
+
+    return graphList->numNodes;
+}
+
+
+
+
 /**
  * @brief :: Initialise a graph
  *
@@ -64,6 +82,7 @@ void graph_list_disp(GraphList *graphList, void (print_element)(void *element)) 
 bool graph_list_init(GraphList *graphList, size_t initialNumNodes, size_t dataSize) {
 
     graphList->dataSize = dataSize;
+    graphList->numNodes = 0;
     if(hashmap_init(&(graphList->ID2Index), initialNumNodes, hashmap_djb2) == false) {
         return false;
     }
@@ -145,7 +164,7 @@ void *graph_list_insert(GraphList *graphList, Vector *incommingConnections, Vect
     */
 
     
-    //Faster but maybebuggy
+    //Faster but maybe buggy
     if(vector_expand(&(graphList->adjacencyList), 1) == false) {
         goto cleanup_A;
     }
@@ -181,7 +200,7 @@ void *graph_list_insert(GraphList *graphList, Vector *incommingConnections, Vect
     }
 
 
-
+    graphList->numNodes++;
     return newNode;
 cleanup_D:
     //Remove the trace of the new node
@@ -204,6 +223,127 @@ cleanup_A:
     return false;
 
 }
+
+
+
+
+/**
+ * @brief :: Insert an item below a node
+ *
+ * @param :: *graphList :: Graph to initialise
+ * @param :: incommingConnectionID :: Incomming connections to new node
+ * @param :: *data :: Data to insert to the graph
+ * @param :: nodeID :: New node ID
+ * 
+ * @return :: void* :: Pointer to the new node in the graph
+ */
+void *graph_list_insert_below(GraphList *graphList, size_t incommingConnectionID ,void *data, size_t nodeID) {
+
+    uint8_t *newNode = MACRO_MALLOC(1, graphList->dataSize);
+    if(newNode == NULL) {
+        return NULL;
+    }
+    //Insert nodes into adjacency list by decending order to minimise lookup time
+
+    //Hash nodeID -> vectorTop
+    size_t graphNodeVectorSize = vector_get_size(&(graphList->graphNodes));
+    if(hashmap_insert(&(graphList->ID2Index), &nodeID, sizeof(nodeID), &graphNodeVectorSize, sizeof(graphNodeVectorSize)) == NULL) {
+        goto cleanup_A;
+    }
+
+    //Append node data
+    if(vector_append(&(graphList->graphNodes), data, 1) == false) {
+        goto cleanup_A;
+    }
+
+    
+    //Faster but maybe buggy
+    if(vector_expand(&(graphList->adjacencyList), 1) == false) {
+        goto cleanup_A;
+    }
+    List *newListPtr = vector_access_index(&(graphList->adjacencyList), vector_get_size(&(graphList->graphNodes)) - 1); //List contains ID of connected nodes
+    if(list_init(newListPtr, sizeof(size_t)) == false) {
+        goto cleanup_B;
+    }
+    
+    //Add incomming nodes to list
+
+    size_t appendToIndex = *((size_t*)hashmap_find(&(graphList->ID2Index), &incommingConnectionID, sizeof(incommingConnectionID)));
+    List *currentList = vector_access_index(&(graphList->adjacencyList), appendToIndex);
+    if(list_push(currentList, &nodeID) == false) {
+        goto cleanup_D;
+    }
+
+
+    graphList->numNodes++;
+    return newNode;
+cleanup_D:
+    //Remove the trace of the new node
+    appendToIndex = *((size_t*)hashmap_find(&(graphList->ID2Index), &incommingConnectionID, sizeof(incommingConnectionID)));
+    currentList = vector_access_index(&(graphList->adjacencyList), appendToIndex);
+    list_find_and_delete(currentList, &nodeID); //Delete the node from the other adjacency lists
+    
+cleanup_B:
+    free(newNode);
+    graphList->adjacencyList.top--;
+cleanup_A:
+    return false;
+
+}
+
+
+
+
+
+/**
+ * @brief :: Insert an item into the graph without any connections
+ *
+ * @param :: *graphList :: Graph to initialise
+ * @param :: *data :: New data
+ * @param :: nodeID :: New node ID
+ * 
+ * @return :: void* :: Pointer to the new node in the graph
+ */
+void *graph_insert_lone_node(GraphList *graphList, void *data, size_t nodeID) {
+    uint8_t *newNode = MACRO_MALLOC(1, graphList->dataSize);
+    if(newNode == NULL) {
+        return NULL;
+    }
+    //Insert nodes into adjacency list by decending order to minimise lookup time
+
+    //Hash nodeID -> vectorTop
+    size_t graphNodeVectorSize = vector_get_size(&(graphList->graphNodes));
+    if(hashmap_insert(&(graphList->ID2Index), &nodeID, sizeof(nodeID), &graphNodeVectorSize, sizeof(graphNodeVectorSize)) == NULL) {
+        goto cleanup_A;
+    }
+
+    //Append node data
+    if(vector_append(&(graphList->graphNodes), data, 1) == false) {
+        goto cleanup_A;
+    }
+
+    
+    //Faster but maybe buggy
+    if(vector_expand(&(graphList->adjacencyList), 1) == false) {
+        goto cleanup_A;
+    }
+    List *newListPtr = vector_access_index(&(graphList->adjacencyList), vector_get_size(&(graphList->graphNodes)) - 1); //List contains ID of connected nodes
+    if(list_init(newListPtr, sizeof(size_t)) == false) {
+        goto cleanup_B;
+    }
+
+
+    graphList->numNodes++;
+    return newNode;
+    
+cleanup_B:
+    free(newNode);
+    graphList->adjacencyList.top--;
+cleanup_A:
+    return false;
+}
+
+
 
 
 
@@ -242,6 +382,7 @@ bool graph_list_delete(GraphList *graphList, size_t nodeID) {
     vector_pop(&(graphList->graphNodes));
     hashmap_remove(&(graphList->ID2Index), &nodeID, sizeof(nodeID));
 
+    graphList->numNodes--;
     return true;
 }
 
