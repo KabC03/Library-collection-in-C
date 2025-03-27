@@ -267,6 +267,7 @@ void *graph_list_insert_below(GraphList *graphList, size_t incommingConnectionID
     if(list_init(newListPtr, sizeof(size_t)) == false) {
         goto cleanup_B;
     }
+
     
     //Add incomming nodes to list
 
