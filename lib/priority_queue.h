@@ -10,6 +10,7 @@
 typedef struct QueueNode {
 
 	struct QueueNode *next;
+	size_t priority; //Lower number indicates lower priority
 	uint8_t data[];
 
 } QueueNode;
@@ -31,6 +32,7 @@ void queue_disp(Queue *queue, void print_element(void *element));
 void queue_init(Queue *queue, unsigned short int dataSize);
 size_t queue_get_size(Queue *queue);
 bool queue_enqueue(Queue *queue, void *data);
+bool queue_priority_enqueue(Queue *queue, void *data, size_t priority);
 QueueNode *queue_dequeue(Queue *queue);
 QueueNode *queue_peak(Queue *queue);
 void queue_destroy(Queue *queue);

@@ -35,7 +35,7 @@ bool strings_compare(String *arg1, String *arg2);
 
 
 
-void strings_vector_init(StringVector *stringVector);
+
 
 
 #endif 

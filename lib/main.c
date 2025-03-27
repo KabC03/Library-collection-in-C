@@ -3,7 +3,7 @@
 #include "hashmap.h"
 #include "list.h"
 #include "matrix.h"
-#include "queue.h"
+#include "priority_queue.h"
 #include "wav.h"
 #include "bignum.h"
 
@@ -20,19 +20,14 @@ void mul(void *dest, void *m1, void *m2) {
 
 int main(void) {
 
-    Bignum b1;
-    Bignum b2;
-    Bignum b3;
-    bignum_init(&b1);
-    bignum_init(&b2);
-    bignum_init(&b3);
+    Queue q1;
+    queue_init(&q1, sizeof(int));
 
-    bignum_from_string(&b1, "-11111");
-    bignum_from_string(&b2, "-11111");
+    for(size_t i = 0; i < 10; i++) {
+        queue_priority_enqueue(&q1, &i, 10 - i);
+    }
+    queue_disp(&q1, queue_print_integer);
 
-    bignum_add(&b3, &b1, &b2);
-
-    bignum_print(&b3);
 
     /*
     FILE *fptr = fopen("output/in.wav", "rb");
@@ -50,7 +45,7 @@ int main(void) {
     wav_append(&wav, &wav2);
     wav_reconstruct(&wav, "output/test.wav");
     fclose(fptr);
-    */
+*/
 
     return 0;
 }

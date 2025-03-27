@@ -1,4 +1,4 @@
-#include "queue.h"
+#include "priority_queue.h"
 #define MACRO_MALLOC(numel, size) malloc(numel * size)
 #define MACRO_MEMCPY(dest, src, n) memcpy(dest, src, n)
 #define MACRO_FREE(ptr) free(ptr)
@@ -16,7 +16,7 @@ void queue_print_uint8_t(void *ptr) {
     if(ptr == NULL) {
         return;
     } else {
-        printf("%u ", *((unsigned int*)ptr));
+        printf("%u", *((unsigned int*)ptr));
     }
     return;
 }
@@ -35,7 +35,7 @@ void queue_print_integer(void *ptr) {
     if(ptr == NULL) {
         return;
     } else {
-        printf("%d ", *((int*)ptr));
+        printf("%d", *((int*)ptr));
     }
     return;
 }
@@ -59,10 +59,12 @@ void queue_disp(Queue *queue, void print_element(void *element)) {
 
     printf("\tData size: %d\n\tSize: %zu\n", queue->dataSize, queue->size);
 
-    printf("Data:\n");
+    printf("[Priority, Data]:\n");
     QueueNode *current = queue->tail;
     for(size_t i = 0; i < queue->size; i++) { //Get to the last item in the list
+		printf("[%zu, ", current->priority);
         print_element(current->data);
+		printf("], ");
         current = current->next; 
     }
     printf("\n=======================\n");
@@ -102,7 +104,7 @@ size_t queue_get_size(Queue *queue) {
 
 
 /**
- * @brief :: Enqueue a node 
+ * @brief :: Enqueue a node WITHOUT PRIORITY
  *
  * @param :: *queue :: Queue to insert to 
  * @param :: *data :: Item to be stored within the queue
@@ -112,6 +114,7 @@ size_t queue_get_size(Queue *queue) {
 bool queue_enqueue(Queue *queue, void *data) {
 
 	QueueNode *newNode = MACRO_MALLOC(1, sizeof(QueueNode) + queue->dataSize);
+	newNode->priority = 0; //Default value
 	newNode->next = NULL; 
 	if(newNode == NULL) {
 		return false;
@@ -128,6 +131,44 @@ bool queue_enqueue(Queue *queue, void *data) {
 	return true;
 } 
 
+
+/**
+ * @brief :: Enqueue a node WITH PRIORITY
+ *
+ * @param :: *queue :: Queue to insert to 
+ * @param :: *data :: Item to be stored within the queue
+ * @param :: priority :: Priority 
+ * 
+ * @return :: bool :: Indication of success/failure 
+ */
+bool queue_priority_enqueue(Queue *queue, void *data, size_t priority) {
+
+	QueueNode *newNode = MACRO_MALLOC(1, sizeof(QueueNode) + queue->dataSize);
+	if(newNode == NULL) {
+		return false;
+	}
+	
+	newNode->priority = priority;
+	if(queue->head == NULL) {
+		queue->tail = newNode;
+	}
+
+	QueueNode **current = &(queue->head);
+	while(*current != NULL) {
+		if(newNode->priority > (*current)->priority) {
+			current = &((*current)->next);
+		} else {
+			newNode->next = (*current);
+			(*current) = newNode;
+		}
+	}
+	*current = newNode;
+
+	MACRO_MEMCPY(newNode->data, data, queue->dataSize);
+
+    queue->size++;
+	return true;
+} 
 
 
 

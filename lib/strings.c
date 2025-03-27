@@ -183,21 +183,6 @@ bool strings_compare(String *arg1, String *arg2) {
 
 
 
-/**
- * @brief :: Initialise a string vector 
- *
- * @param :: *stringVector :: String vector of interest 
- * 
- * @return :: void 
- */
-void strings_vector_init(StringVector *stringVector) {
-
-    stringVector->data = NULL;
-    return;
-}
-
-
-
 
 
 

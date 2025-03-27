@@ -18,11 +18,12 @@
     - Convolve audio files
 
 
-- Strings
-    - String vector
 
 - Arbitrary precision numbers
-
+    - Add
+    - Subtract
+    - Multiply
+    - Divide
 
 - Mat2D
     - Determinant
