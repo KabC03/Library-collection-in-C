@@ -23,7 +23,7 @@ int main(void) {
 
     GraphList g1;
     graph_list_init(&g1, 10, sizeof(int));
-
+    graph_list_find(&g1, 10);
 
 
     return 0;
