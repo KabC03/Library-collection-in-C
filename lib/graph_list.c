@@ -131,18 +131,21 @@ void *graph_list_insert(GraphList *graphList, Vector *incommingConnections, Vect
         goto cleanup_A;
     }
 
+
+    /*
     //Append to adjacency list, this is innefficient, unessesary copy, should try to init() in place in vector
     //Fix this later
     List newList; //List contains ID of connected nodes
     if(list_init(&newList, sizeof(graphList->dataSize)) == false) {
-        goto cleanup_A;
+        goto cleanup_B;
     }
     if(vector_append(&(graphList->adjacencyList), &newList, 1) == false) {
-        goto cleanup_A;
+        goto cleanup_B;
     }
+    */
 
-
-
+    
+    //Faster but maybebuggy
     if(vector_expand(&(graphList->adjacencyList), 1) == false) {
         goto cleanup_A;
     }
@@ -150,7 +153,7 @@ void *graph_list_insert(GraphList *graphList, Vector *incommingConnections, Vect
     if(list_init(newListPtr, sizeof(size_t)) == false) {
         goto cleanup_B;
     }
-
+    
 
 
 
