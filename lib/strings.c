@@ -56,12 +56,12 @@ void strings_destroy(String *string) {
  * @brief :: Set a string to a character array. String is unchanged upon failure
  *
  * @param :: *string :: String to be initialised
- * @param :: *data :: String to bet used 
+ * @param :: *char :: String to bet used 
  * @param :: length :: Length of the string to be used (does not include NULL terminator)
  * 
  * @return :: bool :: Indication of string was successfully set 
  */
-bool strings_set(String *string, void *data, size_t length) {
+bool strings_set(String *string, char *data, size_t length) {
 
     length++; //Account for NULL terminator
     string->data = MACRO_REALLOC(string->data, length, sizeof(char));
@@ -73,6 +73,25 @@ bool strings_set(String *string, void *data, size_t length) {
     MACRO_MEMCPY(string->data, data, length);
 
     return true;
+}
+
+
+
+
+
+/**
+ * @brief :: Set a character index in a string
+ *
+ * @param :: *string :: String to be initialised
+ * @param :: char :: Character to be set
+ * @param :: index :: Index to be set
+ * 
+ * @return :: char* :: Pointer to newly set char
+ */
+char *strings_set_index(String *string, char character, size_t index) {
+
+    ((string->data)[index]) = character;
+    return &((string->data)[index]);
 }
 
 
@@ -102,6 +121,19 @@ char *strings_read(String *string) {
     return string->data;
 }
 
+
+
+/**
+ * @brief :: Read a char from a string
+ *
+ * @param :: *string :: String to be read 
+ * @param :: index :: Index to access
+ * 
+ * @return :: char* :: Char of interest
+ */
+char *strings_read_index(String *string, size_t index) {
+    return &((string->data)[index]);
+}
 
 
 
