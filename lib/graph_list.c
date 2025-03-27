@@ -204,19 +204,19 @@ void graph_list_delete(GraphList *graphList, size_t nodeID) {
 
         list_find_and_delete(currentList, &nodeID); //Delete the node from the other adjacency lists
     }
-    hashmap_remove(&(graphList->ID2Index), &nodeID, sizeof(nodeID));
 
     //Swap and pop out last node
+    //hashmap_disp(&(graphList->ID2Index), hashmap_print_size_t, hashmap_print_size_t);
     size_t nodeIndex = *((size_t*)hashmap_find(&(graphList->ID2Index), &nodeID, sizeof(nodeID)));
-    size_t lastIndex = vector_get_size(&(graphList->adjacencyList));
-
+    size_t lastIndex = vector_get_size(&(graphList->adjacencyList)) - 1;
     vector_xor_swap(&(graphList->adjacencyList), nodeIndex, lastIndex);
     vector_pop(&(graphList->adjacencyList));
 
-    lastIndex = vector_get_size(&(graphList->graphNodes));
+    lastIndex = vector_get_size(&(graphList->graphNodes)) - 1;
 
     vector_xor_swap(&(graphList->adjacencyList), nodeIndex, lastIndex);
     vector_pop(&(graphList->graphNodes));
+    hashmap_remove(&(graphList->ID2Index), &nodeID, sizeof(nodeID));
 
     return;
 }

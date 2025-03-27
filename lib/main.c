@@ -24,7 +24,7 @@ int main(void) {
     GraphList g1;
     graph_list_init(&g1, 10, sizeof(int));
 
-    int data = 100;
+    int data = 5;
     Vector in;
     Vector out;
     vector_init(&out, sizeof(size_t), 1);
@@ -43,6 +43,8 @@ int main(void) {
     if(graph_list_insert(&g1, &in, &out, &data, 10) == false) {
         printf("Insert failed\n");
     }
+
+    graph_list_delete(&g1, 100);
 
     int *ptr = graph_list_find(&g1, 10);
     if(ptr == NULL) {
