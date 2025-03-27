@@ -26,12 +26,7 @@ void mul(void *dest, void *m1, void *m2) {
 
 int main(void) {
 
-    Matrix m1;
-    matrix_init(&m1, sizeof(float), 3, 3);
-    float data[] = {1,2,3,4,5,6,7,8,9};
-    matrix_fill(&m1, data);
-    matrix_disp(&m1, matrix_print_float);
-    exit(0);
+
 
     Tree t1;
     tree_init(&t1, sizeof(int), 10);
