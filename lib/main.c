@@ -26,6 +26,16 @@ int main(void) {
     queue_init(&q2, sizeof(int));
 
     for(size_t i = 0; i < 10; i++) {
+        queue_enqueue(&q1, &i);
+    }
+    for(size_t i = 0; i < 10; i++) {
+        int *val = (int*)(queue_dequeue(&q1)->data);
+        printf("%d\n", *val);
+    }
+
+
+    /*
+    for(size_t i = 0; i < 10; i++) {
         queue_priority_enqueue(&q1, &i, 9 - i);
     }
     printf("Inserted\n");
@@ -45,7 +55,6 @@ int main(void) {
     val = (int*)(queue_dequeue(&q1)->data);
     printf("Value: %d\n", *val);
 
-    /*
     FILE *fptr = fopen("output/in.wav", "rb");
     if(!fptr) {
         printf("Cannot read file\n");

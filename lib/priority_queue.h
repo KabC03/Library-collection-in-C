@@ -19,8 +19,8 @@ typedef struct Queue {
 
     size_t size;
 	unsigned short int dataSize;
-	struct QueueNode *head;
-	struct QueueNode *tail;
+	struct QueueNode *head; //Enqueue here
+	struct QueueNode *tail; //Dequeue here
 
 } Queue;
 
