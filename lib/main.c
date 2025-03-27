@@ -21,14 +21,29 @@ void mul(void *dest, void *m1, void *m2) {
 int main(void) {
 
     Queue q1;
+    Queue q2;
     queue_init(&q1, sizeof(int));
+    queue_init(&q2, sizeof(int));
 
     for(size_t i = 0; i < 10; i++) {
-        queue_priority_enqueue(&q1, &i, 10 - i);
+        queue_priority_enqueue(&q1, &i, 9 - i);
     }
     printf("Inserted\n");
     queue_disp(&q1, queue_print_integer);
 
+
+
+    for(size_t i = 0; i < 10; i++) {
+        queue_priority_enqueue(&q2, &i, i);
+    }
+    printf("Inserted\n");
+    queue_disp(&q2, queue_print_integer);
+
+    int *val = (int*)(queue_dequeue(&q2)->data);
+    printf("Value: %d\n", *val);
+
+    val = (int*)(queue_dequeue(&q1)->data);
+    printf("Value: %d\n", *val);
 
     /*
     FILE *fptr = fopen("output/in.wav", "rb");
