@@ -141,12 +141,25 @@ void *graph_list_insert(GraphList *graphList, Vector *incommingConnections, Vect
         goto cleanup_A;
     }
 
+
+
+    if(vector_expand(&(graphList->adjacencyList), 1) == false) {
+        goto cleanup_A;
+    }
+    List *newListPtr = vector_access_index(&(graphList->adjacencyList), vector_get_size(&(graphList->graphNodes)) - 1); //List contains ID of connected nodes
+    if(list_init(newListPtr, sizeof(size_t)) == false) {
+        goto cleanup_B;
+    }
+
+
+
+
     //Add outgoing nodes to adjacency list
     List *currentListOutgoing = vector_access_index(&(graphList->adjacencyList), vector_get_size(&(graphList->graphNodes)) - 1);
     for(size_t i = 0; i < vector_get_size(outgoingConnections); i++) {
         void *currentData = vector_access_index(outgoingConnections, i);
         if(list_push(currentListOutgoing, currentData) == false) {
-            goto cleanup_B;
+            goto cleanup_C;
         }
     }
 
@@ -159,7 +172,7 @@ void *graph_list_insert(GraphList *graphList, Vector *incommingConnections, Vect
         List *currentList = vector_access_index(&(graphList->adjacencyList), appendToIndex);
         if(list_push(currentList, &nodeID) == false) {
             incommingNodeIterator = i;
-            goto cleanup_C;
+            goto cleanup_D;
         }
 
     }
@@ -167,7 +180,7 @@ void *graph_list_insert(GraphList *graphList, Vector *incommingConnections, Vect
 
 
     return newNode;
-cleanup_C:
+cleanup_D:
     //Remove the trace of the new node
     for(size_t i = 0; i < incommingNodeIterator; i++) {
 
@@ -179,11 +192,14 @@ cleanup_C:
         list_find_and_delete(currentList, &nodeID); //Delete the node from the other adjacency lists
     }
 
-cleanup_B:
+cleanup_C:
     list_destroy(currentListOutgoing);
-cleanup_A:
+cleanup_B:
     free(newNode);
+    graphList->adjacencyList.top--;
+cleanup_A:
     return false;
+
 }
 
 
@@ -198,25 +214,28 @@ cleanup_A:
  */
 bool graph_list_delete(GraphList *graphList, size_t nodeID) {
 
+    size_t *nodeIndexPtr = ((size_t*)hashmap_find(&(graphList->ID2Index), &nodeID, sizeof(nodeID)));
+    if(nodeIndexPtr == NULL) {
+        return false;
+    }
+
     for(size_t i = 0; i < vector_get_size(&(graphList->adjacencyList)); i++) {
 
         List *currentList = vector_access_index(&(graphList->adjacencyList), i);
 
-        if(list_find_and_delete(currentList, &nodeID) == false) { //Delete the node from the other adjacency lists
-            return false;
-        } 
+        list_find_and_delete(currentList, &nodeID); //Delete the node from the other adjacency lists
     }
 
     //Swap and pop out last node
     //hashmap_disp(&(graphList->ID2Index), hashmap_print_size_t, hashmap_print_size_t);
-    size_t nodeIndex = *((size_t*)hashmap_find(&(graphList->ID2Index), &nodeID, sizeof(nodeID)));
+
     size_t lastIndex = vector_get_size(&(graphList->adjacencyList)) - 1;
-    vector_xor_swap(&(graphList->adjacencyList), nodeIndex, lastIndex);
+    vector_xor_swap(&(graphList->adjacencyList), *nodeIndexPtr, lastIndex);
     vector_pop(&(graphList->adjacencyList));
 
     lastIndex = vector_get_size(&(graphList->graphNodes)) - 1;
 
-    vector_xor_swap(&(graphList->adjacencyList), nodeIndex, lastIndex);
+    vector_xor_swap(&(graphList->adjacencyList), *nodeIndexPtr, lastIndex);
     vector_pop(&(graphList->graphNodes));
     hashmap_remove(&(graphList->ID2Index), &nodeID, sizeof(nodeID));
 

@@ -340,17 +340,28 @@ void *vector_pop(Vector *vector) {
 
 
 /**
- * @brief :: Expand a vector by its factor
+ * @brief :: Expand a vector by an amount
  *
  * @param :: *vector :: Vector of interest
+ * @param :: numel :: Amount to expand vector by
  * 
  * @return :: bool :: Indication of success/failure
  */
-bool vector_expand(Vector *vector) {
+bool vector_expand(Vector *vector, size_t numel) {
 
-    if(vector_resize(vector, vector->capacity * CONST_REALLOC_EXPANSION) == false) {
-        return false;
+    if(vector->capacity >= vector->top + numel) {
+        //No reallocation required
+    } else {
+        //Allocation required
+        vector->data = MACRO_REALLOC(vector->data, (vector->capacity + numel) * CONST_REALLOC_EXPANSION, vector->dataSize);
+        if(vector->data == NULL) {
+            //NOTE: Realloc function is responsible for maintaining original vector state if allocation fails 
+            return NULL;
+        } else {
+            vector->capacity = (vector->capacity + numel) * CONST_REALLOC_EXPANSION;
+        }
     }
+    vector->top += numel;
 
     return true;    
 }

@@ -44,7 +44,9 @@ int main(void) {
         printf("Insert failed\n");
     }
 
-    graph_list_delete(&g1, 100);
+    if(graph_list_delete(&g1, 10) == false) {
+        printf("Not deleted\n");
+    }
 
     int *ptr = graph_list_find(&g1, 10);
     if(ptr == NULL) {
