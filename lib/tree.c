@@ -59,19 +59,20 @@ bool tree_init(Tree *tree, size_t dataSize, size_t initialNodes) {
  * @brief :: Insert a node
  *
  * @param :: *tree :: Tree to insert to
- * @param :: nodeID :: Node to insert under
+ * @param :: nodeID :: New node ID
+ * @param :: insertID :: Node to insert under
  * @param :: *data :: Data to insert
  * 
  * @return :: bool :: Indication of success/failure
  */
-bool tree_insert(Tree *tree, size_t nodeID, void *data) {
+bool tree_insert(Tree *tree, size_t nodeID, size_t insertID, void *data) {
 
     if(graph_list_get_num_nodes(&(tree->graphList)) == 0) {
         if(graph_insert_lone_node(&(tree->graphList), data, nodeID) == false) {
             return false;
         }
     } else {
-        if(graph_list_insert_below(&(tree->graphList), 0, data, nodeID) == false) {
+        if(graph_list_insert_below(&(tree->graphList), insertID, data, nodeID) == false) {
             return false;
         }
     }

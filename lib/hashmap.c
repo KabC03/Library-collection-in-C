@@ -184,10 +184,10 @@ void hashmap_print_string(void *ptr) {
 void hashmap_disp(Hashmap *hashmap, void (print_key)(void *key), void (print_value)(void *value)) {
 
 
-    printf("==============HASHMAP STATUS==============\n");
+    printf("==================HASHMAP STATUS==================\n");
     size_t buckets = hashmap->buckets.top;
-    printf("BUCKET\t||\tKEY\t||\tVALUE\t||\n");
-    printf("==========================================\n");
+    printf("||\tBUCKET\t||\tKEY\t||\tVALUE\t||\n");
+    printf("==================================================\n");
     for(size_t i = 0; i < buckets; i++) {
 
         InternalList *internalList = vector_access_index(&(hashmap->buckets), i);
@@ -204,7 +204,7 @@ void hashmap_disp(Hashmap *hashmap, void (print_key)(void *key), void (print_val
         }
         while(current != NULL) {
 
-            printf("%zu",i);
+            printf("||\t%zu",i);
             printf("\t||\t");
             print_key(current->data);
             printf("\t||\t");
@@ -212,9 +212,9 @@ void hashmap_disp(Hashmap *hashmap, void (print_key)(void *key), void (print_val
             printf("\t||\n");
             current = current->next;
         }
-        printf("------------------------------------------\n");
+        printf("--------------------------------------------------\n");
     }
-    printf("==========================================\n");
+    printf("==================================================\n");
     return;
 }
 

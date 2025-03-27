@@ -36,9 +36,9 @@ void matrix_print_float(void *element) {
  */
 void matrix_disp(Matrix *matrix, void print_element(void *element)) {
 
+
     MACRO_ITERATE_MATRIX(matrix, {
         print_element(current);
-
         if((i + 1) % matrix->cols == 0) {
             printf("\n");
         }

@@ -18,7 +18,7 @@ void list_print_size_t(void *ptr) {
     if(ptr == NULL) {
         return;
     } else {
-        printf("%zu ", *((size_t*)ptr));
+        printf("%zu, ", *((size_t*)ptr));
     }
     return;
 }
@@ -38,7 +38,7 @@ void list_print_uint8_t(void *ptr) {
     if(ptr == NULL) {
         return;
     } else {
-        printf("%u ", *((unsigned int*)ptr));
+        printf("%u, ", *((unsigned int*)ptr));
     }
     return;
 }
@@ -57,7 +57,7 @@ void list_print_integer(void *ptr) {
     if(ptr == NULL) {
         return;
     } else {
-        printf("%d ", *((int*)ptr));
+        printf("%d, ", *((int*)ptr));
     }
     return;
 }
@@ -72,7 +72,7 @@ void list_print_integer(void *ptr) {
  */
 void list_disp(List *list , void print_element(void *element)) {
 
-    printf("=====LIST STATUS=====\n");
+    printf("======LIST STATUS======\n");
     if(list == NULL) {
         printf("NULL\n");
         return;
@@ -82,10 +82,12 @@ void list_disp(List *list , void print_element(void *element)) {
 
     printf("Data:\n");
     Node *current = list->head;
+    printf("[");
     for(size_t i = 0; i < list->size; i++) { //Get to the last item in the list
         print_element(current->data);
         current = current->next; 
     }
+    printf("]");
     printf("\n=======================\n");
 
     return;

@@ -39,7 +39,7 @@ void vector_print_integer(void *ptr) {
     if(ptr == NULL) {
         return;
     } else {
-        printf("%d ", *((int*)ptr));
+        printf("%d, ", *((int*)ptr));
     }
     return;
 }
@@ -59,7 +59,7 @@ void vector_print_uint8_t(void *ptr) {
     if(ptr == NULL) {
         return;
     } else {
-        printf("%u ", *((uint8_t*)ptr));
+        printf("%u, ", *((uint8_t*)ptr));
     }
     return;
 }
@@ -87,9 +87,11 @@ void vector_disp(Vector *vector, void print_element(void *element)) {
         printf("NULL\n");
         return;
     }
+    printf("[");
     for(size_t i = 0; i < vector->top; i++) {
         print_element((void*)(&((vector->data)[i * vector->dataSize])));
     }
+    printf("]");
     printf("\n=======================\n");
 
     return;
