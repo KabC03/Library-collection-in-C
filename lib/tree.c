@@ -33,7 +33,7 @@ bool tree_init(Tree *tree, size_t dataSize, size_t initialNodes) {
         return false;
     }
 
-    return false;
+    return true;
 }
 
 
@@ -59,7 +59,7 @@ bool tree_insert(Tree *tree, size_t nodeID, void *data) {
         }
     }
 
-    return false;
+    return true;
 }
 
 
@@ -70,9 +70,9 @@ bool tree_insert(Tree *tree, size_t nodeID, void *data) {
  * @param :: *tree :: Tree to search
  * @param :: nodeID :: Node to delete
  * 
- * @return :: bool :: Indication of success/failure
+ * @return :: void* :: Data
  */
-bool tree_find(Tree *tree, size_t nodeID) {
+void *tree_find(Tree *tree, size_t nodeID) {
 
     return graph_list_find(&(tree->graphList), nodeID);
 }
