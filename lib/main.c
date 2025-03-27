@@ -1,6 +1,7 @@
 
 
 
+
 #include <stdio.h>
 #include "bitmap.h"
 #include "hashmap.h"
@@ -10,6 +11,7 @@
 #include "wav.h"
 #include "bignum.h"
 #include "graph_list.h"
+#include "tree.h"
 
 
 void mul(void *dest, void *m1, void *m2) {
@@ -24,25 +26,16 @@ void mul(void *dest, void *m1, void *m2) {
 
 int main(void) {
 
-    List l1;
-    List l2;
-
-    list_init(&l1, sizeof(int));
-    list_init(&l2, sizeof(int));
+    Tree t1;
+    tree_init(&t1, sizeof(int), 10);
 
     for(int i = 0; i < 10; i++) {
-        list_append(&l1, &i);
-        list_append(&l2, &i);
+        tree_insert(&t1, i, &i);
     }
 
-    list_transfer(&l1, &l2);
 
-    list_disp(&l1, list_print_integer);
-    list_disp(&l2, list_print_integer);
+    tree_disp(&t1, tree_print_integer);
 
     return 0;
 }
-
-
-
 

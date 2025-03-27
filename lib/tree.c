@@ -1,5 +1,22 @@
 #include "tree.h"
 
+/**
+ * @brief :: Helper function for printing integers (for use in tree_disp) 
+ *
+ * @param :: *ptr :: Item to be printed
+ * 
+ * @return :: void
+ */
+void tree_print_integer(void *ptr) {
+
+    if(ptr == NULL) {
+        return;
+    } else {
+        printf("%d, ", *((int*)ptr));
+    }
+    return;
+}
+
 
 /**
  * @brief :: Print a tree
@@ -9,7 +26,7 @@
  * 
  * @return :: void :: Indication of success/failure
  */
-void tree_print(Tree *tree,  void (print_element)(void *element)) {
+void tree_disp(Tree *tree,  void (print_element)(void *element)) {
 
     graph_list_disp(&(tree->graphList), print_element);
 
@@ -90,9 +107,9 @@ void *tree_find(Tree *tree, size_t nodeID) {
  * @param :: *tree :: Tree to delete from
  * @param :: nodeID :: Node to delete
  * 
- * @return :: bool :: Indication of success/failure
+ * @return :: void
  */
-bool tree_delete(Tree *tree, size_t nodeID) {
+void tree_delete(Tree *tree, size_t nodeID) {
 
     //Find parent node then link parent node to all decendent nodes of deleted node then delete current node
 
@@ -104,7 +121,7 @@ bool tree_delete(Tree *tree, size_t nodeID) {
     //Merge src into destination
     list_transfer(mergeDest, mergeSrc);
 
-    return false;
+    return;
 }
 
 
