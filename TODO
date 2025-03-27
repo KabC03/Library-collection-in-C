@@ -1,6 +1,3 @@
-- Queues
-    - Priority Queue versions of above functions
-
 - Bitmaps (focus on depths > 8)
     - Generate blank bitmap, filled
     - Draw a line in a bitmap
@@ -29,7 +26,10 @@
     - Determinant
     - Inverse (Gaussian elimination)
 
-
+- Graphs
+    - Trees (Adjacencey list)
+    - Adjacencey list
+    - Adjacency matrix
 
 
 
