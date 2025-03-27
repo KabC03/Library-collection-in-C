@@ -135,6 +135,31 @@ void list_destroy(List *list) {
 }
 
 
+/**
+ * @brief :: Transfer one list into the start of another
+ *
+ * @param :: *dest :: List destination
+ * @param :: *src :: List src
+ * 
+ * @return :: void
+ */
+void list_transfer(List *dest, List *src) {
+
+    dest->size += src->size;
+
+    Node *current = src->head;
+    for(size_t i = 0; i < src->size - 1; i++) {
+        current = current->next;
+    }
+    current->next = dest->head;
+    dest->head = src->head;
+
+    src->head = NULL;
+    src->size = 0;
+
+    return;
+}
+
 
 
 /**

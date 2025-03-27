@@ -29,6 +29,7 @@ void *graph_list_insert(GraphList *graphList, Vector *incommingConnections, Vect
 bool graph_list_delete(GraphList *graphList, size_t nodeID);
 void *graph_list_set(GraphList *graphList, size_t nodeID, void *data);
 void *graph_list_find(GraphList *graphList, size_t nodeID);
+List *graph_list_find_first_parent_list(GraphList *graphList, size_t nodeID);
 
 
 #endif

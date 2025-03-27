@@ -24,40 +24,21 @@ void mul(void *dest, void *m1, void *m2) {
 
 int main(void) {
 
-    GraphList g1;
-    graph_list_init(&g1, 10, sizeof(int));
+    List l1;
+    List l2;
 
-    int data = 5;
-    Vector in;
-    Vector out;
-    vector_init(&out, sizeof(size_t), 1);
-    vector_init(&in, sizeof(size_t), 1);
+    list_init(&l1, sizeof(int));
+    list_init(&l2, sizeof(int));
 
-    size_t dataArr1[] = {100};
-    //size_t dataArr2[] = {100};
-
-    if(graph_list_insert(&g1, &in, &out, &data, 100) == false) {
-        printf("Insert failed\n");
-    }
-    data = 1;
-
-    vector_fill(&in, dataArr1);
-    vector_fill(&out, dataArr1);
-    if(graph_list_insert(&g1, &in, &out, &data, 10) == false) {
-        printf("Insert failed\n");
+    for(int i = 0; i < 10; i++) {
+        list_append(&l1, &i);
+        list_append(&l2, &i);
     }
 
-    if(graph_list_delete(&g1, 10) == false) {
-        printf("Not deleted\n");
-    }
+    list_transfer(&l1, &l2);
 
-    int *ptr = graph_list_find(&g1, 10);
-    if(ptr == NULL) {
-        printf("Not found\n");
-    } else {
-        printf("Found %d\n", *ptr);
-    }
-    graph_list_disp(&g1, graph_list_print_integer);
+    list_disp(&l1, list_print_integer);
+    list_disp(&l2, list_print_integer);
 
     return 0;
 }

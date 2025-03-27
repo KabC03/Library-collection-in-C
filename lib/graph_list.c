@@ -4,6 +4,8 @@
 #define MACRO_FREE(ptr) free(ptr)
 #define CONST_REALLOC_EXPANSION 2
 #define MACRO_MEMCPY(dest, src, n) memcpy(dest, src, n)
+//Lots of code duplication in the insert functions... I should fix that eventually when I optimise
+
 
 /**
  * @brief :: Helper function for printing integers (for use in graph_list_disp) 
@@ -427,6 +429,35 @@ void *graph_list_find(GraphList *graphList, size_t nodeID) {
 
     return vector_access_index(&(graphList->graphNodes), *nodeIndexPtr);
 }
+
+
+
+/**
+ * @brief :: Find the first parent of a node and immediatly return, may miss other parents
+ *
+ * @param :: *graphList :: Graph to search
+ * @param :: nodeID :: Node ID to search parent
+ * 
+ * @return :: List* :: Parent node adjacency list
+ */
+List *graph_list_find_first_parent_list(GraphList *graphList, size_t nodeID) {
+
+    void *returnPtr = NULL;
+    for(size_t i = 0; i < vector_get_size(&(graphList->adjacencyList)); i++) {
+
+        List *currentList = vector_access_index(&(graphList->adjacencyList), i);
+
+        returnPtr = list_find(currentList, &nodeID);
+        if(returnPtr != NULL) {
+            return currentList;
+        }
+    }
+
+    return NULL;
+}
+
+
+
 
 
 

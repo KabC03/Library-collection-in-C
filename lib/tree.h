@@ -9,8 +9,13 @@ typedef struct Tree {
     GraphList graphList;
 } Tree;
 
-
+void tree_print(Tree *tree,  void (print_element)(void *element));
 bool tree_init(Tree *tree, size_t dataSize, size_t initialNodes);
+bool tree_insert(Tree *tree, size_t nodeID, void *data);
+bool tree_find(Tree *tree, size_t nodeID);
+bool tree_delete(Tree *tree, size_t nodeID);
+
+
 
 #endif
 

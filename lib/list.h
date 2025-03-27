@@ -25,6 +25,7 @@ typedef struct List {
 void list_print_size_t(void *ptr);
 void list_print_uint8_t(void *ptr);
 void list_print_integer(void *ptr);
+void list_transfer(List *dest, List *src);
 bool list_init(List *list, size_t dataSize);
 void list_destroy(List *list);
 void list_disp(List *list , void print_element(void *element));
