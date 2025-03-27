@@ -339,5 +339,25 @@ void *vector_pop(Vector *vector) {
 
 
 
+/**
+ * @brief :: Expand a vector by its factor
+ *
+ * @param :: *vector :: Vector of interest
+ * 
+ * @return :: bool :: Indication of success/failure
+ */
+bool vector_expand(Vector *vector) {
+
+    if(vector_resize(vector, vector->capacity * CONST_REALLOC_EXPANSION) == false) {
+        return false;
+    }
+
+    return true;    
+}
+
+
+
+
+
 
 

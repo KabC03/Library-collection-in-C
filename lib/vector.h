@@ -35,6 +35,7 @@ void vector_fill(Vector *vector, void *data);
 void *vector_fread_append(Vector *vector, FILE *fptr, size_t numel);
 void vector_xor_swap(Vector *vector, size_t index1, size_t index2);
 void *vector_pop(Vector *vector);
+bool vector_expand(Vector *vector);
 
 
 #endif 

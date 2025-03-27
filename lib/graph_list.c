@@ -6,22 +6,45 @@
 #define MACRO_MEMCPY(dest, src, n) memcpy(dest, src, n)
 
 /**
+ * @brief :: Helper function for printing integers (for use in graph_list_disp) 
+ *
+ * @param :: *ptr :: Item to be printed
+ * 
+ * @return :: void
+ */
+void graph_list_print_integer(void *ptr) {
+
+    if(ptr == NULL) {
+        return;
+    } else {
+        printf("%d, ", *((int*)ptr));
+    }
+    return;
+}
+
+
+/**
  * @brief :: Print a graph
  *
  * @param :: *graphList :: Graph to print
+ * @param :: print_element :: Function to print element
  * 
  * @return :: bool :: Indication of success or failure
  */
-void graph_list_print(GraphList *graphList) {
+void graph_list_disp(GraphList *graphList, void (print_element)(void *element)) {
+
+    printf("\n\n\tGraph hashmap:\n");
+    hashmap_disp(&(graphList->ID2Index), hashmap_print_size_t, hashmap_print_size_t);
 
     printf("\tGraph node data:\n");
     for(size_t i = 0; i < vector_get_size(&(graphList->graphNodes)); i++) {
-        List *currentList = vector_access_index(&(graphList->graphNodes), i);
-        list_disp(currentList, list_print_size_t);
+        void *currentItem = vector_access_index(&(graphList->graphNodes), i);
+        print_element(currentItem);
     }
 
     printf("\n\n\tGraph connections:\n");
     for(size_t i = 0; i < vector_get_size(&(graphList->adjacencyList)); i++) {
+        printf("\t\ti = %zu\n",i);
         List *currentList = vector_access_index(&(graphList->adjacencyList), i);
         list_disp(currentList, list_print_size_t);
     }
@@ -61,6 +84,7 @@ bool graph_list_init(GraphList *graphList, size_t initialNumNodes, size_t dataSi
             }
             goto cleanup_C;
         }
+        //list_disp(currentList, list_print_size_t);
     }
 
     return true;
@@ -117,7 +141,6 @@ void *graph_list_insert(GraphList *graphList, Vector *incommincConnections, Vect
         goto cleanup_A;
     }
 
-
     //Add outgoing nodes to adjacency list
     List *currentListOutgoing = vector_access_index(&(graphList->adjacencyList), vector_get_size(&(graphList->graphNodes)));
     for(size_t i = 0; i < vector_get_size(outgoingConnections); i++) {
@@ -140,6 +163,7 @@ void *graph_list_insert(GraphList *graphList, Vector *incommincConnections, Vect
             incommingNodeIterator = i;
             goto cleanup_C;
         }
+
     }
 
 
