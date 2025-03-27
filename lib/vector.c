@@ -46,6 +46,7 @@ void vector_print_integer(void *ptr) {
 
 
 
+
 /**
  * @brief :: Helper function for printing uint8_t (for use in vector_disp) 
  *
@@ -117,7 +118,16 @@ bool vector_init(Vector *vector, uint8_t dataSize, size_t numel) {
     return true;
 }
 
-
+/**
+ * @brief :: Return the size of a vector (number of elements)
+ *
+ * @param :: *vector :: Vector of interest
+ * 
+ * @return :: size_t :: Vector size
+ */
+size_t vector_get_size(Vector *vector) {
+    return vector->top;
+}
 
 /**
  * @brief :: Append a file stream into a vector, destroys vector on failure
