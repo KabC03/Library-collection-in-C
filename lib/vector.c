@@ -277,7 +277,7 @@ void *vector_set_index(Vector *vector, void *data, size_t index) {
 
 
 /**
- * @brief :: Fill a matrix with data 
+ * @brief :: Fill a vector with data 
  *
  * @param :: *vector :: Vector of interest
  * @param :: *data :: Data to place into vector
@@ -296,6 +296,46 @@ void vector_fill(Vector *vector, void *data) {
     return;    
 }
 
+
+/**
+ * @brief :: XOR Swap two indexes in a vector
+ *
+ * @param :: *vector :: Vector of interest
+ * @param :: index1 :: Swap location 1
+ * @param :: index2 :: Swap location 2
+ * 
+ * @return :: void
+ */
+void vector_xor_swap(Vector *vector, size_t index1, size_t index2) {
+
+    uint8_t *src1 = (uint8_t*)vector_access_index(vector, index1);
+    uint8_t *src2 = (uint8_t*)vector_access_index(vector, index2);
+
+    for(size_t i = 0; i < vector->dataSize; i++) { //Yes this is slow because we are doing byte by byte... but it avoids a temp buffer
+        src1[i] ^= src2[i];
+        src2[i] ^= src1[i];
+        src1[i] ^= src2[i];
+    }
+
+    return;
+}
+
+
+
+
+/**
+ * @brief :: Pop the last item from a vector
+ *
+ * @param :: *vector :: Vector of interest
+ * 
+ * @return :: void* :: Popped element
+ */
+void *vector_pop(Vector *vector) {
+
+    void *returnPtr = vector_access_index(vector, vector->top);
+    vector->top--;
+    return returnPtr;    
+}
 
 
 

@@ -22,7 +22,7 @@ typedef struct List {
 
 } List;
 
-
+void list_print_size_t(void *ptr);
 void list_print_uint8_t(void *ptr);
 void list_print_integer(void *ptr);
 bool list_init(List *list, size_t dataSize);

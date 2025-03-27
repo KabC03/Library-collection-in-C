@@ -5,6 +5,29 @@
 #define CONST_REALLOC_EXPANSION 2
 #define MACRO_MEMCPY(dest, src, n) memcpy(dest, src, n)
 
+/**
+ * @brief :: Print a graph
+ *
+ * @param :: *graphList :: Graph to print
+ * 
+ * @return :: bool :: Indication of success or failure
+ */
+void graph_list_print(GraphList *graphList) {
+
+    printf("\tGraph node data:\n");
+    for(size_t i = 0; i < vector_get_size(&(graphList->graphNodes)); i++) {
+        List *currentList = vector_access_index(&(graphList->graphNodes), i);
+        list_disp(currentList, list_print_size_t);
+    }
+
+    printf("\n\n\tGraph connections:\n");
+    for(size_t i = 0; i < vector_get_size(&(graphList->adjacencyList)); i++) {
+        List *currentList = vector_access_index(&(graphList->adjacencyList), i);
+        list_disp(currentList, list_print_size_t);
+    }
+
+    return;
+}
 
 /**
  * @brief :: Initialise a graph
@@ -109,7 +132,7 @@ void *graph_list_insert(GraphList *graphList, Vector *incommincConnections, Vect
     for(size_t i = 0; i < vector_get_size(incommincConnections); i++) {
 
         size_t currentIncommingConnection = *((size_t*)vector_access_index(incommincConnections, i));
-        size_t appendToIndex = *((size_t*)hashmap_find(&(graphList->ID2Index), &currentIncommingConnection, sizeof(size_t)));
+        size_t appendToIndex = *((size_t*)hashmap_find(&(graphList->ID2Index), &currentIncommingConnection, sizeof(currentIncommingConnection)));
 
         List *currentList = vector_access_index(&(graphList->adjacencyList), appendToIndex);
 
@@ -127,7 +150,7 @@ cleanup_C:
     for(size_t i = 0; i < incommingNodeIterator; i++) {
 
         size_t currentIncommingConnection = *((size_t*)vector_access_index(incommincConnections, i));
-        size_t appendToIndex = *((size_t*)hashmap_find(&(graphList->ID2Index), &currentIncommingConnection, sizeof(size_t)));
+        size_t appendToIndex = *((size_t*)hashmap_find(&(graphList->ID2Index), &currentIncommingConnection, sizeof(currentIncommingConnection)));
 
         List *currentList = vector_access_index(&(graphList->adjacencyList), appendToIndex);
 
@@ -140,6 +163,85 @@ cleanup_A:
     free(newNode);
     return false;
 }
+
+
+
+/**
+ * @brief :: Delete an item from a graph
+ *
+ * @param :: *graphList :: Graph to initialise
+ * @param :: nodeID :: Node to remove
+ * 
+ * @return :: void
+ */
+void graph_list_delete(GraphList *graphList, size_t nodeID) {
+
+    for(size_t i = 0; i < vector_get_size(&(graphList->adjacencyList)); i++) {
+
+        List *currentList = vector_access_index(&(graphList->adjacencyList), i);
+
+        list_find_and_delete(currentList, &nodeID); //Delete the node from the other adjacency lists
+    }
+    hashmap_remove(&(graphList->ID2Index), &nodeID, sizeof(nodeID));
+
+    //Swap and pop out last node
+    size_t nodeIndex = *((size_t*)hashmap_find(&(graphList->ID2Index), &nodeID, sizeof(nodeID)));
+    size_t lastIndex = vector_get_size(&(graphList->adjacencyList));
+
+    vector_xor_swap(&(graphList->adjacencyList), nodeIndex, lastIndex);
+    vector_pop(&(graphList->adjacencyList));
+
+    lastIndex = vector_get_size(&(graphList->graphNodes));
+
+    vector_xor_swap(&(graphList->adjacencyList), nodeIndex, lastIndex);
+    vector_pop(&(graphList->graphNodes));
+
+    return;
+}
+
+
+/**
+ * @brief :: Set the value of a node in a list
+ *
+ * @param :: *graphList :: Graph to initialise
+ * @param :: nodeID :: Node to set
+ * @param :: *data :: Data to set
+ * 
+ * @return :: void* :: Set node (if present)
+ */
+void *graph_list_set(GraphList *graphList, size_t nodeID, void *data) {
+
+    size_t *nodeIndexPtr = ((size_t*)hashmap_find(&(graphList->ID2Index), &nodeID, sizeof(nodeID)));
+    if(nodeIndexPtr == NULL) {
+        return NULL;
+    }
+    vector_set_index(&(graphList->graphNodes), data, *nodeIndexPtr);
+
+    return vector_access_index(&(graphList->graphNodes), *nodeIndexPtr);
+}
+
+
+
+
+/**
+ * @brief :: Find an item in a graph
+ *
+ * @param :: *graphList :: Graph to initialise
+ * @param :: nodeID :: Node to find
+ * 
+ * @return :: void* :: Data (if present)
+ */
+void *graph_list_find(GraphList *graphList, size_t nodeID) {
+
+    size_t *nodeIndexPtr = ((size_t*)hashmap_find(&(graphList->ID2Index), &nodeID, sizeof(nodeID)));
+    if(nodeIndexPtr == NULL) {
+        return NULL;
+    }
+
+    return vector_access_index(&(graphList->graphNodes), *nodeIndexPtr);
+}
+
+
 
 
 

@@ -7,6 +7,26 @@
 #define MACRO_MEMCMP(arg1, arg2, n) memcmp(arg1, arg2, n)
 
 /**
+ * @brief :: Helper function for printing size_t (for use in list_disp) 
+ *
+ * @param :: *ptr :: Item to be printed
+ * 
+ * @return :: void
+ */
+void list_print_size_t(void *ptr) {
+
+    if(ptr == NULL) {
+        return;
+    } else {
+        printf("%zu ", *((size_t*)ptr));
+    }
+    return;
+}
+
+
+
+
+/**
  * @brief :: Helper function for printing uint8_t (for use in list_disp) 
  *
  * @param :: *ptr :: Item to be printed

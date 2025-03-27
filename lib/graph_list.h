@@ -17,10 +17,13 @@ typedef struct GraphList {
 
 } GraphList;
 
-//Init, insert, delete, print, find
+//delete, print, find
+void graph_list_print(GraphList *graphList);
 bool graph_list_init(GraphList *graphList, size_t initialNumNodes, size_t dataSize);
 void *graph_list_insert(GraphList *graphList, Vector *incommincConnections, Vector *outgoingConnections, void *data, size_t nodeID);
-
+void graph_list_delete(GraphList *graphList, size_t nodeID);
+void *graph_list_set(GraphList *graphList, size_t nodeID, void *data);
+void *graph_list_find(GraphList *graphList, size_t nodeID);
 
 
 #endif

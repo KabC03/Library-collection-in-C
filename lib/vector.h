@@ -33,6 +33,9 @@ void *vector_access_index(Vector *vector, size_t index);
 void *vector_set_index(Vector *vector, void *data, size_t index);
 void vector_fill(Vector *vector, void *data);
 void *vector_fread_append(Vector *vector, FILE *fptr, size_t numel);
+void vector_xor_swap(Vector *vector, size_t index1, size_t index2);
+void *vector_pop(Vector *vector);
+
 
 #endif 
 
