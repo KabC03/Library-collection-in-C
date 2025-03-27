@@ -112,7 +112,7 @@ cleanup_A:
  * 
  * @return :: void* :: Pointer to the new node in the graph
  */
-void *graph_list_insert(GraphList *graphList, Vector *incommincConnections, Vector *outgoingConnections, void *data, size_t nodeID) {
+void *graph_list_insert(GraphList *graphList, Vector *incommingConnections, Vector *outgoingConnections, void *data, size_t nodeID) {
 
     uint8_t *newNode = MACRO_MALLOC(1, graphList->dataSize);
     if(newNode == NULL) {
@@ -142,24 +142,22 @@ void *graph_list_insert(GraphList *graphList, Vector *incommincConnections, Vect
     }
 
     //Add outgoing nodes to adjacency list
-    List *currentListOutgoing = vector_access_index(&(graphList->adjacencyList), vector_get_size(&(graphList->graphNodes)));
+    List *currentListOutgoing = vector_access_index(&(graphList->adjacencyList), vector_get_size(&(graphList->graphNodes)) - 1);
     for(size_t i = 0; i < vector_get_size(outgoingConnections); i++) {
         void *currentData = vector_access_index(outgoingConnections, i);
-        if(list_append(currentListOutgoing, currentData) == false) {
+        if(list_push(currentListOutgoing, currentData) == false) {
             goto cleanup_B;
         }
     }
 
     //Add incomming nodes to list
-    size_t incommingNodeIterator = vector_get_size(incommincConnections);
-    for(size_t i = 0; i < vector_get_size(incommincConnections); i++) {
+    size_t incommingNodeIterator = vector_get_size(incommingConnections);
+    for(size_t i = 0; i < vector_get_size(incommingConnections); i++) {
 
-        size_t currentIncommingConnection = *((size_t*)vector_access_index(incommincConnections, i));
+        size_t currentIncommingConnection = *((size_t*)vector_access_index(incommingConnections, i));
         size_t appendToIndex = *((size_t*)hashmap_find(&(graphList->ID2Index), &currentIncommingConnection, sizeof(currentIncommingConnection)));
-
         List *currentList = vector_access_index(&(graphList->adjacencyList), appendToIndex);
-
-        if(list_append(currentList, &nodeID) == false) {
+        if(list_push(currentList, &nodeID) == false) {
             incommingNodeIterator = i;
             goto cleanup_C;
         }
@@ -173,7 +171,7 @@ cleanup_C:
     //Remove the trace of the new node
     for(size_t i = 0; i < incommingNodeIterator; i++) {
 
-        size_t currentIncommingConnection = *((size_t*)vector_access_index(incommincConnections, i));
+        size_t currentIncommingConnection = *((size_t*)vector_access_index(incommingConnections, i));
         size_t appendToIndex = *((size_t*)hashmap_find(&(graphList->ID2Index), &currentIncommingConnection, sizeof(currentIncommingConnection)));
 
         List *currentList = vector_access_index(&(graphList->adjacencyList), appendToIndex);

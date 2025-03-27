@@ -30,16 +30,16 @@ int main(void) {
     vector_init(&out, sizeof(size_t), 1);
     vector_init(&in, sizeof(size_t), 1);
 
-    size_t dataArr[] = {100};
-
+    size_t dataArr1[] = {100};
+    //size_t dataArr2[] = {100};
 
     if(graph_list_insert(&g1, &in, &out, &data, 100) == false) {
         printf("Insert failed\n");
     }
     data = 1;
 
-    vector_fill(&in, dataArr);
-    vector_fill(&out, dataArr);
+    vector_fill(&in, dataArr1);
+    vector_fill(&out, dataArr1);
     if(graph_list_insert(&g1, &in, &out, &data, 10) == false) {
         printf("Insert failed\n");
     }
