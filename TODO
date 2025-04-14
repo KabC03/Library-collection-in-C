@@ -27,12 +27,12 @@
     - Inverse (Gaussian elimination)
 
 
-
-
 - Graphs
     - Tree functions do not work, investigate
     - NOTE TREE AND MOST GRAPH_LIST FUNCTIONS ARE NOT FULLY TESTED
     - Reduce code duplicaion in graph_list
     - Adjacency matrix variant
 
+
+- Networking library
 

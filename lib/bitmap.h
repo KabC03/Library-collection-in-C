@@ -7,6 +7,17 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "vector.h"
+#include "matrix.h"
+
+
+/*
+TODO:
+    - Image from a matrix
+    - Draw a line on an image
+    - Generate a solid colour image
+    - Convolve an image with a matrix
+*/
+
 
 
 #pragma pack(push, 1)
