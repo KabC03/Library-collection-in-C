@@ -38,6 +38,36 @@ bool bitmap_init(FILE *fptr, Bitmap *bitmap) {
 }
 
 
+/**
+ * @brief :: Perform a convolution on a 24 bit bitmap
+ *
+ * @param :: *bitmap :: Bitmap image to be reconstructed 
+ * @param :: *kernel :: Matrix to convolve with
+ * 
+ * @return :: void
+ */
+void bitmap_24_convolve(Bitmap *bitmap, Matrix *kernel) {
+
+    for(size_t i = 0; i < bitmap->bitmapInfoHeader.biWidth; i++) {
+        for(size_t j = 0; j < bitmap->bitmapInfoHeader.biHeight; j++) {
+            
+
+        }
+    }
+
+
+
+    return;
+}
+
+
+
+
+
+
+
+
+
 
 /**
  * @brief :: Reconstruct a bitmap image from data 

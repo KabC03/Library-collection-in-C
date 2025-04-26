@@ -59,6 +59,7 @@ typedef struct Bitmap {
 
 bool bitmap_init(FILE *fptr, Bitmap *bitmap);
 bool bitmap_reconstruct(Bitmap *bitmap, char *name);
+void bitmap_24_convolve(Bitmap *bitmap, Matrix *kernel);
 void bitmap_destroy(Bitmap *bitmap);
 
 #endif 
