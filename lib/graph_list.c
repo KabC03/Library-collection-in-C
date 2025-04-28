@@ -146,7 +146,7 @@ void *graph_list_insert(GraphList *graphList, Vector *incommingConnections, Vect
     //Append node data
     void *returnPtr = vector_append(&(graphList->graphNodes), data, 1);
     if(returnPtr == NULL) {
-        goto cleanup_A;
+        goto cleanup_B;
     }
 
 
@@ -165,7 +165,7 @@ void *graph_list_insert(GraphList *graphList, Vector *incommingConnections, Vect
     
     //Faster but maybe buggy
     if(vector_expand(&(graphList->adjacencyList), 1) == false) {
-        goto cleanup_A;
+        goto cleanup_B;
     }
     List *newListPtr = vector_access_index(&(graphList->adjacencyList), vector_get_size(&(graphList->graphNodes)) - 1); //List contains ID of connected nodes
     if(list_init(newListPtr, sizeof(size_t)) == false) {
@@ -215,8 +215,10 @@ cleanup_D:
 
 cleanup_C:
     list_destroy(currentListOutgoing);
+
 cleanup_B:
-    vector_pop(&(graphList->adjacencyList));
+    hashmap_remove(&(graphList->ID2Index), &nodeID, sizeof(nodeID));
+
 cleanup_A:
     return NULL;
 
