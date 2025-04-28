@@ -249,14 +249,23 @@ bool graph_list_delete(GraphList *graphList, size_t nodeID) {
     }
 
     //Swap and pop out last node
-    //hashmap_disp(&(graphList->ID2Index), hashmap_print_size_t, hashmap_print_size_t);
 
     size_t lastIndex = vector_get_size(&(graphList->adjacencyList)) - 1;
     vector_xor_swap(&(graphList->adjacencyList), *nodeIndexPtr, lastIndex);
     vector_pop(&(graphList->adjacencyList));
 
+    //Adjust the hashmap
+    printf("NOT IMPLEMENTED YET\n");
+    exit(-1);
+    /*
+    To readjust hashmap indexing:
+    - Lookup what nodeID was stored in the last index
+    - Search the hashmap (which goes nodeID -> vector index) for vector index -> nodeID
+    - Once the nodeID is found of the last element, use hash_set_key() to set the nodeID to its new position in the vector
+    */
 
-    
+
+
     //nodeIndexPtr points to the swapped element - must update the hashmap
     //TODO
 
