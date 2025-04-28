@@ -28,17 +28,6 @@ int main(void) {
 
 
 
-    Tree t1;
-    tree_init(&t1, sizeof(int), 10);
-
-    for(int i = 1; i < 10; i++) {
-        size_t temp = i;
-        tree_insert(&t1, i, temp, &i);
-    }
-
-
-    tree_disp(&t1, tree_print_integer);
-    tree_delete(&t1, 1);
 
     return 0;
 }

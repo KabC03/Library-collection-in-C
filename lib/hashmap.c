@@ -3,6 +3,7 @@
 
 
 #define MACRO_MALLOC(numel, size) malloc(numel * size)
+#define MACRO_REALLOC(ptr, numel, size) realloc(ptr, numel * size)
 #define MACRO_MEMCPY(dest, src, n) memcpy(dest, src, n)
 #define MACRO_MEMCMP(arg1, arg2, n) memcmp(arg1, arg2, n)
 #define MACRO_FREE(ptr) free(ptr)
@@ -48,7 +49,7 @@ void *internal_list_append(InternalList *internalList, void *key, size_t keySize
     return newNode;
 }
 //Remove an item from a list
-void internal_list_remove(InternalList *InternalList, void *key, size_t keySize) {
+bool internal_list_remove(InternalList *InternalList, void *key, size_t keySize) {
 
     InternalNode **current = &(InternalList->head);
     while(*current != NULL) {
@@ -59,7 +60,7 @@ void internal_list_remove(InternalList *InternalList, void *key, size_t keySize)
                 InternalNode *temp = *current;
                 (*current) = (*current)->next;
                 MACRO_FREE(temp);
-                return;
+                return true;
                 break;
             }
         }
@@ -67,7 +68,7 @@ void internal_list_remove(InternalList *InternalList, void *key, size_t keySize)
         current = &((*current)->next);
     }
 
-    return;
+    return false;
 }
 //Find an item in a list
 void *internal_list_find(InternalList *InternalList, void *key, size_t keySize) {
@@ -87,6 +88,32 @@ void *internal_list_find(InternalList *InternalList, void *key, size_t keySize) 
 
     return NULL;
 }
+//Find and replace a node - return the placed value
+void *internal_list_find_and_replace(InternalList *InternalList, void *key, size_t keySize, void *value, size_t valueSize) {
+
+
+    InternalNode **current = &(InternalList->head);
+    while(current != NULL) {
+
+        if((*current)->keySize == keySize) {
+            if(MACRO_MEMCMP((*current)->data, key, keySize) == 0) { //Found item
+
+                return ((uint8_t*)((*current)->data) + keySize);
+                if(MACRO_REALLOC(*current, 1, sizeof(InternalNode) + keySize + valueSize) == NULL) {
+                    return NULL;
+                }
+                MACRO_MEMCPY((uint8_t*)(&((*current)->data)) + keySize, value, valueSize);
+                return (void*)(&((*current)->data)) + keySize;
+            }
+        }
+
+        current = &((*current)->next);
+    }
+
+    return NULL;
+}
+
+
 //Destroy a list
 void internal_list_destroy(InternalList *InternalList) {
 
@@ -338,17 +365,39 @@ void *hashmap_insert(Hashmap *hashmap, void *key, size_t keySize, void *value, s
  * @param :: *key :: Key of interest 
  * @param :: keySize :: Size of key 
  * 
- * @return :: void
+ * @return :: bool :: If removal was successful
  */
-void hashmap_remove(Hashmap *hashmap, void *key, size_t keySize) {
+bool hashmap_remove(Hashmap *hashmap, void *key, size_t keySize) {
 
     size_t bucketIndex = hashmap->hashmapFunction(key, keySize, hashmap->buckets.top);
     InternalList *internalList = vector_access_index(&(hashmap->buckets), bucketIndex);
 
-    internal_list_remove(internalList, key, keySize);
-
-    return;
+    return internal_list_remove(internalList, key, keySize);
 }
+
+
+
+
+
+/**
+ * @brief :: Set the value of a key
+ *
+ * @param :: *hashmap :: Hashmap of interest 
+ * @param :: *key :: Key of interest 
+ * @param :: keySize :: Size of key 
+ * @param :: *value :: value of interest 
+ * @param :: valueSize :: Size of value 
+ * 
+ * @return :: void* :: Pointer to new element in map 
+ */
+void *hashmap_set_key(Hashmap *hashmap, void *key, size_t keySize, void *value, size_t valueSize) {
+
+    size_t bucketIndex = hashmap->hashmapFunction(key, keySize, hashmap->buckets.top);
+    InternalList *internalList = vector_access_index(&(hashmap->buckets), bucketIndex);
+
+    return internal_list_find_and_replace(internalList, key, keySize, value, valueSize);
+}
+
 
 
 /**
