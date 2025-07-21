@@ -4,7 +4,7 @@ library="./lib/*.c"
 
 
 mkdir -p output
-clear && clang $library -Wall -Werror -fsanitize=address -o ./output/exec
+clear && clang $library -Wall -Werror -fsanitize=address -O0 -o ./output/exec
 echo "Compiled"
 ./output/exec 
 
