@@ -8,6 +8,7 @@
 #include <string.h>
 #include <stdint.h>
 
+#define Vector(Type) vector_init_zero_size(sizeof(Type))
 
 
 typedef struct Vector {
@@ -26,7 +27,8 @@ void vector_print_uint8_t(void *ptr);
 size_t vector_get_size(Vector *vector);
 void vector_disp(Vector *vector, void print_element(void *element));
 bool vector_expand(Vector *vector, size_t numel);
-bool vector_init(Vector *vector, uint8_t dataSize, size_t numel);
+Vector vector_init_zero_size(size_t dataSize);
+bool vector_init(Vector *vector, size_t dataSize, size_t numel);
 void vector_destroy(Vector *vector);
 bool vector_resize(Vector *vector, size_t numel );
 void *vector_append(Vector *vector, void *data, size_t numel);

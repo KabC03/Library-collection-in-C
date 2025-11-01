@@ -97,6 +97,27 @@ void vector_disp(Vector *vector, void print_element(void *element)) {
     return;
 }
 
+
+/**
+ * @brief :: Initialises a vector with a specified datasize and zero capacity
+ *
+ * @param :: *vector :: Vector to be initialised
+ * 
+ * @return :: Vector :: Generated vector
+ */
+Vector vector_init_zero_size(size_t dataSize) {
+
+    Vector vector = {
+        .dataSize = 0,
+        .top = 0,
+        .capacity = 0,
+        .data = NULL
+    };
+    return vector;
+}
+
+
+
 /**
  * @brief :: Initialises a vector with a specified datasize and initial capacity
  *
@@ -106,7 +127,7 @@ void vector_disp(Vector *vector, void print_element(void *element)) {
  * 
  * @return :: bool :: Indicates if memory was successfully allocated for vector
  */
-bool vector_init(Vector *vector, uint8_t dataSize, size_t numel) {
+bool vector_init(Vector *vector, size_t dataSize, size_t numel) {
 
     vector->data = MACRO_MALLOC(dataSize, numel);
     if(vector->data == NULL) {
