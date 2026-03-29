@@ -16,7 +16,7 @@ void queue_print_uint8_t(void *ptr) {
     if(ptr == NULL) {
         return;
     } else {
-        printf("%u", *((unsigned int*)ptr));
+        printf("%u", *((uint8_t*)ptr));
     }
     return;
 }
@@ -57,7 +57,7 @@ void queue_disp(Queue *queue, void print_element(void *element)) {
         return;
     }
 
-    printf("\tData size: %d\n\tSize: %zu\n", queue->dataSize, queue->size);
+    printf("\tData size: %zu\n\tSize: %zu\n", queue->dataSize, queue->size);
 
     printf("[Priority, Data]:\n");
     QueueNode *current = queue->tail;
@@ -114,6 +114,9 @@ size_t queue_get_size(Queue *queue) {
 bool queue_enqueue(Queue *queue, void *data) {
 
 	QueueNode *newNode = MACRO_MALLOC(1, sizeof(QueueNode) + queue->dataSize);
+	if(!newNode) {
+		return false;
+	}
 	newNode->priority = 0; //Default value
 	newNode->next = NULL; 
 	if(newNode == NULL) {

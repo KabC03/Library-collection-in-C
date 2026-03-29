@@ -38,7 +38,7 @@ void list_print_uint8_t(void *ptr) {
     if(ptr == NULL) {
         return;
     } else {
-        printf("%u, ", *((unsigned int*)ptr));
+        printf("%u, ", *((uint8_t*)ptr));
     }
     return;
 }
@@ -147,6 +147,9 @@ void list_destroy(List *list) {
  */
 void list_transfer(List *dest, List *src) {
 
+    if(src->size == 0) {
+        return;   
+    }
     dest->size += src->size;
 
     Node *current = src->head;
@@ -232,7 +235,7 @@ void *list_push(List *list, void *data) {
     //Set up new node
     Node *newNode = MACRO_MALLOC(1, sizeof(Node) + list->dataSize);
     if(newNode == NULL) {
-        return false;
+        return NULL;
     }
     newNode->next = NULL;
     MACRO_MEMCPY(newNode->data, data, list->dataSize);

@@ -1,35 +1,11 @@
-- Bitmaps (focus on depths > 8)
-    - Generate blank bitmap, filled
-    - Draw a line in a bitmap
-    - Colour a pixel in a bitmap
-    - Greyscale a bitmap
-    - Convolve bitmaps
-    - Each should take a function pointer for bitmap_set_pixel(x,y) and/of bitmap_get_pixel(x,y) for each bit depth
-
-
-- Wav
-    - Make it compatable with non standard Wavs
-    - Trim a wav
-    - Generate Wav from DFT
-    - DFT of wav
-    - Convolve audio files
-
-
-
-- Arbitrary precision numbers
-    - Add
-    - Subtract
-    - Multiply
-    - Divide
-
-- Mat2D
-    - Determinant
-    - Inverse (Gaussian elimination)
-
-
-- Graphs
-    - Adjacency matrix variant
-    - Delete node
-
+- Allocator
+- Linked List
+- Queue
+- Stack
+- Vector
+- Matricies
+- Hashmap
+- Bitmaps
+- Wav files
 
 
